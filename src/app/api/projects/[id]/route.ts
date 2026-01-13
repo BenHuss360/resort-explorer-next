@@ -63,7 +63,6 @@ export async function PATCH(
         resortName: body.resortName,
         homepageContent: body.homepageContent,
         mapExperience: body.mapExperience,
-        updatedAt: new Date(),
       })
       .where(eq(projects.id, projectId))
       .returning()
