@@ -302,7 +302,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
             setLongitude(lng.toFixed(6))
           }}
           defaultCenter={
-            project?.boundaries
+            project?.boundaries?.north && project?.boundaries?.south && project?.boundaries?.east && project?.boundaries?.west
               ? {
                   lat: (project.boundaries.north + project.boundaries.south) / 2,
                   lng: (project.boundaries.east + project.boundaries.west) / 2,

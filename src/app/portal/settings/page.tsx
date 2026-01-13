@@ -10,7 +10,7 @@ export default function PortalSettingsPage() {
 
   const [resortName, setResortName] = useState(project?.resortName || '')
   const [homepageContent, setHomepageContent] = useState(project?.homepageContent || '')
-  const [mapExperience, setMapExperience] = useState(project?.mapExperience || 'full')
+  const [mapExperience, setMapExperience] = useState<string>(project?.mapExperience || 'full')
 
   const mutation = useMutation({
     mutationFn: async (data: { resortName: string; homepageContent: string; mapExperience: string }) => {
