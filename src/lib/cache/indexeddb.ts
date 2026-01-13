@@ -1,6 +1,6 @@
 'use client'
 
-const DB_NAME = 'resort-explorer'
+const DB_NAME = 'wandernest'
 const DB_VERSION = 1
 const HOTSPOTS_STORE = 'hotspots'
 const PROJECT_STORE = 'project'

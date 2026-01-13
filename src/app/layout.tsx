@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Resort Explorer',
-  description: 'GPS-guided discovery experience for resort guests',
+  title: 'Wandernest',
+  description: 'GPS-powered exploration for wellness, adventure, and luxury properties',
 }
 
 export const viewport: Viewport = {
