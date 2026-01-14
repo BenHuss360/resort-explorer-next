@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useProject } from '@/components/providers/project-provider'
 import { Badge } from '@/components/ui/badge'
 import { isDemoMode } from '@/lib/mock-data'
@@ -19,6 +20,12 @@ export default function PortalLayout({
 }) {
   const { project } = useProject()
   const pathname = usePathname()
+  const [isDemo, setIsDemo] = useState(false)
+
+  // Check demo mode after mount to avoid hydration mismatch
+  useEffect(() => {
+    setIsDemo(isDemoMode())
+  }, [])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,7 +36,7 @@ export default function PortalLayout({
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-xl font-bold">{project?.resortName || 'Resort'} Portal</h1>
-                {isDemoMode() && (
+                {isDemo && (
                   <Badge variant="warning">Demo Mode</Badge>
                 )}
               </div>
@@ -37,7 +44,7 @@ export default function PortalLayout({
                 Access Code: <code className="bg-gray-100 px-2 py-0.5 rounded">{project?.accessCode}</code>
               </p>
             </div>
-            {!isDemoMode() && (
+            {!isDemo && (
               <Link
                 href="/map"
                 className="text-sm text-blue-600 hover:text-blue-700"

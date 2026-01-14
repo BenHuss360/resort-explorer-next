@@ -39,14 +39,18 @@ const CustomMapCalibrator = dynamic(
 function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
   const [embedSize, setEmbedSize] = useState<'small' | 'medium' | 'large'>('medium')
   const [copied, setCopied] = useState(false)
+  const [baseUrl, setBaseUrl] = useState('')
+
+  // Set baseUrl after mount to avoid hydration mismatch
+  useEffect(() => {
+    setBaseUrl(window.location.origin)
+  }, [])
 
   const sizes = {
     small: { width: 400, height: 500 },
     medium: { width: 600, height: 700 },
     large: { width: 800, height: 900 },
   }
-
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
   const embedUrl = `${baseUrl}/embed/${accessCode}`
   const { width, height } = sizes[embedSize]
 

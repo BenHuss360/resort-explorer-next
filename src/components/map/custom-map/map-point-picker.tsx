@@ -21,6 +21,7 @@ export default function MapPointPicker({
   const markersRef = useRef<L.Marker[]>([])
   const [mapLayer, setMapLayer] = useState<'satellite' | 'street'>('satellite')
   const tileLayerRef = useRef<L.TileLayer | null>(null)
+  const [mapReady, setMapReady] = useState(false)
 
   // Tile layer URLs
   const tileLayers = {
@@ -61,37 +62,72 @@ export default function MapPointPicker({
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainerRef.current || mapRef.current) return
+    if (!mapContainerRef.current) return
 
-    const map = L.map(mapContainerRef.current, {
-      center: [venueCenter.lat, venueCenter.lng],
-      zoom: 16,
-      zoomControl: false,
-    })
-
-    // Add initial tile layer
-    tileLayerRef.current = L.tileLayer(tileLayers.satellite.url, {
-      attribution: tileLayers.satellite.attribution,
-      maxZoom: 19,
-    }).addTo(map)
-
-    // Add zoom control to bottom right
-    L.control.zoom({ position: 'bottomright' }).addTo(map)
-
-    // Click handler
-    if (onClick) {
-      map.on('click', (e: L.LeafletMouseEvent) => {
-        onClick(e.latlng.lat, e.latlng.lng)
-      })
-    }
-
-    mapRef.current = map
-
-    return () => {
-      map.remove()
+    // Prevent re-initialization
+    if (mapRef.current) {
+      mapRef.current.remove()
       mapRef.current = null
     }
-  }, [venueCenter, onClick])
+
+    // Small delay to ensure container has dimensions
+    const initTimer = setTimeout(() => {
+      if (!mapContainerRef.current) return
+
+      const container = mapContainerRef.current
+      const rect = container.getBoundingClientRect()
+
+      // Don't initialize if container has no size
+      if (rect.width === 0 || rect.height === 0) {
+        console.warn('MapPointPicker: Container has no size, delaying init')
+        return
+      }
+
+      try {
+        const map = L.map(container, {
+          center: [venueCenter.lat, venueCenter.lng],
+          zoom: 16,
+          zoomControl: false,
+        })
+
+        // Add initial tile layer
+        tileLayerRef.current = L.tileLayer(tileLayers.satellite.url, {
+          attribution: tileLayers.satellite.attribution,
+          maxZoom: 19,
+        }).addTo(map)
+
+        // Add zoom control to bottom right
+        L.control.zoom({ position: 'bottomright' }).addTo(map)
+
+        // Click handler
+        if (onClick) {
+          map.on('click', (e: L.LeafletMouseEvent) => {
+            onClick(e.latlng.lat, e.latlng.lng)
+          })
+        }
+
+        mapRef.current = map
+        setMapReady(true)
+
+        // Force a resize check after map is initialized
+        setTimeout(() => {
+          if (mapRef.current) {
+            mapRef.current.invalidateSize()
+          }
+        }, 100)
+      } catch (error) {
+        console.error('Failed to initialize map:', error)
+      }
+    }, 50)
+
+    return () => {
+      clearTimeout(initTimer)
+      if (mapRef.current) {
+        mapRef.current.remove()
+        mapRef.current = null
+      }
+    }
+  }, [venueCenter.lat, venueCenter.lng, onClick])
 
   // Update tile layer when mapLayer changes
   useEffect(() => {
@@ -103,7 +139,7 @@ export default function MapPointPicker({
 
   // Update markers when GCPs change
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current || !mapReady) return
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove())
@@ -126,15 +162,33 @@ export default function MapPointPicker({
     })
 
     // Fit bounds if we have markers
-    if (gcps.length > 0) {
+    if (gcps.length > 0 && mapRef.current) {
       const bounds = L.latLngBounds(gcps.map(gcp => [gcp.latitude, gcp.longitude] as [number, number]))
       mapRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 })
     }
-  }, [gcps, createMarkerIcon])
+  }, [gcps, createMarkerIcon, mapReady])
+
+  // Handle container resize
+  useEffect(() => {
+    if (!mapContainerRef.current) return
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize()
+      }
+    })
+
+    resizeObserver.observe(mapContainerRef.current)
+
+    return () => resizeObserver.disconnect()
+  }, [])
 
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapContainerRef} className="w-full h-full" />
+    <div className="absolute inset-0">
+      <div
+        ref={mapContainerRef}
+        className="w-full h-full"
+      />
 
       {/* Map Layer Toggle */}
       <div className="absolute top-4 left-4 z-[1000]">
@@ -166,6 +220,16 @@ export default function MapPointPicker({
       {onClick && (
         <div className="absolute bottom-4 left-4 bg-white/90 px-3 py-1.5 rounded text-xs text-gray-600 z-[1000]">
           Click to place point
+        </div>
+      )}
+
+      {/* Loading state */}
+      {!mapReady && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-[500]">
+          <div className="text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-2" />
+            <div className="text-gray-500 text-sm">Loading map...</div>
+          </div>
         </div>
       )}
     </div>

@@ -225,8 +225,8 @@ export default function CustomMapCalibrator({
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 overflow-hidden">
+        {/* Main Content - use explicit min-height for reliable sizing */}
+        <div className="flex-1 min-h-0 overflow-hidden" style={{ minHeight: '400px' }}>
           {showPreview ? (
             <div className="h-full p-4">
               <CalibrationPreview
@@ -240,50 +240,52 @@ export default function CustomMapCalibrator({
           ) : (
             <div className="h-full flex">
               {/* Left: Custom Image */}
-              <div className="flex-1 p-4 border-r">
-                <div className="h-full flex flex-col">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">
-                    Your Custom Map
-                    {currentStep === 'image' && gcps.length < maxPoints && (
-                      <span className="text-blue-600 ml-2">Click here first</span>
-                    )}
-                  </h3>
-                  <div className={`flex-1 rounded-lg overflow-hidden border-2 ${
+              <div className="flex-1 min-w-0 h-full p-4 border-r flex flex-col">
+                <h3 className="text-sm font-medium text-gray-700 mb-2 shrink-0">
+                  Your Custom Map
+                  {currentStep === 'image' && gcps.length < maxPoints && (
+                    <span className="text-blue-600 ml-2">Click here first</span>
+                  )}
+                </h3>
+                <div
+                  className={`flex-1 rounded-lg overflow-hidden border-2 relative ${
                     currentStep === 'image' && gcps.length < maxPoints
                       ? 'border-blue-500'
                       : 'border-gray-200'
-                  }`}>
-                    <ImagePointPicker
-                      imageUrl={imageUrl}
-                      gcps={gcps}
-                      pendingPoint={pendingImagePoint}
-                      onClick={currentStep === 'image' ? handleImageClick : undefined}
-                      onImageLoad={setImageNaturalSize}
-                    />
-                  </div>
+                  }`}
+                  style={{ minHeight: '300px' }}
+                >
+                  <ImagePointPicker
+                    imageUrl={imageUrl}
+                    gcps={gcps}
+                    pendingPoint={pendingImagePoint}
+                    onClick={currentStep === 'image' ? handleImageClick : undefined}
+                    onImageLoad={setImageNaturalSize}
+                  />
                 </div>
               </div>
 
               {/* Right: Real Map */}
-              <div className="flex-1 p-4">
-                <div className="h-full flex flex-col">
-                  <h3 className="text-sm font-medium text-gray-700 mb-2">
-                    Satellite Map
-                    {currentStep === 'map' && (
-                      <span className="text-blue-600 ml-2">Click matching location</span>
-                    )}
-                  </h3>
-                  <div className={`flex-1 rounded-lg overflow-hidden border-2 ${
+              <div className="flex-1 min-w-0 h-full p-4 flex flex-col">
+                <h3 className="text-sm font-medium text-gray-700 mb-2 shrink-0">
+                  Satellite Map
+                  {currentStep === 'map' && (
+                    <span className="text-blue-600 ml-2">Click matching location</span>
+                  )}
+                </h3>
+                <div
+                  className={`flex-1 rounded-lg overflow-hidden border-2 relative ${
                     currentStep === 'map'
                       ? 'border-blue-500'
                       : 'border-gray-200'
-                  }`}>
-                    <MapPointPicker
-                      gcps={gcps}
-                      venueCenter={venueCenter}
-                      onClick={currentStep === 'map' ? handleMapClick : undefined}
-                    />
-                  </div>
+                  }`}
+                  style={{ minHeight: '300px' }}
+                >
+                  <MapPointPicker
+                    gcps={gcps}
+                    venueCenter={venueCenter}
+                    onClick={currentStep === 'map' ? handleMapClick : undefined}
+                  />
                 </div>
               </div>
             </div>
