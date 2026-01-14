@@ -38,6 +38,10 @@ export default function PortalHotspotsPage() {
   })
 
   const handleDelete = (hotspot: Hotspot) => {
+    if (isDemoMode()) {
+      alert('Deletion is disabled in demo mode. Sign up to manage your own hotspots!')
+      return
+    }
     if (confirm(`Delete "${hotspot.title}"? This cannot be undone.`)) {
       deleteMutation.mutate(hotspot.id)
     }
