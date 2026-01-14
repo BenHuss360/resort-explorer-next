@@ -4,6 +4,7 @@ import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useQuery } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
+import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 import type { Hotspot } from '@/lib/db/schema'
 import { HotspotModal } from '@/components/modals/hotspot-modal'
 
@@ -26,6 +27,10 @@ export default function PortalPreviewPage() {
   const { data: hotspots = [], isLoading } = useQuery({
     queryKey: ['hotspots', project?.id],
     queryFn: async () => {
+      // Return demo hotspots if in demo mode
+      if (isDemoMode()) {
+        return DEMO_HOTSPOTS
+      }
       const res = await fetch(`/api/projects/${project!.id}/hotspots`)
       if (!res.ok) throw new Error('Failed to fetch hotspots')
       return res.json() as Promise<Hotspot[]>
