@@ -27,6 +27,10 @@ export const DEMO_PROJECT: ProjectContextData = {
     latitude: 51.0850,
     longitude: -2.4880,
   },
+  embedSettings: {
+    showHeader: true,
+    showBranding: true,
+  },
 }
 
 // Sample hotspots for demo mode - based on The Newt in Somerset attractions

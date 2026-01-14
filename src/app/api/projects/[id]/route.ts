@@ -65,6 +65,8 @@ export async function PATCH(
     if (body.mapExperience !== undefined) updateData.mapExperience = body.mapExperience
     if (body.venueLocationLat !== undefined) updateData.venueLocationLat = body.venueLocationLat
     if (body.venueLocationLng !== undefined) updateData.venueLocationLng = body.venueLocationLng
+    if (body.embedShowHeader !== undefined) updateData.embedShowHeader = body.embedShowHeader
+    if (body.embedShowBranding !== undefined) updateData.embedShowBranding = body.embedShowBranding
 
     const [updated] = await db
       .update(projects)
