@@ -15,55 +15,80 @@ import {
 import { useProject } from '@/components/providers/project-provider'
 import { activateDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
 
-// Mouse position hook for cursor effects
-function useMousePosition() {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+// Parallax scroll hook
+function useParallax(speed = 0.5) {
+  const [offset, setOffset] = useState(0)
 
   useEffect(() => {
-    const handleMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY })
+    const handleScroll = () => {
+      setOffset(window.scrollY * speed)
     }
-    window.addEventListener('mousemove', handleMove)
-    return () => window.removeEventListener('mousemove', handleMove)
-  }, [])
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [speed])
 
-  return position
+  return offset
 }
 
-// Cursor glow effect for hero
-function CursorGlow() {
-  const { x, y } = useMousePosition()
-  const [isInHero, setIsInHero] = useState(false)
-  const glowRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const heroEl = document.getElementById('hero-section')
-    if (!heroEl) return
-
-    const handleEnter = () => setIsInHero(true)
-    const handleLeave = () => setIsInHero(false)
-
-    heroEl.addEventListener('mouseenter', handleEnter)
-    heroEl.addEventListener('mouseleave', handleLeave)
-
-    return () => {
-      heroEl.removeEventListener('mouseenter', handleEnter)
-      heroEl.removeEventListener('mouseleave', handleLeave)
-    }
-  }, [])
-
-  if (!isInHero) return null
-
+// Grain texture overlay
+function GrainOverlay() {
   return (
     <div
-      ref={glowRef}
-      className="pointer-events-none fixed z-50 w-64 h-64 rounded-full opacity-30 blur-3xl transition-opacity duration-300"
+      className="pointer-events-none fixed inset-0 z-[60] opacity-[0.03]"
       style={{
-        left: x - 128,
-        top: y - 128,
-        background: 'radial-gradient(circle, rgba(52, 211, 153, 0.4) 0%, rgba(20, 184, 166, 0.2) 50%, transparent 70%)',
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }}
     />
+  )
+}
+
+// Animated gradient background for hero
+function AnimatedGradientBg() {
+  return (
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-700 to-teal-700" />
+
+      {/* Animated color blobs */}
+      <div
+        className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-30"
+        style={{
+          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.8) 0%, transparent 50%)',
+          animation: 'moveBlob1 15s ease-in-out infinite',
+        }}
+      />
+      <div
+        className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-30"
+        style={{
+          background: 'radial-gradient(circle, rgba(20, 184, 166, 0.8) 0%, transparent 50%)',
+          animation: 'moveBlob2 18s ease-in-out infinite',
+        }}
+      />
+      <div
+        className="absolute top-1/4 right-1/4 w-1/2 h-1/2 rounded-full opacity-20"
+        style={{
+          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.8) 0%, transparent 50%)',
+          animation: 'moveBlob3 20s ease-in-out infinite',
+        }}
+      />
+
+      <style jsx>{`
+        @keyframes moveBlob1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30%, 20%) scale(1.1); }
+          66% { transform: translate(-20%, 30%) scale(0.9); }
+        }
+        @keyframes moveBlob2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-30%, -20%) scale(0.9); }
+          66% { transform: translate(20%, -30%) scale(1.1); }
+        }
+        @keyframes moveBlob3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-30%, 30%) scale(1.2); }
+        }
+      `}</style>
+    </div>
   )
 }
 
@@ -72,9 +97,9 @@ function AnimatedLogo({ className = '', iconClassName = '' }: { className?: stri
   return (
     <div className={`relative ${className}`}>
       {/* Glow effect behind logo */}
-      <div className="absolute inset-0 bg-emerald-400/20 rounded-3xl blur-xl animate-pulse" />
+      <div className="absolute inset-0 bg-emerald-400/30 rounded-3xl blur-xl animate-pulse" />
       <div className="relative bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/20 w-full h-full">
-        <TreePine
+        <Footprints
           className={`text-white transition-transform ${iconClassName}`}
           style={{
             animation: 'sway 4s ease-in-out infinite',
@@ -89,6 +114,60 @@ function AnimatedLogo({ className = '', iconClassName = '' }: { className?: stri
           75% { transform: rotate(-1deg) translateX(-1px); }
         }
       `}</style>
+    </div>
+  )
+}
+
+// Shimmer text effect
+function ShimmerText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={`relative inline-block ${className}`}>
+      <span className="bg-gradient-to-r from-emerald-200 via-teal-100 to-cyan-200 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
+        {children}
+      </span>
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        .animate-shimmer {
+          animation: shimmer 3s linear infinite;
+        }
+      `}</style>
+    </span>
+  )
+}
+
+// Tilt card wrapper
+function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [transform, setTransform] = useState('')
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotateX = (y - centerY) / 20
+    const rotateY = (centerX - x) / 20
+    setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`)
+  }
+
+  const handleMouseLeave = () => {
+    setTransform('')
+  }
+
+  return (
+    <div
+      ref={cardRef}
+      className={`transition-transform duration-300 ease-out ${className}`}
+      style={{ transform }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
     </div>
   )
 }
@@ -164,39 +243,88 @@ function AnimatedSection({
   )
 }
 
-// Floating decorative elements for hero
+// Floating decorative elements for hero with parallax
 function FloatingElements() {
+  const offset = useParallax(0.3)
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Animated gradient orbs */}
-      <div className="absolute top-20 left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-teal-400/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute top-40 right-[15%] w-56 h-56 bg-gradient-to-br from-emerald-300/15 to-cyan-400/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]" />
-      <div className="absolute bottom-32 left-[20%] w-40 h-40 bg-gradient-to-br from-teal-200/15 to-emerald-300/10 rounded-full blur-2xl animate-pulse [animation-delay:2s]" />
-      <div className="absolute bottom-20 right-[25%] w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse [animation-delay:3s]" />
+      {/* Animated gradient orbs with parallax */}
+      <div
+        className="absolute top-20 left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-teal-400/20 rounded-full blur-3xl animate-pulse"
+        style={{ transform: `translateY(${offset * 0.5}px)` }}
+      />
+      <div
+        className="absolute top-40 right-[15%] w-56 h-56 bg-gradient-to-br from-emerald-300/15 to-cyan-400/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"
+        style={{ transform: `translateY(${offset * 0.3}px)` }}
+      />
+      <div
+        className="absolute bottom-32 left-[20%] w-40 h-40 bg-gradient-to-br from-teal-200/15 to-emerald-300/10 rounded-full blur-2xl animate-pulse [animation-delay:2s]"
+        style={{ transform: `translateY(${offset * 0.7}px)` }}
+      />
+      <div
+        className="absolute bottom-20 right-[25%] w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse [animation-delay:3s]"
+        style={{ transform: `translateY(${offset * 0.4}px)` }}
+      />
 
-      {/* Floating icons */}
-      <div className="absolute top-32 left-[8%] opacity-20 animate-bounce [animation-duration:3s]">
+      {/* Floating icons with parallax */}
+      <div
+        className="absolute top-32 left-[8%] opacity-20 animate-bounce [animation-duration:3s]"
+        style={{ transform: `translateY(${offset * 0.2}px)` }}
+      >
         <Mountain className="w-8 h-8 text-white" />
       </div>
-      <div className="absolute top-24 right-[12%] opacity-15 animate-bounce [animation-duration:4s] [animation-delay:0.5s]">
+      <div
+        className="absolute top-24 right-[12%] opacity-15 animate-bounce [animation-duration:4s] [animation-delay:0.5s]"
+        style={{ transform: `translateY(${offset * 0.4}px)` }}
+      >
         <Compass className="w-10 h-10 text-white" />
       </div>
-      <div className="absolute bottom-44 right-[8%] opacity-20 animate-bounce [animation-duration:3.5s] [animation-delay:1s]">
+      <div
+        className="absolute bottom-44 right-[8%] opacity-20 animate-bounce [animation-duration:3.5s] [animation-delay:1s]"
+        style={{ transform: `translateY(${offset * 0.3}px)` }}
+      >
         <Leaf className="w-6 h-6 text-white" />
       </div>
-      <div className="absolute bottom-52 left-[15%] opacity-15 animate-bounce [animation-duration:4.5s] [animation-delay:1.5s]">
+      <div
+        className="absolute bottom-52 left-[15%] opacity-15 animate-bounce [animation-duration:4.5s] [animation-delay:1.5s]"
+        style={{ transform: `translateY(${offset * 0.5}px)` }}
+      >
         <TreePine className="w-7 h-7 text-white" />
       </div>
     </div>
   )
 }
 
-// Scroll indicator
+// Improved scroll indicator
 function ScrollIndicator() {
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsVisible(window.scrollY < 100)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-      <span className="text-white/60 text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
-      <ChevronDown className="w-5 h-5 text-white/60" />
+    <div
+      className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+    >
+      <span className="text-white/70 text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
+      <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
+        <div className="w-1.5 h-3 bg-white/70 rounded-full animate-scrollBounce" />
+      </div>
+      <style jsx>{`
+        @keyframes scrollBounce {
+          0%, 100% { transform: translateY(0); opacity: 1; }
+          50% { transform: translateY(12px); opacity: 0.3; }
+        }
+        .animate-scrollBounce {
+          animation: scrollBounce 1.5s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }
@@ -273,7 +401,7 @@ function QuickDemoButton() {
   )
 }
 
-// Guest Access Card Component (Primary - More Prominent)
+// Guest Access Card with glassmorphism and animated border
 function GuestAccessCard() {
   const [accessCode, setAccessCode] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -312,75 +440,94 @@ function GuestAccessCard() {
   }
 
   return (
-    <Card className="group relative overflow-hidden border-0 bg-white shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-1">
-      {/* Prominent gradient border effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      <div className="absolute inset-[2px] bg-white rounded-[inherit]" />
+    <TiltCard>
+      <Card className="group relative overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
+        {/* Animated gradient border */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-borderRotate" />
+        <div className="absolute inset-[2px] bg-white/90 backdrop-blur-xl rounded-[inherit]" />
 
-      {/* Top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+        {/* Top accent bar with animation */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-[length:200%_auto] animate-gradientMove" />
 
-      {/* Decorative corner element */}
-      <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
+        {/* Decorative corner element */}
+        <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
 
-      <div className="relative">
-        <CardHeader className="text-center pb-2 pt-8">
-          <div className="w-18 h-18 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-            <Footprints className="w-9 h-9 text-white" />
-          </div>
-          <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
-            Start Wandering
-          </CardTitle>
-          <CardDescription className="text-base mt-2 text-stone-600">
-            Got a code from your property? Enter it to begin exploring.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pb-8 px-6 md:px-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label htmlFor="access-code" className="text-sm font-medium text-stone-600">
-                Access Code
-              </Label>
-              <Input
-                id="access-code"
-                type="text"
-                placeholder="Enter your code"
-                value={accessCode}
-                onChange={(e) => setAccessCode(e.target.value)}
-                className="mt-2 text-center text-xl font-bold tracking-[0.25em] uppercase h-14 border-2 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all rounded-xl"
-                maxLength={10}
-              />
+        <div className="relative">
+          <CardHeader className="text-center pb-2 pt-8">
+            <div className="w-18 h-18 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <Footprints className="w-9 h-9 text-white" />
             </div>
+            <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              Start Wandering
+            </CardTitle>
+            <CardDescription className="text-base mt-2 text-stone-600">
+              Got a code from your property? Enter it to begin exploring.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pb-8 px-6 md:px-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <Label htmlFor="access-code" className="text-sm font-medium text-stone-600">
+                  Access Code
+                </Label>
+                <Input
+                  id="access-code"
+                  type="text"
+                  placeholder="Enter your code"
+                  value={accessCode}
+                  onChange={(e) => setAccessCode(e.target.value)}
+                  className="mt-2 text-center text-xl font-bold tracking-[0.25em] uppercase h-14 border-2 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all rounded-xl bg-white/50 backdrop-blur-sm"
+                  maxLength={10}
+                />
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full h-14 text-lg bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 rounded-xl"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Finding your path...
-                </span>
-              ) : (
-                <>
-                  Begin Exploring
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                className="w-full h-14 text-lg bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 rounded-xl"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Finding your path...
+                  </span>
+                ) : (
+                  <>
+                    Begin Exploring
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </Button>
+            </form>
 
-          <p className="mt-5 text-center text-sm text-stone-500">
-            Ask your property's front desk for an access code
-          </p>
-        </CardContent>
-      </div>
-    </Card>
+            <p className="mt-5 text-center text-sm text-stone-500">
+              Ask your property's front desk for an access code
+            </p>
+          </CardContent>
+        </div>
+
+        <style jsx>{`
+          @keyframes borderRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+          }
+          @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+          }
+          .animate-borderRotate {
+            animation: borderRotate 3s linear infinite;
+          }
+          .animate-gradientMove {
+            animation: gradientMove 2s linear infinite;
+          }
+        `}</style>
+      </Card>
+    </TiltCard>
   )
 }
 
-// Creator Login Card Component (Secondary - Less Prominent)
+// Creator Login Card with glassmorphism
 function CreatorLoginCard() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -410,82 +557,195 @@ function CreatorLoginCard() {
   }
 
   return (
-    <Card className="group relative overflow-hidden border border-stone-200 bg-stone-50/50 hover:bg-white hover:border-amber-200 shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-      {/* Subtle top accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500" />
+    <TiltCard>
+      <Card className="group relative overflow-hidden border border-white/20 bg-white/50 backdrop-blur-xl hover:bg-white/70 hover:border-amber-200 shadow-lg hover:shadow-xl transition-all duration-500">
+        {/* Subtle top accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500" />
 
-      {/* Decorative corner element */}
-      <div className="absolute -top-12 -right-12 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-colors duration-500" />
+        {/* Decorative corner element */}
+        <div className="absolute -top-12 -right-12 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-colors duration-500" />
 
-      <CardHeader className="text-center pb-2 pt-6">
-        <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform duration-300">
-          <Building2 className="w-7 h-7 text-white" />
-        </div>
-        <CardTitle className="text-xl font-bold text-stone-700">
-          Property Portal
-        </CardTitle>
-        <CardDescription className="text-sm mt-1">
-          Manage your discovery experience
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pb-6 px-5">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div>
-            <Label htmlFor="email" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@property.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors"
-            />
+        <CardHeader className="text-center pb-2 pt-6">
+          <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform duration-300">
+            <Building2 className="w-7 h-7 text-white" />
           </div>
+          <CardTitle className="text-xl font-bold text-stone-700">
+            Property Portal
+          </CardTitle>
+          <CardDescription className="text-sm mt-1">
+            Manage your discovery experience
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pb-6 px-5">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <Label htmlFor="email" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+                Email
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@property.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors bg-white/50 backdrop-blur-sm"
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="password" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
-              Password
-            </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors"
-            />
-          </div>
+            <div>
+              <Label htmlFor="password" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors bg-white/50 backdrop-blur-sm"
+              />
+            </div>
 
-          <Button
-            type="submit"
-            className="w-full h-10 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-300"
-            disabled={isLoading}
+            <Button
+              type="submit"
+              className="w-full h-10 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-300"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Signing in...
+                </span>
+              ) : (
+                'Sign In'
+              )}
+            </Button>
+          </form>
+
+          <button
+            onClick={handleForgotPassword}
+            className="mt-3 w-full text-center text-xs text-stone-400 hover:text-stone-600 transition-colors"
           >
-            {isLoading ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Signing in...
-              </span>
-            ) : (
-              'Sign In'
-            )}
-          </Button>
-        </form>
-
-        <button
-          onClick={handleForgotPassword}
-          className="mt-3 w-full text-center text-xs text-stone-400 hover:text-stone-600 transition-colors"
-        >
-          Forgot your password?
-        </button>
-      </CardContent>
-    </Card>
+            Forgot your password?
+          </button>
+        </CardContent>
+      </Card>
+    </TiltCard>
   )
 }
 
-// Product Preview / Mockup Section
+// Phone mockup with animated elements
+function PhoneMockup() {
+  return (
+    <div className="relative mx-auto max-w-[320px] lg:max-w-none">
+      {/* Phone frame */}
+      <div className="relative bg-stone-900 rounded-[3rem] p-3 shadow-2xl shadow-stone-900/30">
+        {/* Screen */}
+        <div className="bg-gradient-to-b from-emerald-50 to-white rounded-[2.5rem] overflow-hidden aspect-[9/19]">
+          {/* Status bar */}
+          <div className="bg-emerald-700 px-6 py-3 flex items-center justify-between">
+            <span className="text-white/90 text-xs font-medium">9:41</span>
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-2 bg-white/90 rounded-sm" />
+            </div>
+          </div>
+
+          {/* App header */}
+          <div className="bg-gradient-to-b from-emerald-700 to-emerald-600 px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                <TreePine className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-white font-semibold">Mountain Retreat</p>
+                <p className="text-emerald-100 text-xs">12 spots to discover</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Map area */}
+          <div className="relative h-48 bg-gradient-to-b from-emerald-100/50 to-teal-50/50">
+            {/* Simulated map elements */}
+            <div className="absolute inset-4">
+              {/* Paths */}
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
+                <path d="M20,80 Q40,60 50,50 T80,30" stroke="#059669" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
+                <path d="M10,40 Q30,50 60,45 T90,60" stroke="#0d9488" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
+              </svg>
+
+              {/* Animated map pins */}
+              <div className="absolute top-[20%] left-[30%] w-8 h-8 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg animate-pinPulse">
+                <MapPin className="w-4 h-4 text-white" />
+              </div>
+              <div className="absolute top-[50%] left-[60%] w-6 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:0.5s]">
+                <MapPin className="w-3 h-3 text-white" />
+              </div>
+              <div className="absolute top-[70%] left-[25%] w-6 h-6 bg-gradient-to-b from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:1s]">
+                <MapPin className="w-3 h-3 text-white" />
+              </div>
+              <div className="absolute top-[35%] right-[15%] w-5 h-5 bg-stone-300 rounded-full flex items-center justify-center opacity-60">
+                <MapPin className="w-2.5 h-2.5 text-stone-500" />
+              </div>
+
+              {/* Animated user location */}
+              <div className="absolute animate-userMove">
+                <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg" />
+                <div className="absolute inset-0 w-4 h-4 bg-blue-500 rounded-full animate-ping opacity-30" />
+              </div>
+            </div>
+
+            <style jsx>{`
+              @keyframes pinPulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+              }
+              @keyframes userMove {
+                0%, 100% { top: 45%; left: 40%; }
+                25% { top: 42%; left: 45%; }
+                50% { top: 48%; left: 42%; }
+                75% { top: 44%; left: 38%; }
+              }
+              .animate-pinPulse {
+                animation: pinPulse 2s ease-in-out infinite;
+              }
+              .animate-userMove {
+                animation: userMove 8s ease-in-out infinite;
+              }
+            `}</style>
+          </div>
+
+          {/* Nearby card */}
+          <div className="px-4 py-3">
+            <div className="bg-white rounded-2xl p-4 shadow-lg border border-stone-100">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-stone-800 text-sm">Meditation Garden</p>
+                  <p className="text-xs text-emerald-600 font-medium">50m away · Unlocked!</p>
+                  <p className="text-xs text-stone-500 mt-1 line-clamp-2">A tranquil space for morning meditation...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom nav hint */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-stone-300 rounded-full" />
+        </div>
+
+        {/* Notch */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-stone-900 rounded-full" />
+      </div>
+
+      {/* Decorative elements around phone */}
+      <div className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-2xl opacity-20 blur-xl" />
+      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full opacity-20 blur-xl" />
+    </div>
+  )
+}
+
+// Product Preview Section
 function ProductPreviewSection() {
   const features = [
     { icon: MapPinned, label: 'Interactive Map', description: 'See all points of interest' },
@@ -519,92 +779,7 @@ function ProductPreviewSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Phone Mockup */}
           <AnimatedSection delay={200}>
-            <div className="relative mx-auto max-w-[320px] lg:max-w-none">
-              {/* Phone frame */}
-              <div className="relative bg-stone-900 rounded-[3rem] p-3 shadow-2xl shadow-stone-900/30">
-                {/* Screen */}
-                <div className="bg-gradient-to-b from-emerald-50 to-white rounded-[2.5rem] overflow-hidden aspect-[9/19]">
-                  {/* Status bar */}
-                  <div className="bg-emerald-700 px-6 py-3 flex items-center justify-between">
-                    <span className="text-white/90 text-xs font-medium">9:41</span>
-                    <div className="flex items-center gap-1">
-                      <div className="w-4 h-2 bg-white/90 rounded-sm" />
-                    </div>
-                  </div>
-
-                  {/* App header */}
-                  <div className="bg-gradient-to-b from-emerald-700 to-emerald-600 px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                        <TreePine className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-white font-semibold">Mountain Retreat</p>
-                        <p className="text-emerald-100 text-xs">12 spots to discover</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Map area */}
-                  <div className="relative h-48 bg-gradient-to-b from-emerald-100/50 to-teal-50/50">
-                    {/* Simulated map elements */}
-                    <div className="absolute inset-4">
-                      {/* Paths */}
-                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                        <path d="M20,80 Q40,60 50,50 T80,30" stroke="#059669" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
-                        <path d="M10,40 Q30,50 60,45 T90,60" stroke="#0d9488" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
-                      </svg>
-
-                      {/* Map pins */}
-                      <div className="absolute top-[20%] left-[30%] w-8 h-8 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg animate-pulse">
-                        <MapPin className="w-4 h-4 text-white" />
-                      </div>
-                      <div className="absolute top-[50%] left-[60%] w-6 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-md">
-                        <MapPin className="w-3 h-3 text-white" />
-                      </div>
-                      <div className="absolute top-[70%] left-[25%] w-6 h-6 bg-gradient-to-b from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center shadow-md">
-                        <MapPin className="w-3 h-3 text-white" />
-                      </div>
-                      <div className="absolute top-[35%] right-[15%] w-5 h-5 bg-stone-300 rounded-full flex items-center justify-center opacity-60">
-                        <MapPin className="w-2.5 h-2.5 text-stone-500" />
-                      </div>
-
-                      {/* User location */}
-                      <div className="absolute top-[45%] left-[40%]">
-                        <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg" />
-                        <div className="absolute inset-0 w-4 h-4 bg-blue-500 rounded-full animate-ping opacity-30" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Nearby card */}
-                  <div className="px-4 py-3">
-                    <div className="bg-white rounded-2xl p-4 shadow-lg border border-stone-100">
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <Sparkles className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-stone-800 text-sm">Meditation Garden</p>
-                          <p className="text-xs text-emerald-600 font-medium">50m away · Unlocked!</p>
-                          <p className="text-xs text-stone-500 mt-1 line-clamp-2">A tranquil space for morning meditation...</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Bottom nav hint */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-stone-300 rounded-full" />
-                </div>
-
-                {/* Notch */}
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-stone-900 rounded-full" />
-              </div>
-
-              {/* Decorative elements around phone */}
-              <div className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-2xl opacity-20 blur-xl" />
-              <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full opacity-20 blur-xl" />
-            </div>
+            <PhoneMockup />
           </AnimatedSection>
 
           {/* Features list */}
@@ -749,16 +924,16 @@ function FeaturesSection() {
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
+      {/* Grain texture overlay */}
+      <GrainOverlay />
+
       {/* Floating Demo CTA */}
       <FloatingDemoCTA />
 
-      {/* Cursor glow effect */}
-      <CursorGlow />
-
       {/* Hero Section */}
-      <header id="hero-section" className="relative min-h-[90vh] md:min-h-screen flex flex-col bg-gradient-to-br from-emerald-900 via-emerald-700 to-teal-700 pt-16 md:pt-20 pb-32 md:pb-40 px-4 overflow-hidden">
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/50 via-transparent to-transparent" />
+      <header id="hero-section" className="relative min-h-[90vh] md:min-h-screen flex flex-col pt-16 md:pt-20 pb-32 md:pb-40 px-4 overflow-hidden">
+        {/* Animated gradient background */}
+        <AnimatedGradientBg />
 
         <FloatingElements />
 
@@ -783,9 +958,7 @@ export default function LandingPage() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-[1.1]">
               Wander. Discover.
               <br />
-              <span className="bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent">
-                Experience.
-              </span>
+              <ShimmerText>Experience.</ShimmerText>
             </h1>
 
             <p className="text-lg sm:text-xl md:text-2xl text-emerald-100/90 max-w-2xl mx-auto leading-relaxed mb-8 md:mb-10 px-4">
@@ -835,7 +1008,7 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-3 group cursor-pointer">
                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 group-hover:scale-110 transition-all duration-300">
-                  <TreePine className="w-6 h-6 text-white group-hover:rotate-12 transition-transform duration-300" />
+                  <Footprints className="w-6 h-6 text-white group-hover:rotate-12 transition-transform duration-300" />
                 </div>
                 <span className="font-bold text-2xl text-stone-800 group-hover:text-emerald-700 transition-colors">Wandernest</span>
               </div>

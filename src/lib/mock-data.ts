@@ -23,6 +23,10 @@ export const DEMO_PROJECT: ProjectContextData = {
     opacity: 0.8,
     enabled: false,
   },
+  venueLocation: {
+    latitude: 40.7736,
+    longitude: -73.9712,
+  },
 }
 
 // Sample hotspots for demo mode

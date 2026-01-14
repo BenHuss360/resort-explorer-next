@@ -57,13 +57,18 @@ export async function PATCH(
 
     const body = await request.json()
 
+    // Build update object, only including fields that are provided
+    const updateData: Record<string, unknown> = {}
+
+    if (body.resortName !== undefined) updateData.resortName = body.resortName
+    if (body.homepageContent !== undefined) updateData.homepageContent = body.homepageContent
+    if (body.mapExperience !== undefined) updateData.mapExperience = body.mapExperience
+    if (body.venueLocationLat !== undefined) updateData.venueLocationLat = body.venueLocationLat
+    if (body.venueLocationLng !== undefined) updateData.venueLocationLng = body.venueLocationLng
+
     const [updated] = await db
       .update(projects)
-      .set({
-        resortName: body.resortName,
-        homepageContent: body.homepageContent,
-        mapExperience: body.mapExperience,
-      })
+      .set(updateData)
       .where(eq(projects.id, projectId))
       .returning()
 

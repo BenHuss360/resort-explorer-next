@@ -1,0 +1,294 @@
+{
+  "id": "945e241d-71a7-413b-8ac5-7aa893c9ae1c",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.hotspots": {
+      "name": "hotspots",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "audio_url": {
+          "name": "audio_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "marker_color": {
+          "name": "marker_color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'#3B82F6'"
+        },
+        "marker_type": {
+          "name": "marker_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'pin'"
+        },
+        "custom_marker_url": {
+          "name": "custom_marker_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "optional_fields": {
+          "name": "optional_fields",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hotspots_project_id_projects_id_fk": {
+          "name": "hotspots_project_id_projects_id_fk",
+          "tableFrom": "hotspots",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.projects": {
+      "name": "projects",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "resort_name": {
+          "name": "resort_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "access_code": {
+          "name": "access_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "homepage_content": {
+          "name": "homepage_content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "map_type": {
+          "name": "map_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'openstreetmap'"
+        },
+        "custom_map_url": {
+          "name": "custom_map_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "map_experience": {
+          "name": "map_experience",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'full'"
+        },
+        "north_boundary": {
+          "name": "north_boundary",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "south_boundary": {
+          "name": "south_boundary",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "east_boundary": {
+          "name": "east_boundary",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "west_boundary": {
+          "name": "west_boundary",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "venue_location_lat": {
+          "name": "venue_location_lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "venue_location_lng": {
+          "name": "venue_location_lng",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_image_url": {
+          "name": "custom_map_image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_north_lat": {
+          "name": "custom_map_north_lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_south_lat": {
+          "name": "custom_map_south_lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_west_lng": {
+          "name": "custom_map_west_lng",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_east_lng": {
+          "name": "custom_map_east_lng",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "custom_map_opacity": {
+          "name": "custom_map_opacity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0.8
+        },
+        "custom_map_enabled": {
+          "name": "custom_map_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "projects_access_code_unique": {
+          "name": "projects_access_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "access_code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

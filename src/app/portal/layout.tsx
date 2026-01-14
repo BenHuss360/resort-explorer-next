@@ -1,6 +1,8 @@
 'use client'
 
 import { useProject } from '@/components/providers/project-provider'
+import { Badge } from '@/components/ui/badge'
+import { isDemoMode } from '@/lib/mock-data'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -25,17 +27,24 @@ export default function PortalLayout({
         <div className="max-w-5xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold">{project?.resortName || 'Resort'} Portal</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-xl font-bold">{project?.resortName || 'Resort'} Portal</h1>
+                {isDemoMode() && (
+                  <Badge variant="warning">Demo Mode</Badge>
+                )}
+              </div>
               <p className="text-sm text-gray-500">
                 Access Code: <code className="bg-gray-100 px-2 py-0.5 rounded">{project?.accessCode}</code>
               </p>
             </div>
-            <Link
-              href="/map"
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
-              ← Back to Map
-            </Link>
+            {!isDemoMode() && (
+              <Link
+                href="/map"
+                className="text-sm text-blue-600 hover:text-blue-700"
+              >
+                ← Back to Map
+              </Link>
+            )}
           </div>
         </div>
 

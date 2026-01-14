@@ -26,6 +26,15 @@ const MOCK_PROJECT: ProjectContextData = {
     opacity: 0.8,
     enabled: false,
   },
+  venueLocation: {
+    latitude: 51.0958,
+    longitude: -2.5353,
+  },
+}
+
+export interface VenueLocation {
+  latitude: number | null
+  longitude: number | null
 }
 
 export interface ProjectContextData {
@@ -36,6 +45,7 @@ export interface ProjectContextData {
   mapExperience: MapExperience
   boundaries: Boundaries
   customMapOverlay: CustomMapOverlay
+  venueLocation: VenueLocation
 }
 
 interface ProjectContextType {
@@ -69,13 +79,17 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             west: data.westBoundary,
           },
           customMapOverlay: {
-            imageUrl: data.customOverlayUrl,
-            northLat: data.overlayNorth,
-            southLat: data.overlaySouth,
-            westLng: data.overlayWest,
-            eastLng: data.overlayEast,
-            opacity: data.overlayOpacity || 0.8,
-            enabled: data.overlayEnabled || false,
+            imageUrl: data.customMapImageUrl,
+            northLat: data.customMapNorthLat,
+            southLat: data.customMapSouthLat,
+            westLng: data.customMapWestLng,
+            eastLng: data.customMapEastLng,
+            opacity: data.customMapOpacity || 0.8,
+            enabled: data.customMapEnabled || false,
+          },
+          venueLocation: {
+            latitude: data.venueLocationLat,
+            longitude: data.venueLocationLng,
           },
         }
         setProjectState(projectData)

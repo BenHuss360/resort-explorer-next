@@ -25,6 +25,13 @@ const MARKER_SHAPES = {
   diamond: (color: string) => `
     <div style="width:20px;height:20px;background:${color};border:2px solid white;transform:rotate(45deg);box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>
   `,
+  home: (color: string) => `
+    <svg width="32" height="32" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="11" fill="${color}" opacity="0.2"/>
+    </svg>
+  `,
 }
 
 interface LocationPickerProps {

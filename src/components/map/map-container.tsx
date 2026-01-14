@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
-import { useGeolocation } from '@/hooks/use-geolocation'
+import { useSmartLocation } from '@/hooks/use-smart-location'
 import { useProximity } from '@/hooks/use-proximity'
 import { formatDistance } from '@/lib/utils/haversine'
 import { cacheManager } from '@/lib/cache/indexeddb'
@@ -81,12 +81,33 @@ export function MapContainer() {
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
   })
 
-  // GPS tracking with high accuracy for better precision
-  const { location, error: gpsError, isLoading: gpsLoading, retry: retryGps } = useGeolocation({
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0, // Always get fresh position
+  // Smart location with mock support when far from venue
+  const {
+    latitude,
+    longitude,
+    error: gpsError,
+    isLoading: gpsLoading,
+    isMockLocation,
+    distanceToVenue,
+    retry: retryGps,
+  } = useSmartLocation({
+    venueLocation: project?.venueLocation || null,
+    boundaries: project?.boundaries || null,
   })
+
+  // Create a location object compatible with the existing code
+  const location = latitude && longitude ? {
+    coords: {
+      latitude,
+      longitude,
+      accuracy: 10,
+      altitude: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null,
+    },
+    timestamp: Date.now(),
+  } as GeolocationPosition : null
 
   // Proximity detection
   const {
@@ -197,6 +218,21 @@ export function MapContainer() {
       {gpsLoading && !gpsError && (
         <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 text-sm text-blue-800">
           Getting your location...
+        </div>
+      )}
+
+      {/* Mock Location Indicator */}
+      {isMockLocation && (
+        <div className="bg-purple-50 border-b border-purple-200 px-4 py-2 text-sm text-purple-800 flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+            Demo mode - Using venue location
+            {distanceToVenue && (
+              <span className="text-purple-600">
+                (You're {formatDistance(distanceToVenue)} away)
+              </span>
+            )}
+          </span>
         </div>
       )}
 

@@ -19,6 +19,9 @@ export const projects = pgTable('projects', {
   southBoundary: real('south_boundary'),
   eastBoundary: real('east_boundary'),
   westBoundary: real('west_boundary'),
+  // Venue center location (used for mock mode when user is far from venue)
+  venueLocationLat: real('venue_location_lat'),
+  venueLocationLng: real('venue_location_lng'),
   // Custom map overlay
   customMapImageUrl: text('custom_map_image_url'),
   customMapNorthLat: real('custom_map_north_lat'),
