@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
 import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 import type { Hotspot } from '@/lib/db/schema'
-import { HotspotModal } from '@/components/modals/hotspot-modal'
+import { PreviewHotspotPanel } from '@/components/modals/preview-hotspot-panel'
 
 const LeafletMap = dynamic(
   () => import('@/components/map/leaflet-map'),
@@ -83,10 +83,18 @@ export default function PortalPreviewPage() {
                     onHotspotClick={setSelectedHotspot}
                   />
                 )}
+
+                {/* Hotspot detail panel (inside phone frame) */}
+                {selectedHotspot && (
+                  <PreviewHotspotPanel
+                    hotspot={selectedHotspot}
+                    onClose={() => setSelectedHotspot(null)}
+                  />
+                )}
               </div>
 
               {/* Home indicator */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-300 rounded-full" />
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-300 rounded-full z-50" />
             </div>
 
             {/* Notch */}
@@ -101,14 +109,6 @@ export default function PortalPreviewPage() {
       <p className="text-sm text-gray-500 text-center">
         Click on markers to preview how they will appear to guests on their mobile devices.
       </p>
-
-      {selectedHotspot && (
-        <HotspotModal
-          hotspot={selectedHotspot}
-          isOpen={!!selectedHotspot}
-          onClose={() => setSelectedHotspot(null)}
-        />
-      )}
     </div>
   )
 }
