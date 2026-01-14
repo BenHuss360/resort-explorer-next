@@ -22,6 +22,8 @@ export const DEMO_PROJECT: ProjectContextData = {
     eastLng: null,
     opacity: 0.8,
     enabled: false,
+    gcps: [],
+    calibrationMode: 'corners',
   },
   venueLocation: {
     latitude: 51.0850,

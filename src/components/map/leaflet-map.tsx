@@ -56,6 +56,7 @@ export default function LeafletMap({
   const markersRef = useRef<L.Marker[]>([])
   const userMarkerRef = useRef<L.CircleMarker | null>(null)
   const userPulseRef = useRef<L.CircleMarker | null>(null)
+  const overlayRef = useRef<L.ImageOverlay | null>(null)
   const onHotspotClickRef = useRef(onHotspotClick)
 
   // Keep callback ref updated
@@ -203,6 +204,41 @@ export default function LeafletMap({
       }).addTo(mapRef.current)
     }
   }, [userLocation])
+
+  // Update custom map overlay
+  useEffect(() => {
+    if (!mapRef.current) return
+
+    // Remove existing overlay
+    if (overlayRef.current) {
+      overlayRef.current.remove()
+      overlayRef.current = null
+    }
+
+    // Add new overlay if enabled and configured
+    if (
+      customOverlay?.enabled &&
+      customOverlay?.imageUrl &&
+      customOverlay?.northLat != null &&
+      customOverlay?.southLat != null &&
+      customOverlay?.westLng != null &&
+      customOverlay?.eastLng != null
+    ) {
+      const bounds: L.LatLngBoundsExpression = [
+        [customOverlay.southLat, customOverlay.westLng], // Southwest
+        [customOverlay.northLat, customOverlay.eastLng], // Northeast
+      ]
+
+      overlayRef.current = L.imageOverlay(customOverlay.imageUrl, bounds, {
+        opacity: customOverlay.opacity ?? 0.8,
+        interactive: false,
+        alt: 'Custom venue map overlay',
+      }).addTo(mapRef.current)
+
+      // Ensure overlay is below markers
+      overlayRef.current.bringToBack()
+    }
+  }, [customOverlay])
 
   // Center on user location
   const centerOnUser = useCallback(() => {

@@ -25,6 +25,8 @@ const MOCK_PROJECT: ProjectContextData = {
     eastLng: null,
     opacity: 0.8,
     enabled: false,
+    gcps: [],
+    calibrationMode: 'corners',
   },
   venueLocation: {
     latitude: 51.0958,
@@ -89,8 +91,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             southLat: data.customMapSouthLat,
             westLng: data.customMapWestLng,
             eastLng: data.customMapEastLng,
-            opacity: data.customMapOpacity || 0.8,
+            opacity: data.customMapOpacity ?? 0.8,
             enabled: data.customMapEnabled || false,
+            gcps: data.customMapGCPs || [],
+            calibrationMode: data.customMapCalibrationMode || 'corners',
           },
           venueLocation: {
             latitude: data.venueLocationLat,

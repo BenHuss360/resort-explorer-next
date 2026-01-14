@@ -65,6 +65,17 @@ export async function PATCH(
     if (body.mapExperience !== undefined) updateData.mapExperience = body.mapExperience
     if (body.venueLocationLat !== undefined) updateData.venueLocationLat = body.venueLocationLat
     if (body.venueLocationLng !== undefined) updateData.venueLocationLng = body.venueLocationLng
+    // Custom map overlay fields
+    if (body.customMapImageUrl !== undefined) updateData.customMapImageUrl = body.customMapImageUrl
+    if (body.customMapNorthLat !== undefined) updateData.customMapNorthLat = body.customMapNorthLat
+    if (body.customMapSouthLat !== undefined) updateData.customMapSouthLat = body.customMapSouthLat
+    if (body.customMapWestLng !== undefined) updateData.customMapWestLng = body.customMapWestLng
+    if (body.customMapEastLng !== undefined) updateData.customMapEastLng = body.customMapEastLng
+    if (body.customMapOpacity !== undefined) updateData.customMapOpacity = body.customMapOpacity
+    if (body.customMapEnabled !== undefined) updateData.customMapEnabled = body.customMapEnabled
+    if (body.customMapGCPs !== undefined) updateData.customMapGCPs = body.customMapGCPs
+    if (body.customMapCalibrationMode !== undefined) updateData.customMapCalibrationMode = body.customMapCalibrationMode
+    // Embed settings
     if (body.embedShowHeader !== undefined) updateData.embedShowHeader = body.embedShowHeader
     if (body.embedShowBranding !== undefined) updateData.embedShowBranding = body.embedShowBranding
 

@@ -30,6 +30,8 @@ export const projects = pgTable('projects', {
   customMapEastLng: real('custom_map_east_lng'),
   customMapOpacity: real('custom_map_opacity').default(0.8),
   customMapEnabled: boolean('custom_map_enabled').default(false),
+  customMapGCPs: jsonb('custom_map_gcps').default([]),
+  customMapCalibrationMode: text('custom_map_calibration_mode').default('corners'),
   // Embed settings (for white-label/mobile app integration)
   embedShowHeader: boolean('embed_show_header').default(true),
   embedShowBranding: boolean('embed_show_branding').default(true),
@@ -95,6 +97,17 @@ export type Boundaries = {
   west: number | null
 }
 
+export type GroundControlPoint = {
+  id: string
+  imageX: number  // 0-1 normalized position on image
+  imageY: number  // 0-1 normalized position on image
+  latitude: number
+  longitude: number
+  label?: string
+}
+
+export type CalibrationMode = 'corners' | 'gcps'
+
 export type CustomMapOverlay = {
   imageUrl: string | null
   northLat: number | null
@@ -103,6 +116,8 @@ export type CustomMapOverlay = {
   eastLng: number | null
   opacity: number
   enabled: boolean
+  gcps: GroundControlPoint[]
+  calibrationMode: CalibrationMode
 }
 
 export type EmbedSettings = {
@@ -144,4 +159,25 @@ export const projectSchema = z.object({
   southBoundary: z.number().optional().nullable(),
   eastBoundary: z.number().optional().nullable(),
   westBoundary: z.number().optional().nullable(),
+})
+
+export const groundControlPointSchema = z.object({
+  id: z.string(),
+  imageX: z.number().min(0).max(1),
+  imageY: z.number().min(0).max(1),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
+  label: z.string().optional(),
+})
+
+export const customMapOverlaySchema = z.object({
+  imageUrl: z.string().url().nullable(),
+  northLat: z.number().min(-90).max(90).nullable(),
+  southLat: z.number().min(-90).max(90).nullable(),
+  westLng: z.number().min(-180).max(180).nullable(),
+  eastLng: z.number().min(-180).max(180).nullable(),
+  opacity: z.number().min(0).max(1).default(0.8),
+  enabled: z.boolean().default(false),
+  gcps: z.array(groundControlPointSchema).default([]),
+  calibrationMode: z.enum(['corners', 'gcps']).default('corners'),
 })
