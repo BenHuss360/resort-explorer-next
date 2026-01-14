@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { toast } from 'sonner'
 import {
   MapPin, ArrowRight, Footprints, TreePine, Sparkles, Building2,
@@ -401,14 +402,16 @@ function QuickDemoButton() {
   )
 }
 
-// Guest Access Card with glassmorphism and animated border
-function GuestAccessCard() {
+// Unified Login Card with tabs for Guest Access and Property Portal
+function UnifiedLoginCard() {
   const [accessCode, setAccessCode] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { setProject } = useProject()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleGuestSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!accessCode.trim()) return
 
@@ -439,103 +442,7 @@ function GuestAccessCard() {
     }
   }
 
-  return (
-    <TiltCard>
-      <Card className="group relative overflow-hidden border-0 bg-white/70 backdrop-blur-xl shadow-2xl">
-        {/* Animated gradient border */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-borderRotate" />
-        <div className="absolute inset-[2px] bg-white/90 backdrop-blur-xl rounded-[inherit]" />
-
-        {/* Top accent bar with animation */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 bg-[length:200%_auto] animate-gradientMove" />
-
-        {/* Decorative corner element */}
-        <div className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
-
-        <div className="relative">
-          <CardHeader className="text-center pb-2 pt-8">
-            <div className="w-18 h-18 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-              <Footprints className="w-9 h-9 text-white" />
-            </div>
-            <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
-              Start Wandering
-            </CardTitle>
-            <CardDescription className="text-base mt-2 text-stone-600">
-              Got a code from your property? Enter it to begin exploring.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pb-8 px-6 md:px-8">
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <Label htmlFor="access-code" className="text-sm font-medium text-stone-600">
-                  Access Code
-                </Label>
-                <Input
-                  id="access-code"
-                  type="text"
-                  placeholder="Enter your code"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
-                  className="mt-2 text-center text-xl font-bold tracking-[0.25em] uppercase h-14 border-2 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20 transition-all rounded-xl bg-white/50 backdrop-blur-sm"
-                  maxLength={10}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-14 text-lg bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 rounded-xl"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Finding your path...
-                  </span>
-                ) : (
-                  <>
-                    Begin Exploring
-                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </>
-                )}
-              </Button>
-            </form>
-
-            <p className="mt-5 text-center text-sm text-stone-500">
-              Ask your property's front desk for an access code
-            </p>
-          </CardContent>
-        </div>
-
-        <style jsx>{`
-          @keyframes borderRotate {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-          }
-          @keyframes gradientMove {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-          }
-          .animate-borderRotate {
-            animation: borderRotate 3s linear infinite;
-          }
-          .animate-gradientMove {
-            animation: gradientMove 2s linear infinite;
-          }
-        `}</style>
-      </Card>
-    </TiltCard>
-  )
-}
-
-// Creator Login Card with glassmorphism
-function CreatorLoginCard() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const { setProject } = useProject()
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handlePropertySubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email.trim() || !password.trim()) {
       toast.error('Please enter both email and password.')
@@ -557,80 +464,133 @@ function CreatorLoginCard() {
   }
 
   return (
-    <TiltCard>
-      <Card className="group relative overflow-hidden border border-white/20 bg-white/50 backdrop-blur-xl hover:bg-white/70 hover:border-amber-200 shadow-lg hover:shadow-xl transition-all duration-500">
-        {/* Subtle top accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500" />
+    <Card className="relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-2xl">
+      {/* Top accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
 
-        {/* Decorative corner element */}
-        <div className="absolute -top-12 -right-12 w-24 h-24 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-colors duration-500" />
+      <CardHeader className="text-center pb-4 pt-8">
+        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-500/30">
+          <Footprints className="w-8 h-8 text-white" />
+        </div>
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          Welcome to Wandernest
+        </CardTitle>
+        <CardDescription className="text-stone-600 mt-1">
+          Enter your access code or sign in to manage your property
+        </CardDescription>
+      </CardHeader>
 
-        <CardHeader className="text-center pb-2 pt-6">
-          <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-500/20 group-hover:scale-110 transition-transform duration-300">
-            <Building2 className="w-7 h-7 text-white" />
-          </div>
-          <CardTitle className="text-xl font-bold text-stone-700">
-            Property Portal
-          </CardTitle>
-          <CardDescription className="text-sm mt-1">
-            Manage your discovery experience
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pb-6 px-5">
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <Label htmlFor="email" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@property.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors bg-white/50 backdrop-blur-sm"
-              />
-            </div>
+      <CardContent className="pb-8 px-6">
+        <Tabs defaultValue="guest" className="w-full">
+          <TabsList className="w-full mb-6 bg-stone-100 p-1 rounded-lg">
+            <TabsTrigger value="guest" className="flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md">
+              <Footprints className="w-4 h-4 mr-2" />
+              Guest Access
+            </TabsTrigger>
+            <TabsTrigger value="property" className="flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md">
+              <Building2 className="w-4 h-4 mr-2" />
+              Property Portal
+            </TabsTrigger>
+          </TabsList>
 
-            <div>
-              <Label htmlFor="password" className="text-xs font-medium text-stone-500 uppercase tracking-wide">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1.5 h-10 text-sm border-stone-200 focus:border-amber-500 focus:ring-amber-500/20 transition-colors bg-white/50 backdrop-blur-sm"
-              />
-            </div>
+          <TabsContent value="guest">
+            <form onSubmit={handleGuestSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="access-code" className="text-sm font-medium text-stone-600">
+                  Access Code
+                </Label>
+                <Input
+                  id="access-code"
+                  type="text"
+                  placeholder="Enter your code"
+                  value={accessCode}
+                  onChange={(e) => setAccessCode(e.target.value)}
+                  className="mt-2 text-center text-lg font-bold tracking-[0.2em] uppercase h-12 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  maxLength={10}
+                />
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full h-10 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium shadow-md shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-300"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Signing in...
-                </span>
-              ) : (
-                'Sign In'
-              )}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Loading...
+                  </span>
+                ) : (
+                  <>
+                    Begin Exploring
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
+              </Button>
 
-          <button
-            onClick={handleForgotPassword}
-            className="mt-3 w-full text-center text-xs text-stone-400 hover:text-stone-600 transition-colors"
-          >
-            Forgot your password?
-          </button>
-        </CardContent>
-      </Card>
-    </TiltCard>
+              <p className="text-center text-sm text-stone-500">
+                Ask your property's front desk for an access code
+              </p>
+            </form>
+          </TabsContent>
+
+          <TabsContent value="property">
+            <form onSubmit={handlePropertySubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-sm font-medium text-stone-600">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@property.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-2 h-10 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password" className="text-sm font-medium text-stone-600">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-2 h-10 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Signing in...
+                  </span>
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="w-full text-center text-sm text-stone-400 hover:text-stone-600 transition-colors"
+              >
+                Forgot your password?
+              </button>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -974,22 +934,11 @@ export default function LandingPage() {
         <ScrollIndicator />
       </header>
 
-      {/* Dual Access Cards */}
-      <main className="max-w-5xl mx-auto px-4 -mt-20 md:-mt-24 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 md:gap-8">
-          {/* Primary Card - Guest Access (larger) */}
-          <div className="lg:col-span-3">
-            <AnimatedSection>
-              <GuestAccessCard />
-            </AnimatedSection>
-          </div>
-          {/* Secondary Card - Property Portal (smaller) */}
-          <div className="lg:col-span-2">
-            <AnimatedSection delay={150}>
-              <CreatorLoginCard />
-            </AnimatedSection>
-          </div>
-        </div>
+      {/* Login Card */}
+      <main className="max-w-md mx-auto px-4 -mt-20 md:-mt-24 relative z-10">
+        <AnimatedSection>
+          <UnifiedLoginCard />
+        </AnimatedSection>
       </main>
 
       {/* Product Preview */}
