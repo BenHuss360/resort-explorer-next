@@ -6,6 +6,15 @@ import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
 import { MediaUpload } from '@/components/forms/media-upload'
+import { isDemoMode } from '@/lib/mock-data'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import type { Hotspot, OptionalField } from '@/lib/db/schema'
 
 const LocationPicker = dynamic(
@@ -180,6 +189,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
     (hotspot?.optionalFields as OptionalField[]) || []
   )
   const [openEmojiPicker, setOpenEmojiPicker] = useState<number | null>(null)
+  const [showDemoModal, setShowDemoModal] = useState(false)
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<Hotspot>) => {
@@ -205,6 +215,12 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (isDemoMode()) {
+      setShowDemoModal(true)
+      return
+    }
+
     mutation.mutate({
       title,
       description,
@@ -499,6 +515,27 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
           Error: {mutation.error.message}
         </p>
       )}
+
+      {/* Demo Mode Modal */}
+      <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>This is a Demo</DialogTitle>
+            <DialogDescription>
+              You cannot save hotspots in demo mode. Sign up to create your own Wandernest and start building interactive experiences for your guests.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <button
+              type="button"
+              onClick={() => setShowDemoModal(false)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Got it
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }
