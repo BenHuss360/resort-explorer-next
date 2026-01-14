@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
+import { MediaUpload } from '@/components/forms/media-upload'
 import type { Hotspot, OptionalField } from '@/lib/db/schema'
 
 const LocationPicker = dynamic(
@@ -349,31 +350,19 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
       <div className="bg-white rounded-lg border p-6 space-y-4">
         <h3 className="font-semibold">Media</h3>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image URL
-          </label>
-          <input
-            type="url"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="https://..."
-          />
-        </div>
+        <MediaUpload
+          type="image"
+          label="Image"
+          value={imageUrl}
+          onChange={setImageUrl}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Audio URL
-          </label>
-          <input
-            type="url"
-            value={audioUrl}
-            onChange={(e) => setAudioUrl(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="https://..."
-          />
-        </div>
+        <MediaUpload
+          type="audio"
+          label="Audio"
+          value={audioUrl}
+          onChange={setAudioUrl}
+        />
       </div>
 
       {/* Marker Style */}
