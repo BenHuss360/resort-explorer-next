@@ -417,26 +417,29 @@ function UnifiedLoginCard() {
 
     setIsLoading(true)
 
+    // Check for demo mode first
+    if (accessCode.trim().toUpperCase() === 'DEMO') {
+      activateDemoMode()
+      setProject(DEMO_PROJECT)
+      toast.success('Welcome to Demo Mode!')
+      router.push('/portal/preview')
+      setIsLoading(false)
+      return
+    }
+
     try {
-      const res = await fetch(`/api/auth?code=${accessCode.trim().toUpperCase()}`)
+      const res = await fetch(`/api/projects/by-code/${accessCode.trim().toUpperCase()}`)
 
       if (res.ok) {
         const data = await res.json()
-        setProject(data.project)
-        toast.success(`Welcome to ${data.project.resortName}!`)
+        setProject(data)
+        toast.success(`Welcome to ${data.resortName}!`)
         router.push('/map')
       } else {
         toast.error('Invalid access code. Please check and try again.')
       }
     } catch {
-      if (accessCode.trim().toUpperCase() === 'DEMO') {
-        activateDemoMode()
-        setProject(DEMO_PROJECT)
-        toast.success('Welcome to Demo Mode!')
-        router.push('/portal/preview')
-      } else {
-        toast.error('Invalid access code. Please check and try again.')
-      }
+      toast.error('Invalid access code. Please check and try again.')
     } finally {
       setIsLoading(false)
     }
