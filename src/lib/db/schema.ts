@@ -50,6 +50,7 @@ export const hotspots = pgTable('hotspots', {
   markerColor: text('marker_color').default('#3B82F6'),
   markerType: text('marker_type').default('pin'),
   customMarkerUrl: text('custom_marker_url'),
+  showLabelOnMap: boolean('show_label_on_map').default(false),
   optionalFields: jsonb('optional_fields').default([]),
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow(),
@@ -130,6 +131,7 @@ export const hotspotSchema = z.object({
   markerColor: z.string().default('#3B82F6'),
   markerType: z.enum(['pin', 'circle', 'star', 'diamond']).default('pin'),
   customMarkerUrl: z.string().url().optional().nullable(),
+  showLabelOnMap: z.boolean().default(false),
   optionalFields: z.array(optionalFieldSchema).default([]),
 })
 

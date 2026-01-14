@@ -47,6 +47,7 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
     markerColor: '#059669',
     markerType: 'pin',
     customMarkerUrl: null,
+    showLabelOnMap: false,
     optionalFields: [
       { icon: 'leaf', title: 'Highlight', subtitle: '265 Apple Varieties' },
       { icon: 'clock', title: 'Best Time', subtitle: 'Spring & Autumn' },
@@ -66,6 +67,7 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
     markerColor: '#DC2626',
     markerType: 'circle',
     customMarkerUrl: null,
+    showLabelOnMap: false,
     optionalFields: [
       { icon: 'apple', title: 'Trees', subtitle: '460+ Heritage Apples' },
       { icon: 'map', title: 'Feature', subtitle: 'Panoramic Views' },
@@ -85,6 +87,7 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
     markerColor: '#F59E0B',
     markerType: 'star',
     customMarkerUrl: null,
+    showLabelOnMap: false,
     optionalFields: [
       { icon: 'heart', title: 'Family', subtitle: 'Kid Friendly' },
       { icon: 'clock', title: 'Feeding', subtitle: '11 AM & 3 PM' },
@@ -104,6 +107,7 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
     markerColor: '#8B5CF6',
     markerType: 'diamond',
     customMarkerUrl: null,
+    showLabelOnMap: false,
     optionalFields: [
       { icon: 'wine', title: 'Tastings', subtitle: 'Daily from 10 AM' },
       { icon: 'shopping-bag', title: 'Shop', subtitle: 'Local Produce' },
@@ -123,6 +127,7 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
     markerColor: '#3B82F6',
     markerType: 'pin',
     customMarkerUrl: null,
+    showLabelOnMap: false,
     optionalFields: [
       { icon: 'footprints', title: 'Distance', subtitle: '1.5 Mile Loop' },
       { icon: 'tree', title: 'Features', subtitle: 'Ancient Woodland' },

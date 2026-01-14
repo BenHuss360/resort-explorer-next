@@ -185,6 +185,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
   const [audioUrl, setAudioUrl] = useState(hotspot?.audioUrl || '')
   const [markerColor, setMarkerColor] = useState(hotspot?.markerColor || '#3B82F6')
   const [markerType, setMarkerType] = useState(hotspot?.markerType || 'pin')
+  const [showLabelOnMap, setShowLabelOnMap] = useState(hotspot?.showLabelOnMap ?? false)
   const [optionalFields, setOptionalFields] = useState<OptionalField[]>(
     (hotspot?.optionalFields as OptionalField[]) || []
   )
@@ -230,6 +231,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
       audioUrl: audioUrl || null,
       markerColor,
       markerType,
+      showLabelOnMap,
       optionalFields,
     })
   }
@@ -429,11 +431,43 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
           </div>
         </div>
 
+        {/* Show Label Toggle */}
+        <div className="flex items-center justify-between py-3 border-t">
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Show label on map
+            </label>
+            <p className="text-sm text-gray-500">
+              Display the hotspot title next to the marker
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowLabelOnMap(!showLabelOnMap)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              showLabelOnMap ? 'bg-blue-500' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                showLabelOnMap ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+
         {/* Marker Preview */}
         <div className="pt-4 border-t">
           <p className="text-sm text-gray-500 mb-2">Preview</p>
-          <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg">
-            <MarkerPreview shape={markerType} color={markerColor} />
+          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-3">
+            <div className="w-12 h-12 flex items-center justify-center">
+              <MarkerPreview shape={markerType} color={markerColor} />
+            </div>
+            {showLabelOnMap && title && (
+              <span className="text-sm font-medium bg-white px-2 py-1 rounded shadow-sm border">
+                {title}
+              </span>
+            )}
           </div>
         </div>
       </div>
