@@ -9,8 +9,8 @@ import { usePathname } from 'next/navigation'
 
 const tabs = [
   { name: 'Hotspots', href: '/portal' },
-  { name: 'Settings', href: '/portal/settings' },
   { name: 'Preview', href: '/portal/preview' },
+  { name: 'Settings', href: '/portal/settings' },
 ]
 
 export default function PortalLayout({

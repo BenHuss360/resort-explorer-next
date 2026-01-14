@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import type { Boundaries, CustomMapOverlay, MapExperience } from '@/lib/db/schema'
+import type { Boundaries, CustomMapOverlay, MapExperience, EmbedSettings } from '@/lib/db/schema'
 
 // Mock project for development - replace with real auth later
 // Default location: Appletrees, Castle Cary, BA7 7PQ
@@ -32,6 +32,10 @@ const MOCK_PROJECT: ProjectContextData = {
     latitude: 51.0958,
     longitude: -2.5353,
   },
+  embedSettings: {
+    showHeader: true,
+    showBranding: true,
+  },
 }
 
 export interface VenueLocation {
@@ -48,6 +52,7 @@ export interface ProjectContextData {
   boundaries: Boundaries
   customMapOverlay: CustomMapOverlay
   venueLocation: VenueLocation
+  embedSettings: EmbedSettings
 }
 
 interface ProjectContextType {
@@ -94,6 +99,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           venueLocation: {
             latitude: data.venueLocationLat,
             longitude: data.venueLocationLng,
+          },
+          embedSettings: {
+            showHeader: data.embedShowHeader ?? true,
+            showBranding: data.embedShowBranding ?? true,
           },
         }
         setProjectState(projectData)

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { HotspotForm } from '@/components/forms/hotspot-form'
 import Link from 'next/link'
 import type { Hotspot } from '@/lib/db/schema'
+import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 
 export default function EditHotspotPage({
   params,
@@ -16,6 +17,14 @@ export default function EditHotspotPage({
   const { data: hotspot, isLoading, error } = useQuery({
     queryKey: ['hotspot', id],
     queryFn: async () => {
+      // Check for demo mode hotspots first
+      if (isDemoMode()) {
+        const demoHotspot = DEMO_HOTSPOTS.find(h => h.id === parseInt(id))
+        if (demoHotspot) {
+          return demoHotspot
+        }
+      }
+
       const res = await fetch(`/api/hotspots/${id}`)
       if (!res.ok) throw new Error('Hotspot not found')
       return res.json() as Promise<Hotspot>

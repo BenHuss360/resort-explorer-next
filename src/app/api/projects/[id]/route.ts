@@ -75,6 +75,9 @@ export async function PATCH(
     if (body.customMapEnabled !== undefined) updateData.customMapEnabled = body.customMapEnabled
     if (body.customMapGCPs !== undefined) updateData.customMapGCPs = body.customMapGCPs
     if (body.customMapCalibrationMode !== undefined) updateData.customMapCalibrationMode = body.customMapCalibrationMode
+    // Embed settings
+    if (body.embedShowHeader !== undefined) updateData.embedShowHeader = body.embedShowHeader
+    if (body.embedShowBranding !== undefined) updateData.embedShowBranding = body.embedShowBranding
 
     const [updated] = await db
       .update(projects)

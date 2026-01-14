@@ -155,6 +155,16 @@ export default function LeafletMap({
           onHotspotClickRef.current(hotspot)
         })
 
+      // Add permanent label if enabled
+      if (hotspot.showLabelOnMap) {
+        marker.bindTooltip(hotspot.title, {
+          permanent: true,
+          direction: 'right',
+          offset: [10, 0],
+          className: 'marker-label',
+        })
+      }
+
       markersRef.current.push(marker)
     })
   }, [hotspots, createMarkerIcon])

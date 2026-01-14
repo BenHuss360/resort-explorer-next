@@ -1,52 +1,51 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { put } from '@vercel/blob'
+import { NextResponse } from 'next/server'
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
-const MAX_SIZE = 5 * 1024 * 1024 // 5MB
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+const ALLOWED_AUDIO_TYPES = ['audio/mpeg', 'audio/wav', 'audio/mp4', 'audio/ogg', 'audio/webm']
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File | null
 
     if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'No file provided' },
+        { error: 'File too large. Maximum size is 10MB.' },
         { status: 400 }
       )
     }
 
     // Validate file type
-    if (!ALLOWED_TYPES.includes(file.type)) {
+    const isImage = ALLOWED_IMAGE_TYPES.includes(file.type)
+    const isAudio = ALLOWED_AUDIO_TYPES.includes(file.type)
+
+    if (!isImage && !isAudio) {
       return NextResponse.json(
-        { error: 'Invalid file type. Allowed: JPEG, PNG, WebP' },
+        { error: 'Invalid file type. Allowed: images (jpeg, png, gif, webp) or audio (mp3, wav, m4a, ogg).' },
         { status: 400 }
       )
     }
 
-    // Validate file size
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json(
-        { error: 'File too large. Maximum size: 5MB' },
-        { status: 400 }
-      )
-    }
-
-    // Generate unique filename
-    const ext = file.name.split('.').pop() || 'jpg'
-    const filename = `custom-maps/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    // Generate a unique filename
+    const timestamp = Date.now()
+    const extension = file.name.split('.').pop() || (isImage ? 'jpg' : 'mp3')
+    const filename = `${isImage ? 'images' : 'audio'}/${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`
 
     // Upload to Vercel Blob
     const blob = await put(filename, file, {
       access: 'public',
     })
 
-    return NextResponse.json({
-      url: blob.url,
-      filename: blob.pathname,
-    })
+    return NextResponse.json({ url: blob.url })
   } catch (error) {
-    console.error('Error uploading file:', error)
+    console.error('Upload error:', error)
     return NextResponse.json(
       { error: 'Failed to upload file' },
       { status: 500 }

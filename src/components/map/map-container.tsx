@@ -9,6 +9,7 @@ import { useSmartLocation } from '@/hooks/use-smart-location'
 import { useProximity } from '@/hooks/use-proximity'
 import { formatDistance } from '@/lib/utils/haversine'
 import { cacheManager } from '@/lib/cache/indexeddb'
+import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 import type { Hotspot } from '@/lib/db/schema'
 import { HotspotModal } from '@/components/modals/hotspot-modal'
 import { SimpleHotspotModal } from '@/components/modals/simple-hotspot-modal'
@@ -54,6 +55,11 @@ export function MapContainer() {
     queryKey: ['hotspots', project?.id],
     queryFn: async () => {
       const projectId = project!.id
+
+      // Return demo hotspots if in demo mode
+      if (isDemoMode()) {
+        return DEMO_HOTSPOTS
+      }
 
       try {
         // Try to fetch from network

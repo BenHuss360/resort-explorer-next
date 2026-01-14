@@ -5,6 +5,16 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
+import { MediaUpload } from '@/components/forms/media-upload'
+import { isDemoMode } from '@/lib/mock-data'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import type { Hotspot, OptionalField } from '@/lib/db/schema'
 
 const LocationPicker = dynamic(
@@ -175,10 +185,12 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
   const [audioUrl, setAudioUrl] = useState(hotspot?.audioUrl || '')
   const [markerColor, setMarkerColor] = useState(hotspot?.markerColor || '#3B82F6')
   const [markerType, setMarkerType] = useState(hotspot?.markerType || 'pin')
+  const [showLabelOnMap, setShowLabelOnMap] = useState(hotspot?.showLabelOnMap ?? false)
   const [optionalFields, setOptionalFields] = useState<OptionalField[]>(
     (hotspot?.optionalFields as OptionalField[]) || []
   )
   const [openEmojiPicker, setOpenEmojiPicker] = useState<number | null>(null)
+  const [showDemoModal, setShowDemoModal] = useState(false)
 
   const mutation = useMutation({
     mutationFn: async (data: Partial<Hotspot>) => {
@@ -204,6 +216,12 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (isDemoMode()) {
+      setShowDemoModal(true)
+      return
+    }
+
     mutation.mutate({
       title,
       description,
@@ -213,6 +231,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
       audioUrl: audioUrl || null,
       markerColor,
       markerType,
+      showLabelOnMap,
       optionalFields,
     })
   }
@@ -349,31 +368,19 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
       <div className="bg-white rounded-lg border p-6 space-y-4">
         <h3 className="font-semibold">Media</h3>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image URL
-          </label>
-          <input
-            type="url"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="https://..."
-          />
-        </div>
+        <MediaUpload
+          type="image"
+          label="Image"
+          value={imageUrl}
+          onChange={setImageUrl}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Audio URL
-          </label>
-          <input
-            type="url"
-            value={audioUrl}
-            onChange={(e) => setAudioUrl(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="https://..."
-          />
-        </div>
+        <MediaUpload
+          type="audio"
+          label="Audio"
+          value={audioUrl}
+          onChange={setAudioUrl}
+        />
       </div>
 
       {/* Marker Style */}
@@ -424,11 +431,43 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
           </div>
         </div>
 
+        {/* Show Label Toggle */}
+        <div className="flex items-center justify-between py-3 border-t">
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Show label on map
+            </label>
+            <p className="text-sm text-gray-500">
+              Display the hotspot title next to the marker
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowLabelOnMap(!showLabelOnMap)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              showLabelOnMap ? 'bg-blue-500' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                showLabelOnMap ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+
         {/* Marker Preview */}
         <div className="pt-4 border-t">
           <p className="text-sm text-gray-500 mb-2">Preview</p>
-          <div className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg">
-            <MarkerPreview shape={markerType} color={markerColor} />
+          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-3">
+            <div className="w-12 h-12 flex items-center justify-center">
+              <MarkerPreview shape={markerType} color={markerColor} />
+            </div>
+            {showLabelOnMap && title && (
+              <span className="text-sm font-medium bg-white px-2 py-1 rounded shadow-sm border">
+                {title}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -510,6 +549,27 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
           Error: {mutation.error.message}
         </p>
       )}
+
+      {/* Demo Mode Modal */}
+      <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>This is a Demo</DialogTitle>
+            <DialogDescription>
+              You cannot save hotspots in demo mode. Sign up to create your own Wandernest and start building interactive experiences for your guests.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <button
+              type="button"
+              onClick={() => setShowDemoModal(false)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Got it
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 }

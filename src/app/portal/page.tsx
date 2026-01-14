@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
+import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 import Link from 'next/link'
 import type { Hotspot } from '@/lib/db/schema'
 
@@ -14,6 +15,10 @@ export default function PortalHotspotsPage() {
   const { data: hotspots = [], isLoading } = useQuery({
     queryKey: ['hotspots', project?.id],
     queryFn: async () => {
+      // Return demo hotspots if in demo mode
+      if (isDemoMode()) {
+        return DEMO_HOTSPOTS
+      }
       const res = await fetch(`/api/projects/${project!.id}/hotspots`)
       if (!res.ok) throw new Error('Failed to fetch hotspots')
       return res.json() as Promise<Hotspot[]>
@@ -33,6 +38,10 @@ export default function PortalHotspotsPage() {
   })
 
   const handleDelete = (hotspot: Hotspot) => {
+    if (isDemoMode()) {
+      alert('Deletion is disabled in demo mode. Sign up to manage your own hotspots!')
+      return
+    }
     if (confirm(`Delete "${hotspot.title}"? This cannot be undone.`)) {
       deleteMutation.mutate(hotspot.id)
     }
