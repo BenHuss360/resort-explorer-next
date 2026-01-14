@@ -348,7 +348,7 @@ function FloatingDemoCTA() {
     activateDemoMode()
     setProject(DEMO_PROJECT)
     toast.success('Welcome to Demo Mode!')
-    router.push('/map')
+    router.push('/portal/preview')
   }
 
   return (
@@ -375,7 +375,7 @@ function QuickDemoButton() {
     activateDemoMode()
     setProject(DEMO_PROJECT)
     toast.success('Welcome to Demo Mode!')
-    router.push('/map')
+    router.push('/portal/preview')
   }
 
   return (
@@ -433,7 +433,7 @@ function UnifiedLoginCard() {
         activateDemoMode()
         setProject(DEMO_PROJECT)
         toast.success('Welcome to Demo Mode!')
-        router.push('/map')
+        router.push('/portal/preview')
       } else {
         toast.error('Invalid access code. Please check and try again.')
       }
