@@ -3,7 +3,7 @@
 import { use, useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
-import type { Project, Hotspot, Boundaries, CustomMapOverlay } from '@/lib/db/schema'
+import type { Project, Hotspot, Boundaries, CustomMapOverlay, EmbedSettings } from '@/lib/db/schema'
 import { HotspotModal } from '@/components/modals/hotspot-modal'
 
 const LeafletMap = dynamic(
@@ -52,6 +52,10 @@ export default function EmbedPage({ params }: { params: Promise<{ code: string }
         opacity: rawProject.customMapOpacity || 0.8,
         enabled: rawProject.customMapEnabled || false,
       } as CustomMapOverlay,
+      embedSettings: {
+        showHeader: rawProject.embedShowHeader ?? true,
+        showBranding: rawProject.embedShowBranding ?? true,
+      } as EmbedSettings,
     }
   }, [rawProject])
 
@@ -97,11 +101,13 @@ export default function EmbedPage({ params }: { params: Promise<{ code: string }
 
   return (
     <div className="w-full h-screen flex flex-col">
-      {/* Minimal header */}
-      <div className="bg-emerald-600 px-4 py-2 flex items-center justify-between">
-        <span className="text-white font-medium text-sm">{rawProject.resortName}</span>
-        <span className="text-emerald-100 text-xs">{hotspots.length} spots</span>
-      </div>
+      {/* Minimal header - conditionally rendered */}
+      {project.embedSettings.showHeader && (
+        <div className="bg-emerald-600 px-4 py-2 flex items-center justify-between">
+          <span className="text-white font-medium text-sm">{rawProject.resortName}</span>
+          <span className="text-emerald-100 text-xs">{hotspots.length} spots</span>
+        </div>
+      )}
 
       {/* Map */}
       <div className="flex-1 relative">
@@ -114,18 +120,20 @@ export default function EmbedPage({ params }: { params: Promise<{ code: string }
         />
       </div>
 
-      {/* Powered by badge */}
-      <a
-        href="https://wandernest.app"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1 shadow-sm"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2c-2.8 0-5 2.2-5 5 0 .5.1.9.2 1.3l4.8 11.5 4.8-11.5c.1-.4.2-.8.2-1.3 0-2.8-2.2-5-5-5z" />
-        </svg>
-        Powered by Wandernest
-      </a>
+      {/* Powered by badge - conditionally rendered */}
+      {project.embedSettings.showBranding && (
+        <a
+          href="https://wandernest.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1 shadow-sm"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2c-2.8 0-5 2.2-5 5 0 .5.1.9.2 1.3l4.8 11.5 4.8-11.5c.1-.4.2-.8.2-1.3 0-2.8-2.2-5-5-5z" />
+          </svg>
+          Powered by Wandernest
+        </a>
+      )}
 
       {selectedHotspot && (
         <HotspotModal

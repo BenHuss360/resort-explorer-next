@@ -22,7 +22,8 @@ const VenueLocationPicker = dynamic(
 // Embed Code Section - can be gated behind premium later
 function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
   const [embedSize, setEmbedSize] = useState<'small' | 'medium' | 'large'>('medium')
-  const [copied, setCopied] = useState(false)
+  const [copiedIframe, setCopiedIframe] = useState(false)
+  const [copiedUrl, setCopiedUrl] = useState(false)
 
   const sizes = {
     small: { width: 400, height: 500 },
@@ -43,15 +44,14 @@ function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
   style="border-radius: 12px; border: 1px solid #e5e7eb;"
 ></iframe>`
 
-  const copyEmbedCode = async () => {
+  const copyToClipboard = async (text: string, setCopied: (v: boolean) => void) => {
     try {
-      await navigator.clipboard.writeText(embedCode)
+      await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // Fallback for older browsers
       const textarea = document.createElement('textarea')
-      textarea.value = embedCode
+      textarea.value = text
       document.body.appendChild(textarea)
       textarea.select()
       document.execCommand('copy')
@@ -62,65 +62,120 @@ function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
   }
 
   return (
-    <div className="bg-white rounded-lg border p-6 space-y-4">
+    <div className="bg-white rounded-lg border p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold">Embed in Your Website</h3>
+        <h3 className="font-semibold">Embed & Integration</h3>
         <span className="text-xs bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 px-2 py-1 rounded-full font-medium">
           Coming Soon
         </span>
       </div>
-      <p className="text-sm text-gray-500">
-        Add the interactive map directly to your website or app. Copy the embed code below.
-      </p>
 
-      {/* Size Selector */}
-      <div className="flex gap-2">
-        {(['small', 'medium', 'large'] as const).map((size) => (
+      {/* Direct URL for Mobile Apps */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+            <path d="M12 18h.01" />
+          </svg>
+          <span className="text-sm font-medium">Mobile App / WebView</span>
+        </div>
+        <p className="text-xs text-gray-500">
+          Use this URL in your mobile app's WebView for fullscreen integration.
+        </p>
+        <div className="flex items-center gap-2">
+          <code className="flex-1 bg-gray-100 px-3 py-2 rounded-lg text-sm font-mono text-gray-700 truncate">
+            {embedUrl}
+          </code>
           <button
-            key={size}
             type="button"
-            onClick={() => setEmbedSize(size)}
-            className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
-              embedSize === size
-                ? 'bg-blue-50 border-blue-200 text-blue-700'
-                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-            }`}
+            onClick={() => copyToClipboard(embedUrl, setCopiedUrl)}
+            className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors flex items-center gap-1.5 shrink-0"
           >
-            {size.charAt(0).toUpperCase() + size.slice(1)}
-            <span className="text-xs text-gray-400 ml-1">
-              ({sizes[size].width}×{sizes[size].height})
-            </span>
+            {copiedUrl ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Copied!
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                Copy
+              </>
+            )}
           </button>
-        ))}
+        </div>
       </div>
 
-      {/* Embed Code */}
-      <div className="relative">
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto font-mono">
-          {embedCode}
-        </pre>
-        <button
-          type="button"
-          onClick={copyEmbedCode}
-          className="absolute top-2 right-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md transition-colors flex items-center gap-1.5"
-        >
-          {copied ? (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              Copied!
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-              </svg>
-              Copy
-            </>
-          )}
-        </button>
+      <hr className="border-gray-100" />
+
+      {/* Website Embed */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+            <rect width="18" height="18" x="3" y="3" rx="2" />
+            <path d="M3 9h18" />
+            <path d="M9 21V9" />
+          </svg>
+          <span className="text-sm font-medium">Website Embed</span>
+        </div>
+        <p className="text-xs text-gray-500">
+          Add the interactive map to your website using this iframe code.
+        </p>
+
+        {/* Size Selector */}
+        <div className="flex gap-2">
+          {(['small', 'medium', 'large'] as const).map((size) => (
+            <button
+              key={size}
+              type="button"
+              onClick={() => setEmbedSize(size)}
+              className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                embedSize === size
+                  ? 'bg-blue-50 border-blue-200 text-blue-700'
+                  : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+              }`}
+            >
+              {size.charAt(0).toUpperCase() + size.slice(1)}
+              <span className="text-xs text-gray-400 ml-1">
+                ({sizes[size].width}×{sizes[size].height})
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Embed Code */}
+        <div className="relative">
+          <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto font-mono">
+            {embedCode}
+          </pre>
+          <button
+            type="button"
+            onClick={() => copyToClipboard(embedCode, setCopiedIframe)}
+            className="absolute top-2 right-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs rounded-md transition-colors flex items-center gap-1.5"
+          >
+            {copiedIframe ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                Copied!
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+                Copy
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       <p className="text-xs text-gray-400">
@@ -143,6 +198,12 @@ export default function PortalSettingsPage() {
   const [venueLocationLng, setVenueLocationLng] = useState<number | null>(
     project?.venueLocation?.longitude || null
   )
+  const [embedShowHeader, setEmbedShowHeader] = useState<boolean>(
+    project?.embedSettings?.showHeader ?? true
+  )
+  const [embedShowBranding, setEmbedShowBranding] = useState<boolean>(
+    project?.embedSettings?.showBranding ?? true
+  )
 
   // Update state when project loads
   useEffect(() => {
@@ -152,6 +213,8 @@ export default function PortalSettingsPage() {
       setMapExperience(project.mapExperience || 'full')
       setVenueLocationLat(project.venueLocation?.latitude || null)
       setVenueLocationLng(project.venueLocation?.longitude || null)
+      setEmbedShowHeader(project.embedSettings?.showHeader ?? true)
+      setEmbedShowBranding(project.embedSettings?.showBranding ?? true)
     }
   }, [project])
 
@@ -162,6 +225,8 @@ export default function PortalSettingsPage() {
       mapExperience: string
       venueLocationLat?: number | null
       venueLocationLng?: number | null
+      embedShowHeader?: boolean
+      embedShowBranding?: boolean
     }) => {
       const res = await fetch(`/api/projects/${project!.id}`, {
         method: 'PATCH',
@@ -185,6 +250,8 @@ export default function PortalSettingsPage() {
       mapExperience,
       venueLocationLat,
       venueLocationLng,
+      embedShowHeader,
+      embedShowBranding,
     })
   }
 
@@ -307,6 +374,69 @@ export default function PortalSettingsPage() {
                   Hotspots automatically open when guests are within 10 meters. Perfect for guided tours.
                 </p>
               </div>
+            </label>
+          </div>
+        </div>
+
+        {/* Embed Settings */}
+        <div className="bg-white rounded-lg border p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold">Embed Settings</h3>
+            <span className="text-xs bg-gradient-to-r from-violet-100 to-purple-100 text-violet-800 px-2 py-1 rounded-full font-medium">
+              Premium
+            </span>
+          </div>
+          <p className="text-sm text-gray-500">
+            Customize how your map appears when embedded in your website or mobile app.
+          </p>
+
+          <div className="space-y-3">
+            <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+              <div>
+                <p className="font-medium">Show Header Bar</p>
+                <p className="text-sm text-gray-500">
+                  Display the resort name and hotspot count at the top of the embed.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={embedShowHeader}
+                onClick={() => setEmbedShowHeader(!embedShowHeader)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                  embedShowHeader ? 'bg-emerald-500' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition ${
+                    embedShowHeader ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </label>
+
+            <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+              <div>
+                <p className="font-medium">Show Wandernest Branding</p>
+                <p className="text-sm text-gray-500">
+                  Display the "Powered by Wandernest" badge. Disable for white-label integration.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={embedShowBranding}
+                onClick={() => setEmbedShowBranding(!embedShowBranding)}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                  embedShowBranding ? 'bg-emerald-500' : 'bg-gray-200'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition ${
+                    embedShowBranding ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </label>
           </div>
         </div>

@@ -30,6 +30,9 @@ export const projects = pgTable('projects', {
   customMapEastLng: real('custom_map_east_lng'),
   customMapOpacity: real('custom_map_opacity').default(0.8),
   customMapEnabled: boolean('custom_map_enabled').default(false),
+  // Embed settings (for white-label/mobile app integration)
+  embedShowHeader: boolean('embed_show_header').default(true),
+  embedShowBranding: boolean('embed_show_branding').default(true),
   // Meta
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow(),
@@ -99,6 +102,11 @@ export type CustomMapOverlay = {
   eastLng: number | null
   opacity: number
   enabled: boolean
+}
+
+export type EmbedSettings = {
+  showHeader: boolean
+  showBranding: boolean
 }
 
 // ============================================
