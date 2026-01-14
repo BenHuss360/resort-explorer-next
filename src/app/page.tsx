@@ -589,6 +589,29 @@ function UnifiedLoginCard() {
               >
                 Forgot your password?
               </button>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-stone-200" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="px-2 bg-white text-stone-400">or</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  activateDemoMode()
+                  setProject(DEMO_PROJECT)
+                  toast.success('Welcome to Demo Mode!')
+                  router.push('/portal/preview')
+                }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+              >
+                <Play className="w-4 h-4" />
+                Explore the demo
+              </button>
             </form>
           </TabsContent>
         </Tabs>
@@ -890,9 +913,6 @@ export default function LandingPage() {
       {/* Grain texture overlay */}
       <GrainOverlay />
 
-      {/* Floating Demo CTA */}
-      <FloatingDemoCTA />
-
       {/* Hero Section */}
       <header id="hero-section" className="relative min-h-[90vh] md:min-h-screen flex flex-col pt-16 md:pt-20 pb-32 md:pb-40 px-4 overflow-hidden">
         {/* Animated gradient background */}
@@ -928,9 +948,6 @@ export default function LandingPage() {
               GPS-powered exploration for wellness retreats and luxury properties.
               Let your guests discover at their own pace.
             </p>
-
-            {/* Quick Demo Button */}
-            <QuickDemoButton />
           </div>
         </div>
 
