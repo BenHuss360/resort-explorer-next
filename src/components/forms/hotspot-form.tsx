@@ -4,8 +4,10 @@ import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useProject } from '@/components/providers/project-provider'
 import { MediaUpload } from '@/components/forms/media-upload'
+import { isDemoMode } from '@/lib/mock-data'
 import type { Hotspot, OptionalField } from '@/lib/db/schema'
 
 const LocationPicker = dynamic(
@@ -205,6 +207,12 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (isDemoMode()) {
+      toast.info('This is a demo — you cannot save hotspots. Sign up to create your own Wandernest!')
+      return
+    }
+
     mutation.mutate({
       title,
       description,
