@@ -1,11 +1,12 @@
 'use client'
 
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react'
-import type { GroundControlPoint } from '@/lib/db/schema'
+import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 
 interface ImagePointPickerProps {
   imageUrl: string
   gcps: GroundControlPoint[]
+  calibrationMode?: CalibrationMode
   pendingPoint?: { x: number; y: number } | null
   onClick?: (x: number, y: number) => void
   onImageLoad?: (size: { width: number; height: number }) => void
@@ -21,6 +22,7 @@ interface ViewState {
 export default function ImagePointPicker({
   imageUrl,
   gcps,
+  calibrationMode = '2corners',
   pendingPoint,
   onClick,
   onImageLoad,
@@ -282,14 +284,26 @@ export default function ImagePointPicker({
           height={containerSize.height}
         >
           <polygon
-            points={gcps.map(gcp => {
-              const pos = getMarkerPosition(gcp)
-              return pos ? `${pos.left},${pos.top}` : ''
-            }).filter(Boolean).join(' ')}
+            points={(() => {
+              // For 2-corner mode with 2 points, draw a rectangle
+              if (calibrationMode === '2corners' && gcps.length === 2) {
+                const p1 = getMarkerPosition(gcps[0]) // Top-left
+                const p2 = getMarkerPosition(gcps[1]) // Bottom-right
+                if (p1 && p2) {
+                  // Calculate all 4 corners of the rectangle
+                  return `${p1.left},${p1.top} ${p2.left},${p1.top} ${p2.left},${p2.top} ${p1.left},${p2.top}`
+                }
+              }
+              // For other modes, connect the points in order
+              return gcps.map(gcp => {
+                const pos = getMarkerPosition(gcp)
+                return pos ? `${pos.left},${pos.top}` : ''
+              }).filter(Boolean).join(' ')
+            })()}
             fill="rgba(59, 130, 246, 0.15)"
             stroke="rgba(59, 130, 246, 0.8)"
             strokeWidth="2"
-            strokeDasharray={gcps.length < 3 ? "5,5" : "0"}
+            strokeDasharray={gcps.length < 3 && calibrationMode !== '2corners' ? "5,5" : "0"}
           />
         </svg>
       )}

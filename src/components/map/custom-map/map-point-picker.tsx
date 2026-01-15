@@ -3,11 +3,12 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import type { GroundControlPoint } from '@/lib/db/schema'
+import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 
 interface MapPointPickerProps {
   gcps: GroundControlPoint[]
   venueCenter: { lat: number; lng: number }
+  calibrationMode?: CalibrationMode
   onClick?: (lat: number, lng: number) => void
   onGCPDrag?: (id: string, lat: number, lng: number) => void
   showPendingIndicator?: boolean
@@ -17,6 +18,7 @@ interface MapPointPickerProps {
 export default function MapPointPicker({
   gcps,
   venueCenter,
+  calibrationMode = '2corners',
   onClick,
   onGCPDrag,
 }: MapPointPickerProps) {
@@ -191,13 +193,28 @@ export default function MapPointPicker({
     }
 
     if (gcps.length >= 2 && mapRef.current) {
-      const latLngs = gcps.map(gcp => [gcp.latitude, gcp.longitude] as [number, number])
+      let latLngs: [number, number][]
+
+      // For 2-corner mode with 2 points, draw a rectangle
+      if (calibrationMode === '2corners' && gcps.length === 2) {
+        const [p1, p2] = gcps
+        // Calculate all 4 corners of the rectangle
+        latLngs = [
+          [p1.latitude, p1.longitude], // Top-left (NW)
+          [p1.latitude, p2.longitude], // Top-right (NE)
+          [p2.latitude, p2.longitude], // Bottom-right (SE)
+          [p2.latitude, p1.longitude], // Bottom-left (SW)
+        ]
+      } else {
+        latLngs = gcps.map(gcp => [gcp.latitude, gcp.longitude] as [number, number])
+      }
+
       polygonRef.current = L.polygon(latLngs, {
         color: 'rgba(59, 130, 246, 0.8)',
         fillColor: 'rgba(59, 130, 246, 0.15)',
         fillOpacity: 0.15,
         weight: 2,
-        dashArray: gcps.length < 3 ? '5, 5' : undefined,
+        dashArray: gcps.length < 3 && calibrationMode !== '2corners' ? '5, 5' : undefined,
       }).addTo(mapRef.current)
 
       // Ensure polygon is below markers
@@ -209,7 +226,7 @@ export default function MapPointPicker({
       const bounds = L.latLngBounds(gcps.map(gcp => [gcp.latitude, gcp.longitude] as [number, number]))
       mapRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 })
     }
-  }, [gcps, createMarkerIcon, mapReady])
+  }, [gcps, createMarkerIcon, mapReady, calibrationMode])
 
   // Handle container resize
   useEffect(() => {

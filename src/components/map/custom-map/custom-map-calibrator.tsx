@@ -175,6 +175,143 @@ interface CustomMapCalibratorProps {
 
 type Step = 'image' | 'map' | 'preview'
 
+// Wizard component to help choose the right calibration mode
+function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode) => void }) {
+  const [step, setStep] = useState<'north' | 'scale' | 'result'>('north')
+  const [isNorthAligned, setIsNorthAligned] = useState<boolean | null>(null)
+  const [isToScale, setIsToScale] = useState<boolean | null>(null)
+
+  const handleNorthAnswer = (answer: boolean | null) => {
+    setIsNorthAligned(answer)
+    setStep('scale')
+  }
+
+  const handleScaleAnswer = (answer: boolean | null) => {
+    setIsToScale(answer)
+    setStep('result')
+  }
+
+  const getRecommendedMode = (): { mode: CalibrationMode; reason: string } => {
+    // If not north-aligned, need 4-corner mode for rotation
+    if (isNorthAligned === false) {
+      return {
+        mode: 'corners',
+        reason: 'Your map needs rotation support, so we\'ll use 4-corner calibration.',
+      }
+    }
+    // If north-aligned but not to scale, might need more control
+    if (isToScale === false) {
+      return {
+        mode: 'corners',
+        reason: 'Since your map may not be perfectly to scale, 4-corner mode gives better control.',
+      }
+    }
+    // Default: 2-corner is simplest for standard maps
+    return {
+      mode: '2corners',
+      reason: 'For a standard north-aligned map, 2-corner mode is the simplest option.',
+    }
+  }
+
+  const { mode, reason } = getRecommendedMode()
+
+  return (
+    <div className="p-6 space-y-6">
+      {step === 'north' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Is your map aligned north?</h3>
+          <p className="text-sm text-gray-600">
+            Most printed maps have north at the top. If your map is rotated or has a different orientation, let us know.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleNorthAnswer(true)}
+              className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-blue-700 font-medium transition-colors"
+            >
+              Yes, north is up
+            </button>
+            <button
+              onClick={() => handleNorthAnswer(false)}
+              className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors"
+            >
+              No, it's rotated
+            </button>
+            <button
+              onClick={() => handleNorthAnswer(null)}
+              className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-500 font-medium transition-colors"
+            >
+              Not sure
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'scale' && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Is your map drawn to scale?</h3>
+          <p className="text-sm text-gray-600">
+            Some maps are stylized or simplified. If distances aren't proportionally accurate, we can handle that.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleScaleAnswer(true)}
+              className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-blue-700 font-medium transition-colors"
+            >
+              Yes, it's accurate
+            </button>
+            <button
+              onClick={() => handleScaleAnswer(false)}
+              className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors"
+            >
+              No, it's stylized
+            </button>
+            <button
+              onClick={() => handleScaleAnswer(null)}
+              className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-500 font-medium transition-colors"
+            >
+              Not sure
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 'result' && (
+        <div className="space-y-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-green-800 mb-2">
+              Recommended: {mode === '2corners' ? '2 Corners' : mode === 'corners' ? '4 Corners' : 'Multiple Points'}
+            </h3>
+            <p className="text-sm text-green-700">{reason}</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => onComplete(mode)}
+              className="flex-1 py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Use recommended mode
+            </button>
+            <button
+              onClick={() => onComplete('2corners')}
+              className="py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+            >
+              2 Corners
+            </button>
+            <button
+              onClick={() => onComplete('corners')}
+              className="py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
+            >
+              4 Corners
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 text-center">
+            You can change modes later if needed
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function CustomMapCalibrator({
   imageUrl,
   existingGCPs = [],
@@ -194,6 +331,7 @@ export default function CustomMapCalibrator({
   const [showPreview, setShowPreview] = useState(false)
   const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number; height: number } | null>(null)
   const [showHelp, setShowHelp] = useState(!existingGCPs.length) // Show help by default for new calibrations
+  const [showWizard, setShowWizard] = useState(!existingGCPs.length) // Show wizard for new calibrations
 
   // Labels for corner modes
   const cornerLabels = calibrationMode === '2corners'
@@ -362,6 +500,43 @@ export default function CustomMapCalibrator({
 
   const instructions = getInstructionText()
 
+  // Handle wizard completion
+  const handleWizardComplete = useCallback((mode: CalibrationMode) => {
+    setCalibrationMode(mode)
+    setShowWizard(false)
+  }, [])
+
+  // Show wizard for new calibrations
+  if (showWizard) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div className="bg-white rounded-xl w-full max-w-lg my-auto">
+          <div className="p-4 border-b flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Calibrate Custom Map</h2>
+            <button
+              onClick={onCancel}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Close"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <CalibrationWizard onComplete={handleWizardComplete} />
+          <div className="p-4 border-t">
+            <button
+              onClick={() => setShowWizard(false)}
+              className="text-sm text-gray-500 hover:text-gray-700"
+            >
+              Skip wizard and choose mode manually
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-xl w-full max-w-7xl max-h-[95vh] flex flex-col my-auto">
@@ -405,9 +580,11 @@ export default function CustomMapCalibrator({
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => {
-                  setCalibrationMode('2corners')
-                  if (gcps.length > 2) {
-                    setGCPs(gcps.slice(0, 2))
+                  if (calibrationMode !== '2corners') {
+                    setCalibrationMode('2corners')
+                    setGCPs([]) // Clear GCPs when switching modes to avoid label mismatch
+                    setPendingImagePoint(null)
+                    setCurrentStep('image')
                   }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -421,9 +598,11 @@ export default function CustomMapCalibrator({
               </button>
               <button
                 onClick={() => {
-                  setCalibrationMode('corners')
-                  if (gcps.length > 4) {
-                    setGCPs(gcps.slice(0, 4))
+                  if (calibrationMode !== 'corners') {
+                    setCalibrationMode('corners')
+                    setGCPs([]) // Clear GCPs when switching modes to avoid label mismatch
+                    setPendingImagePoint(null)
+                    setCurrentStep('image')
                   }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
@@ -436,7 +615,14 @@ export default function CustomMapCalibrator({
                 4 Corners
               </button>
               <button
-                onClick={() => setCalibrationMode('gcps')}
+                onClick={() => {
+                  if (calibrationMode !== 'gcps') {
+                    setCalibrationMode('gcps')
+                    setGCPs([]) // Clear GCPs when switching modes to avoid label mismatch
+                    setPendingImagePoint(null)
+                    setCurrentStep('image')
+                  }
+                }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                   calibrationMode === 'gcps'
                     ? 'bg-white shadow text-gray-900'
@@ -511,6 +697,7 @@ export default function CustomMapCalibrator({
                   <ImagePointPicker
                     imageUrl={imageUrl}
                     gcps={gcps}
+                    calibrationMode={calibrationMode}
                     pendingPoint={pendingImagePoint}
                     onClick={currentStep === 'image' ? handleImageClick : undefined}
                     onImageLoad={setImageNaturalSize}
@@ -541,6 +728,7 @@ export default function CustomMapCalibrator({
                   <MapPointPicker
                     gcps={gcps}
                     venueCenter={venueCenter}
+                    calibrationMode={calibrationMode}
                     onClick={currentStep === 'map' ? handleMapClick : undefined}
                     onGCPDrag={handleMapGCPDrag}
                   />
