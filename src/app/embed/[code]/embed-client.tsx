@@ -54,6 +54,8 @@ export function EmbedClient({ code }: EmbedClientProps) {
         eastLng: rawProject.customMapEastLng,
         opacity: rawProject.customMapOpacity || 1.0,
         enabled: rawProject.customMapEnabled || false,
+        gcps: (rawProject.customMapGCPs as CustomMapOverlay['gcps']) || [],
+        calibrationMode: (rawProject.customMapCalibrationMode as CustomMapOverlay['calibrationMode']) || '2corners',
       } as CustomMapOverlay,
       embedSettings: {
         showHeader: rawProject.embedShowHeader ?? true,

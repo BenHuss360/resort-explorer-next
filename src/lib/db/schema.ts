@@ -106,7 +106,7 @@ export type GroundControlPoint = {
   label?: string
 }
 
-export type CalibrationMode = 'corners' | 'gcps'
+export type CalibrationMode = '2corners' | 'corners' | 'gcps'
 
 export type CustomMapOverlay = {
   imageUrl: string | null
@@ -179,5 +179,5 @@ export const customMapOverlaySchema = z.object({
   opacity: z.number().min(0).max(1).default(1.0),
   enabled: z.boolean().default(false),
   gcps: z.array(groundControlPointSchema).default([]),
-  calibrationMode: z.enum(['corners', 'gcps']).default('corners'),
+  calibrationMode: z.enum(['2corners', 'corners', 'gcps']).default('2corners'),
 })

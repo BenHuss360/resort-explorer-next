@@ -186,7 +186,7 @@ export default function CustomMapCalibrator({
 }: CustomMapCalibratorProps) {
   const [gcps, setGCPs] = useState<GroundControlPoint[]>(existingGCPs)
   const [calibrationMode, setCalibrationMode] = useState<CalibrationMode>(
-    existingGCPs.length > 4 ? 'gcps' : 'corners'
+    existingGCPs.length > 4 ? 'gcps' : existingGCPs.length > 2 ? 'corners' : '2corners'
   )
   const [currentStep, setCurrentStep] = useState<Step>('image')
   const [pendingImagePoint, setPendingImagePoint] = useState<{ x: number; y: number } | null>(null)
@@ -195,14 +195,16 @@ export default function CustomMapCalibrator({
   const [imageNaturalSize, setImageNaturalSize] = useState<{ width: number; height: number } | null>(null)
   const [showHelp, setShowHelp] = useState(!existingGCPs.length) // Show help by default for new calibrations
 
-  // Labels for 4-corner mode
-  const cornerLabels = ['Northwest', 'Northeast', 'Southeast', 'Southwest']
+  // Labels for corner modes
+  const cornerLabels = calibrationMode === '2corners'
+    ? ['Top-Left', 'Bottom-Right']
+    : ['Northwest', 'Northeast', 'Southeast', 'Southwest']
 
-  const maxPoints = calibrationMode === 'corners' ? 4 : 20
+  const maxPoints = calibrationMode === '2corners' ? 2 : calibrationMode === 'corners' ? 4 : 20
 
   // Add a new GCP
   const addGCP = useCallback((imageX: number, imageY: number, lat: number, lng: number) => {
-    const label = calibrationMode === 'corners'
+    const label = (calibrationMode === 'corners' || calibrationMode === '2corners')
       ? cornerLabels[gcps.length]
       : `Point ${gcps.length + 1}`
 
@@ -262,6 +264,24 @@ export default function CustomMapCalibrator({
 
   // Calculate bounds from GCPs (with error handling for collinear points)
   const { calculatedBounds, boundsError } = useMemo(() => {
+    // 2-corner mode: simple direct calculation
+    if (calibrationMode === '2corners') {
+      if (gcps.length < 2) {
+        return { calculatedBounds: null, boundsError: null }
+      }
+      const [p1, p2] = gcps
+      return {
+        calculatedBounds: {
+          north: Math.max(p1.latitude, p2.latitude),
+          south: Math.min(p1.latitude, p2.latitude),
+          east: Math.max(p1.longitude, p2.longitude),
+          west: Math.min(p1.longitude, p2.longitude),
+        },
+        boundsError: null,
+      }
+    }
+
+    // 4-corners and GCPs mode: use affine transformation
     if (gcps.length < 3 || !imageNaturalSize) {
       return { calculatedBounds: null, boundsError: null }
     }
@@ -272,12 +292,14 @@ export default function CustomMapCalibrator({
       // Points are likely collinear
       return { calculatedBounds: null, boundsError: 'Points are in a straight line. Adjust marker positions.' }
     }
-  }, [gcps, imageNaturalSize])
+  }, [gcps, imageNaturalSize, calibrationMode])
 
   // Check if we can save
-  const canSave = calibrationMode === 'corners'
-    ? gcps.length === 4 && calculatedBounds !== null
-    : gcps.length >= 3 && calculatedBounds !== null
+  const canSave = calibrationMode === '2corners'
+    ? gcps.length === 2 && calculatedBounds !== null
+    : calibrationMode === 'corners'
+      ? gcps.length === 4 && calculatedBounds !== null
+      : gcps.length >= 3 && calculatedBounds !== null
 
   // Handle save
   const handleSave = useCallback(() => {
@@ -302,13 +324,21 @@ export default function CustomMapCalibrator({
 
     if (currentStep === 'image') {
       if (gcps.length >= maxPoints) {
+        const modeLabel = calibrationMode === '2corners' ? 'Both corners' :
+                         calibrationMode === 'corners' ? 'All 4 corners' : 'All points'
         return {
-          main: calibrationMode === 'corners' ? 'All 4 corners placed!' : 'All points placed!',
+          main: `${modeLabel} placed!`,
           sub: 'Click "Preview" to check alignment, or "Save" if you\'re satisfied.',
         }
       }
 
-      if (calibrationMode === 'corners') {
+      if (calibrationMode === '2corners') {
+        const cornerName = cornerLabels[gcps.length]
+        return {
+          main: `Step 1: Click the ${cornerName} corner`,
+          sub: `Find the ${cornerName.toLowerCase()} corner on your custom map. (${gcps.length === 0 ? '2' : '1'} of 2 remaining)`,
+        }
+      } else if (calibrationMode === 'corners') {
         const cornerName = cornerLabels[gcps.length]
         return {
           main: `Step 1: Click the ${cornerName} corner`,
@@ -375,6 +405,22 @@ export default function CustomMapCalibrator({
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button
                 onClick={() => {
+                  setCalibrationMode('2corners')
+                  if (gcps.length > 2) {
+                    setGCPs(gcps.slice(0, 2))
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  calibrationMode === '2corners'
+                    ? 'bg-white shadow text-gray-900'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                title="Simplest option. Mark opposite corners (top-left and bottom-right)."
+              >
+                2 Corners
+              </button>
+              <button
+                onClick={() => {
                   setCalibrationMode('corners')
                   if (gcps.length > 4) {
                     setGCPs(gcps.slice(0, 4))
@@ -385,7 +431,7 @@ export default function CustomMapCalibrator({
                     ? 'bg-white shadow text-gray-900'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
-                title="Best for rectangular maps. Mark the 4 corners."
+                title="Mark the 4 corners for more precision."
               >
                 4 Corners
               </button>
@@ -402,9 +448,11 @@ export default function CustomMapCalibrator({
               </button>
             </div>
             <span className="text-xs text-gray-400 hidden sm:inline">
-              {calibrationMode === 'corners'
-                ? '(Best for rectangular maps)'
-                : '(For irregular or non-rectangular maps)'}
+              {calibrationMode === '2corners'
+                ? '(Simplest - for rectangular maps)'
+                : calibrationMode === 'corners'
+                  ? '(Mark all 4 corners)'
+                  : '(For irregular maps)'}
             </span>
           </div>
 
@@ -517,6 +565,11 @@ export default function CustomMapCalibrator({
         <div className="p-4 border-t flex items-center justify-between shrink-0 bg-gray-50">
           <div className="text-sm text-gray-500">
             {gcps.length} reference point{gcps.length !== 1 ? 's' : ''} placed
+            {calibrationMode === '2corners' && gcps.length < 2 && (
+              <span className="text-amber-600 ml-2">
+                (need {2 - gcps.length} more)
+              </span>
+            )}
             {calibrationMode === 'corners' && gcps.length < 4 && (
               <span className="text-amber-600 ml-2">
                 (need {4 - gcps.length} more)

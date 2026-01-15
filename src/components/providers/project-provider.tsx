@@ -60,7 +60,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             opacity: data.customMapOpacity ?? 1.0,
             enabled: data.customMapEnabled || false,
             gcps: data.customMapGCPs || [],
-            calibrationMode: data.customMapCalibrationMode || 'corners',
+            calibrationMode: data.customMapCalibrationMode || '2corners',
           },
           venueLocation: {
             latitude: data.venueLocationLat,

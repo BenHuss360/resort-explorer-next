@@ -3,7 +3,16 @@
 import { useEffect, useRef, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import type { Hotspot, Boundaries, CustomMapOverlay } from '@/lib/db/schema'
+import type { Hotspot, Boundaries, CustomMapOverlay, GroundControlPoint } from '@/lib/db/schema'
+import { calculateAffineTransform, imageToGPS } from '@/lib/utils/affine-transform'
+
+// Import Leaflet.imageTransform plugin (extends L globally)
+import 'leaflet-imagetransform/src/L.ImageTransform.js'
+
+// Declare the extended L type for TypeScript
+declare module 'leaflet' {
+  function imageTransform(url: string, anchors: L.LatLngExpression[], options?: L.ImageOverlayOptions): L.ImageOverlay
+}
 
 // Fix default marker icon issue in Leaflet with bundlers
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -212,6 +221,42 @@ export default function LeafletMap({
     }
   }, [userLocation])
 
+  // Helper function to get 4 corner anchors from GCPs
+  const getCornerAnchors = useCallback((gcps: GroundControlPoint[], calibrationMode: string): L.LatLngExpression[] | null => {
+    // For 4-corner mode: GCPs are already the corners in order (NW, NE, SE, SW)
+    // The plugin expects: TopLeft (NW), TopRight (NE), BottomRight (SE), BottomLeft (SW)
+    if (calibrationMode === 'corners' && gcps.length === 4) {
+      return [
+        [gcps[0].latitude, gcps[0].longitude], // NW = TopLeft
+        [gcps[1].latitude, gcps[1].longitude], // NE = TopRight
+        [gcps[2].latitude, gcps[2].longitude], // SE = BottomRight
+        [gcps[3].latitude, gcps[3].longitude], // SW = BottomLeft
+      ]
+    }
+
+    // For GCPs mode: use affine transform to compute corner coordinates
+    if (calibrationMode === 'gcps' && gcps.length >= 3) {
+      try {
+        const matrix = calculateAffineTransform(gcps)
+        // Transform image corners (0,0), (1,0), (1,1), (0,1) to GPS
+        const topLeft = imageToGPS(0, 0, matrix)
+        const topRight = imageToGPS(1, 0, matrix)
+        const bottomRight = imageToGPS(1, 1, matrix)
+        const bottomLeft = imageToGPS(0, 1, matrix)
+        return [
+          [topLeft.lat, topLeft.lng],
+          [topRight.lat, topRight.lng],
+          [bottomRight.lat, bottomRight.lng],
+          [bottomLeft.lat, bottomLeft.lng],
+        ]
+      } catch {
+        return null
+      }
+    }
+
+    return null
+  }, [])
+
   // Update custom map overlay
   useEffect(() => {
     if (!mapRef.current) return
@@ -231,21 +276,37 @@ export default function LeafletMap({
       customOverlay?.westLng != null &&
       customOverlay?.eastLng != null
     ) {
-      const bounds: L.LatLngBoundsExpression = [
-        [customOverlay.southLat, customOverlay.westLng], // Southwest
-        [customOverlay.northLat, customOverlay.eastLng], // Northeast
-      ]
+      const opacity = customOverlay.opacity ?? 1.0
+      const calibrationMode = customOverlay.calibrationMode || '2corners'
+      const gcps = customOverlay.gcps || []
 
-      overlayRef.current = L.imageOverlay(customOverlay.imageUrl, bounds, {
-        opacity: customOverlay.opacity ?? 1.0,
-        interactive: false,
-        alt: 'Custom venue map overlay',
-      }).addTo(mapRef.current)
+      // Try to use imageTransform for 4-corner or GCPs mode
+      const anchors = getCornerAnchors(gcps, calibrationMode)
+
+      if (anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')) {
+        // Use imageTransform for proper perspective/affine transformation
+        overlayRef.current = L.imageTransform(customOverlay.imageUrl, anchors, {
+          opacity,
+          interactive: false,
+        }).addTo(mapRef.current)
+      } else {
+        // Fall back to simple axis-aligned bounds for 2-corner mode
+        const bounds: L.LatLngBoundsExpression = [
+          [customOverlay.southLat, customOverlay.westLng], // Southwest
+          [customOverlay.northLat, customOverlay.eastLng], // Northeast
+        ]
+
+        overlayRef.current = L.imageOverlay(customOverlay.imageUrl, bounds, {
+          opacity,
+          interactive: false,
+          alt: 'Custom venue map overlay',
+        }).addTo(mapRef.current)
+      }
 
       // Ensure overlay is below markers
       overlayRef.current.bringToBack()
     }
-  }, [customOverlay])
+  }, [customOverlay, getCornerAnchors])
 
   // Center on user location
   const centerOnUser = useCallback(() => {

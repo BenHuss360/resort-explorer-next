@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.1",
     "leaflet": "^1.9.4",
+    "leaflet-imagetransform": "github:OriginalSin/Leaflet.imageTransform",
     "lucide-react": "^0.562.0",
     "next": "16.1.1",
     "next-themes": "^0.4.6",
