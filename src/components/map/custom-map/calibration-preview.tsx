@@ -1,9 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import type { GroundControlPoint } from '@/lib/db/schema'
+import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
+import { calculateAffineTransform, imageToGPS } from '@/lib/utils/affine-transform'
+
+// Import Leaflet.imageTransform plugin
+import 'leaflet-imagetransform/src/L.ImageTransform.js'
 
 interface CalibrationPreviewProps {
   imageUrl: string
@@ -16,6 +20,7 @@ interface CalibrationPreviewProps {
   opacity: number
   venueCenter: { lat: number; lng: number }
   gcps: GroundControlPoint[]
+  calibrationMode?: CalibrationMode
 }
 
 export default function CalibrationPreview({
@@ -24,6 +29,7 @@ export default function CalibrationPreview({
   opacity,
   venueCenter,
   gcps,
+  calibrationMode = '2corners',
 }: CalibrationPreviewProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -33,6 +39,40 @@ export default function CalibrationPreview({
   const [showOverlay, setShowOverlay] = useState(true)
   const [mapReady, setMapReady] = useState(false)
   const tileLayerRef = useRef<L.TileLayer | null>(null)
+
+  // Helper function to get 4 corner anchors from GCPs
+  const getCornerAnchors = useCallback((): L.LatLngExpression[] | null => {
+    // For 4-corner mode: GCPs are already the corners in order (NW, NE, SE, SW)
+    if (calibrationMode === 'corners' && gcps.length === 4) {
+      return [
+        [gcps[0].latitude, gcps[0].longitude], // NW = TopLeft
+        [gcps[1].latitude, gcps[1].longitude], // NE = TopRight
+        [gcps[2].latitude, gcps[2].longitude], // SE = BottomRight
+        [gcps[3].latitude, gcps[3].longitude], // SW = BottomLeft
+      ]
+    }
+
+    // For GCPs mode: use affine transform to compute corner coordinates
+    if (calibrationMode === 'gcps' && gcps.length >= 3) {
+      try {
+        const matrix = calculateAffineTransform(gcps)
+        const topLeft = imageToGPS(0, 0, matrix)
+        const topRight = imageToGPS(1, 0, matrix)
+        const bottomRight = imageToGPS(1, 1, matrix)
+        const bottomLeft = imageToGPS(0, 1, matrix)
+        return [
+          [topLeft.lat, topLeft.lng],
+          [topRight.lat, topRight.lng],
+          [bottomRight.lat, bottomRight.lng],
+          [bottomLeft.lat, bottomLeft.lng],
+        ]
+      } catch {
+        return null
+      }
+    }
+
+    return null
+  }, [gcps, calibrationMode])
 
   // Tile layer URLs
   const tileLayers = {
@@ -95,20 +135,36 @@ export default function CalibrationPreview({
 
     // Add new overlay if bounds exist and showOverlay is true
     if (bounds && showOverlay) {
+      // Try to use imageTransform for 4-corner or GCPs mode
+      const anchors = getCornerAnchors()
+
+      if (anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')) {
+        // Use imageTransform for proper perspective transformation
+        overlayRef.current = (L as any).imageTransform(imageUrl, anchors, {
+          opacity,
+          interactive: false,
+        }).addTo(mapRef.current)
+      } else {
+        // Fall back to simple axis-aligned bounds for 2-corner mode
+        const imageBounds: L.LatLngBoundsExpression = [
+          [bounds.south, bounds.west],
+          [bounds.north, bounds.east],
+        ]
+
+        overlayRef.current = L.imageOverlay(imageUrl, imageBounds, {
+          opacity,
+          interactive: false,
+        }).addTo(mapRef.current)
+      }
+
+      // Fit map to bounds
       const imageBounds: L.LatLngBoundsExpression = [
         [bounds.south, bounds.west],
         [bounds.north, bounds.east],
       ]
-
-      overlayRef.current = L.imageOverlay(imageUrl, imageBounds, {
-        opacity,
-        interactive: false,
-      }).addTo(mapRef.current)
-
-      // Fit map to bounds
       mapRef.current.fitBounds(imageBounds, { padding: [20, 20] })
     }
-  }, [bounds, opacity, imageUrl, showOverlay, mapReady])
+  }, [bounds, opacity, imageUrl, showOverlay, mapReady, calibrationMode, getCornerAnchors])
 
   // Update GCP markers
   useEffect(() => {

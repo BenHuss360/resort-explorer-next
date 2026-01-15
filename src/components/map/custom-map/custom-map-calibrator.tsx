@@ -671,6 +671,7 @@ export default function CustomMapCalibrator({
                 opacity={opacity}
                 venueCenter={venueCenter}
                 gcps={gcps}
+                calibrationMode={calibrationMode}
               />
             </div>
           ) : (
