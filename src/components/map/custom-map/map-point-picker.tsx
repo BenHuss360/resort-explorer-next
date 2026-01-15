@@ -183,6 +183,16 @@ export default function MapPointPicker({
         }
       })
 
+      // Prevent map click from firing when interacting with markers
+      // This is important when a pending point is being placed - clicking
+      // on an existing marker to drag it shouldn't place the pending point
+      marker.on('mousedown', (e: L.LeafletMouseEvent) => {
+        L.DomEvent.stopPropagation(e)
+      })
+      marker.on('click', (e: L.LeafletMouseEvent) => {
+        L.DomEvent.stopPropagation(e)
+      })
+
       markersRef.current.push(marker)
     })
 

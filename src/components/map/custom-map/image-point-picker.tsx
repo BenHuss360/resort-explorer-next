@@ -326,6 +326,10 @@ export default function ImagePointPicker({
                 setDraggingMarkerId(gcp.id)
               }
             }}
+            onClick={(e) => {
+              // Prevent container click from placing a new point when clicking markers
+              e.stopPropagation()
+            }}
           >
             <div className="relative">
               <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold transition-transform ${
