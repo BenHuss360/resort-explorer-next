@@ -237,7 +237,7 @@ export default function LeafletMap({
       ]
 
       overlayRef.current = L.imageOverlay(customOverlay.imageUrl, bounds, {
-        opacity: customOverlay.opacity ?? 0.8,
+        opacity: customOverlay.opacity ?? 1.0,
         interactive: false,
         alt: 'Custom venue map overlay',
       }).addTo(mapRef.current)

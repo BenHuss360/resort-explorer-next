@@ -179,7 +179,7 @@ export default function CustomMapCalibrator({
   imageUrl,
   existingGCPs = [],
   existingBounds,
-  existingOpacity = 0.8,
+  existingOpacity = 1.0,
   venueCenter = { lat: 51.0958, lng: -2.5353 },
   onSave,
   onCancel,

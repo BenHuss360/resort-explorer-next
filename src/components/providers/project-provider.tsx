@@ -57,7 +57,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
             southLat: data.customMapSouthLat,
             westLng: data.customMapWestLng,
             eastLng: data.customMapEastLng,
-            opacity: data.customMapOpacity ?? 0.8,
+            opacity: data.customMapOpacity ?? 1.0,
             enabled: data.customMapEnabled || false,
             gcps: data.customMapGCPs || [],
             calibrationMode: data.customMapCalibrationMode || 'corners',

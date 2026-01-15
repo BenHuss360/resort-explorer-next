@@ -20,7 +20,7 @@ export const DEMO_PROJECT: ProjectContextData = {
     southLat: null,
     westLng: null,
     eastLng: null,
-    opacity: 0.8,
+    opacity: 1.0,
     enabled: false,
     gcps: [],
     calibrationMode: 'corners',

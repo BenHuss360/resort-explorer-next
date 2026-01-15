@@ -233,7 +233,7 @@ export default function PortalSettingsPage() {
     project?.customMapOverlay?.enabled || false
   )
   const [customMapOpacity, setCustomMapOpacity] = useState(
-    project?.customMapOverlay?.opacity ?? 0.8
+    project?.customMapOverlay?.opacity ?? 1.0
   )
   const [customMapGCPs, setCustomMapGCPs] = useState<GroundControlPoint[]>(
     (project?.customMapOverlay?.gcps as GroundControlPoint[]) || []
@@ -269,7 +269,7 @@ export default function PortalSettingsPage() {
       // Custom map overlay
       setCustomMapImageUrl(project.customMapOverlay?.imageUrl || null)
       setCustomMapEnabled(project.customMapOverlay?.enabled || false)
-      setCustomMapOpacity(project.customMapOverlay?.opacity ?? 0.8)
+      setCustomMapOpacity(project.customMapOverlay?.opacity ?? 1.0)
       setCustomMapGCPs((project.customMapOverlay?.gcps as GroundControlPoint[]) || [])
       setCustomMapBounds({
         northLat: project.customMapOverlay?.northLat || null,
@@ -616,7 +616,7 @@ export default function PortalSettingsPage() {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-green-800">Calibrated</p>
                     <p className="text-xs text-green-600">
-                      {customMapGCPs.length} reference points • {Math.round(customMapOpacity * 100)}% opacity
+                      {customMapGCPs.length} reference points
                     </p>
                   </div>
                   <button
@@ -650,22 +650,6 @@ export default function PortalSettingsPage() {
                 </div>
               )}
 
-              {/* Opacity slider (only when calibrated) */}
-              {customMapBounds.northLat && (
-                <div className="flex items-center gap-4">
-                  <label className="text-sm text-gray-600">Opacity:</label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={customMapOpacity}
-                    onChange={(e) => setCustomMapOpacity(parseFloat(e.target.value))}
-                    className="flex-1"
-                  />
-                  <span className="text-sm text-gray-500 w-12">{Math.round(customMapOpacity * 100)}%</span>
-                </div>
-              )}
             </div>
           )}
         </div>

@@ -52,7 +52,7 @@ export function EmbedClient({ code }: EmbedClientProps) {
         southLat: rawProject.customMapSouthLat,
         westLng: rawProject.customMapWestLng,
         eastLng: rawProject.customMapEastLng,
-        opacity: rawProject.customMapOpacity || 0.8,
+        opacity: rawProject.customMapOpacity || 1.0,
         enabled: rawProject.customMapEnabled || false,
       } as CustomMapOverlay,
       embedSettings: {
