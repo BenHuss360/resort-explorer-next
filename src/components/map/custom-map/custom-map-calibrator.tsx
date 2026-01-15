@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 import { GCPList } from './gcp-list'
@@ -260,15 +260,24 @@ export default function CustomMapCalibrator({
     ))
   }, [])
 
-  // Calculate bounds from GCPs
-  const calculatedBounds = gcps.length >= 3 && imageNaturalSize
-    ? calculateBoundsFromGCPs(gcps, imageNaturalSize.width, imageNaturalSize.height)
-    : null
+  // Calculate bounds from GCPs (with error handling for collinear points)
+  const { calculatedBounds, boundsError } = useMemo(() => {
+    if (gcps.length < 3 || !imageNaturalSize) {
+      return { calculatedBounds: null, boundsError: null }
+    }
+    try {
+      const bounds = calculateBoundsFromGCPs(gcps, imageNaturalSize.width, imageNaturalSize.height)
+      return { calculatedBounds: bounds, boundsError: null }
+    } catch (error) {
+      // Points are likely collinear
+      return { calculatedBounds: null, boundsError: 'Points are in a straight line. Adjust marker positions.' }
+    }
+  }, [gcps, imageNaturalSize])
 
   // Check if we can save
   const canSave = calibrationMode === 'corners'
-    ? gcps.length === 4
-    : gcps.length >= 3
+    ? gcps.length === 4 && calculatedBounds !== null
+    : gcps.length >= 3 && calculatedBounds !== null
 
   // Handle save
   const handleSave = useCallback(() => {
@@ -511,6 +520,11 @@ export default function CustomMapCalibrator({
             {calibrationMode === 'corners' && gcps.length < 4 && (
               <span className="text-amber-600 ml-2">
                 (need {4 - gcps.length} more)
+              </span>
+            )}
+            {boundsError && (
+              <span className="text-red-600 ml-2 font-medium">
+                {boundsError}
               </span>
             )}
             {calibrationMode === 'gcps' && gcps.length < 3 && (

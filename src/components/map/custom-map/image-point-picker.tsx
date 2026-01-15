@@ -274,6 +274,26 @@ export default function ImagePointPicker({
         />
       </div>
 
+      {/* Polygon outline connecting markers */}
+      {imageLoaded && gcps.length >= 2 && containerSize && (
+        <svg
+          className="absolute inset-0 pointer-events-none z-[5]"
+          width={containerSize.width}
+          height={containerSize.height}
+        >
+          <polygon
+            points={gcps.map(gcp => {
+              const pos = getMarkerPosition(gcp)
+              return pos ? `${pos.left},${pos.top}` : ''
+            }).filter(Boolean).join(' ')}
+            fill="rgba(59, 130, 246, 0.15)"
+            stroke="rgba(59, 130, 246, 0.8)"
+            strokeWidth="2"
+            strokeDasharray={gcps.length < 3 ? "5,5" : "0"}
+          />
+        </svg>
+      )}
+
       {/* GCP Markers */}
       {imageLoaded && gcps.map((gcp, index) => {
         const pos = getMarkerPosition(gcp)

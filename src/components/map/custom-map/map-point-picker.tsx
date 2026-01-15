@@ -23,6 +23,7 @@ export default function MapPointPicker({
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const markersRef = useRef<L.Marker[]>([])
+  const polygonRef = useRef<L.Polygon | null>(null)
   const [mapLayer, setMapLayer] = useState<'satellite' | 'street'>('satellite')
   const tileLayerRef = useRef<L.TileLayer | null>(null)
   const [mapReady, setMapReady] = useState(false)
@@ -182,6 +183,26 @@ export default function MapPointPicker({
 
       markersRef.current.push(marker)
     })
+
+    // Update polygon outline
+    if (polygonRef.current) {
+      polygonRef.current.remove()
+      polygonRef.current = null
+    }
+
+    if (gcps.length >= 2 && mapRef.current) {
+      const latLngs = gcps.map(gcp => [gcp.latitude, gcp.longitude] as [number, number])
+      polygonRef.current = L.polygon(latLngs, {
+        color: 'rgba(59, 130, 246, 0.8)',
+        fillColor: 'rgba(59, 130, 246, 0.15)',
+        fillOpacity: 0.15,
+        weight: 2,
+        dashArray: gcps.length < 3 ? '5, 5' : undefined,
+      }).addTo(mapRef.current)
+
+      // Ensure polygon is below markers
+      polygonRef.current.bringToBack()
+    }
 
     // Fit bounds if we have markers
     if (gcps.length > 0 && mapRef.current) {
