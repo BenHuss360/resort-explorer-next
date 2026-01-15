@@ -41,7 +41,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
+    const [{ id }, body] = await Promise.all([params, request.json()])
     const projectId = parseInt(id)
 
     if (isNaN(projectId)) {
@@ -50,8 +50,6 @@ export async function POST(
         { status: 400 }
       )
     }
-
-    const body = await request.json()
 
     const [newHotspot] = await db
       .insert(hotspots)

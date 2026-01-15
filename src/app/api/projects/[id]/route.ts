@@ -45,7 +45,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params
+    const [{ id }, body] = await Promise.all([params, request.json()])
     const projectId = parseInt(id)
 
     if (isNaN(projectId)) {
@@ -54,8 +54,6 @@ export async function PATCH(
         { status: 400 }
       )
     }
-
-    const body = await request.json()
 
     // Build update object, only including fields that are provided
     const updateData: Record<string, unknown> = {}
