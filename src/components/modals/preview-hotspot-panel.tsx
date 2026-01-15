@@ -13,7 +13,7 @@ export function PreviewHotspotPanel({ hotspot, onClose }: PreviewHotspotPanelPro
   const optionalFields = (hotspot.optionalFields || []) as OptionalField[]
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col">
+    <div className="absolute inset-0 z-[1001] flex flex-col">
       {/* Backdrop */}
       <div
         className="flex-1 bg-black/30"

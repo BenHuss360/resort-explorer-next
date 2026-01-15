@@ -2,41 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import type { Boundaries, CustomMapOverlay, MapExperience, EmbedSettings } from '@/lib/db/schema'
-
-// Mock project for development - replace with real auth later
-// Default location: Appletrees, Castle Cary, BA7 7PQ
-const MOCK_PROJECT: ProjectContextData = {
-  id: 1,
-  resortName: 'Appletrees',
-  accessCode: 'APPLE24',
-  homepageContent: 'Welcome to Appletrees!',
-  mapExperience: 'full',
-  boundaries: {
-    north: 51.0968,
-    south: 51.0948,
-    east: -2.5343,
-    west: -2.5363,
-  },
-  customMapOverlay: {
-    imageUrl: null,
-    northLat: null,
-    southLat: null,
-    westLng: null,
-    eastLng: null,
-    opacity: 0.8,
-    enabled: false,
-    gcps: [],
-    calibrationMode: 'corners',
-  },
-  venueLocation: {
-    latitude: 51.0958,
-    longitude: -2.5353,
-  },
-  embedSettings: {
-    showHeader: true,
-    showBranding: true,
-  },
-}
+import { isDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
 
 export interface VenueLocation {
   latitude: number | null
@@ -114,10 +80,23 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     return null
   }, [])
 
-  // On mount, load project from API
+  // On mount, load project from API or use demo data
   useEffect(() => {
-    // For development, use mock project ID 1
-    fetchProject(1).then(() => setIsLoading(false))
+    // Check if in demo mode first
+    if (isDemoMode()) {
+      setProjectState(DEMO_PROJECT as ProjectContextData)
+      setIsLoading(false)
+      return
+    }
+
+    // Otherwise try API
+    fetchProject(1).then((result) => {
+      if (!result) {
+        // Use demo project as fallback if API fails
+        setProjectState(DEMO_PROJECT as ProjectContextData)
+      }
+      setIsLoading(false)
+    })
   }, [fetchProject])
 
   const setProject = (project: ProjectContextData | null) => {

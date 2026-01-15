@@ -91,8 +91,8 @@ export default function LeafletMap({
     if (!mapContainerRef.current || mapRef.current) return
 
     // Determine initial center
-    let center: [number, number] = [51.0958, -2.5353] // Default: Appletrees, Castle Cary
-    let zoom = 14
+    let center: [number, number] = [51.0850, -2.4880] // Default: The Newt in Somerset
+    let zoom = 15
 
     if (userLocation) {
       center = [userLocation.coords.latitude, userLocation.coords.longitude]
