@@ -42,23 +42,11 @@ export default function CalibrationPreview({
 
   // Helper function to get 4 corner anchors from GCPs
   const getCornerAnchors = useCallback((): L.LatLngExpression[] | null => {
-    // For 4-corner mode: use GCPs directly as anchors (user clicks on actual corners)
-    // For GCPs mode: use affine transform to compute corner coordinates
-    if (calibrationMode === 'corners' && gcps.length === 4) {
-      // In 4-corner mode, assume user clicked: top-left, top-right, bottom-right, bottom-left
-      // Use their GPS positions directly as anchors
-      console.log('4-corner mode: using GCP positions directly as anchors')
-      return [
-        [gcps[0].latitude, gcps[0].longitude], // top-left
-        [gcps[1].latitude, gcps[1].longitude], // top-right
-        [gcps[2].latitude, gcps[2].longitude], // bottom-right
-        [gcps[3].latitude, gcps[3].longitude], // bottom-left
-      ]
-    }
-
-    if (calibrationMode === 'gcps' && gcps.length >= 3) {
+    // For both 4-corner and GCPs mode: use affine transform to compute corner coordinates
+    // This allows users to click on any 4 points that define the map area (not just image edges)
+    // The transform extrapolates where image corners should be based on clicked points
+    if ((calibrationMode === 'corners' || calibrationMode === 'gcps') && gcps.length >= 3) {
       try {
-        // For GCPs mode, use affine transform to compute where image corners should be
         const matrix = calculateAffineTransform(gcps)
         const topLeft = imageToGPS(0, 0, matrix)
         const topRight = imageToGPS(1, 0, matrix)

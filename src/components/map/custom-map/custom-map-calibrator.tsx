@@ -333,10 +333,10 @@ export default function CustomMapCalibrator({
   const [showHelp, setShowHelp] = useState(!existingGCPs.length) // Show help by default for new calibrations
   const [showWizard, setShowWizard] = useState(!existingGCPs.length) // Show wizard for new calibrations
 
-  // Labels for corner modes - use image corner names, not compass directions
+  // Labels for corner modes
   const cornerLabels = calibrationMode === '2corners'
-    ? ['Top-Left Corner', 'Bottom-Right Corner']
-    : ['Top-Left Corner', 'Top-Right Corner', 'Bottom-Right Corner', 'Bottom-Left Corner']
+    ? ['Top-Left', 'Bottom-Right']
+    : ['Top-Left', 'Top-Right', 'Bottom-Right', 'Bottom-Left']
 
   const maxPoints = calibrationMode === '2corners' ? 2 : calibrationMode === 'corners' ? 4 : 20
 
@@ -473,14 +473,14 @@ export default function CustomMapCalibrator({
       if (calibrationMode === '2corners') {
         const cornerName = cornerLabels[gcps.length]
         return {
-          main: `Step 1: Click the ${cornerName}`,
-          sub: `Click on the actual ${cornerName.toLowerCase()} of your image. (${gcps.length === 0 ? '2' : '1'} of 2 remaining)`,
+          main: `Step 1: Click the ${cornerName} area`,
+          sub: `Find a recognizable point in the ${cornerName.toLowerCase()} area of your map. (${gcps.length === 0 ? '2' : '1'} of 2 remaining)`,
         }
       } else if (calibrationMode === 'corners') {
         const cornerName = cornerLabels[gcps.length]
         return {
-          main: `Step 1: Click the ${cornerName}`,
-          sub: `Click on the actual ${cornerName.toLowerCase()} of your image - the edge/corner of the map itself. (${maxPoints - gcps.length} of 4 remaining)`,
+          main: `Step 1: Click the ${cornerName} area`,
+          sub: `Find a recognizable point in the ${cornerName.toLowerCase()} area of your map content. Spread points across the full map area for best results. (${maxPoints - gcps.length} of 4 remaining)`,
         }
       } else {
         return {
