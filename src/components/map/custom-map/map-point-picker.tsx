@@ -9,6 +9,8 @@ interface MapPointPickerProps {
   gcps: GroundControlPoint[]
   venueCenter: { lat: number; lng: number }
   onClick?: (lat: number, lng: number) => void
+  showPendingIndicator?: boolean
+  pendingPointNumber?: number
 }
 
 export default function MapPointPicker({
@@ -60,19 +62,22 @@ export default function MapPointPicker({
     })
   }, [])
 
+  // Store onClick in a ref so map doesn't re-initialize when it changes
+  const onClickRef = useRef(onClick)
+  useEffect(() => {
+    onClickRef.current = onClick
+  }, [onClick])
+
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current) return
 
-    // Prevent re-initialization
-    if (mapRef.current) {
-      mapRef.current.remove()
-      mapRef.current = null
-    }
+    // Prevent re-initialization if map already exists
+    if (mapRef.current) return
 
     // Small delay to ensure container has dimensions
     const initTimer = setTimeout(() => {
-      if (!mapContainerRef.current) return
+      if (!mapContainerRef.current || mapRef.current) return
 
       const container = mapContainerRef.current
       const rect = container.getBoundingClientRect()
@@ -99,12 +104,12 @@ export default function MapPointPicker({
         // Add zoom control to bottom right
         L.control.zoom({ position: 'bottomright' }).addTo(map)
 
-        // Click handler
-        if (onClick) {
-          map.on('click', (e: L.LeafletMouseEvent) => {
-            onClick(e.latlng.lat, e.latlng.lng)
-          })
-        }
+        // Click handler - use ref so it always uses the current onClick
+        map.on('click', (e: L.LeafletMouseEvent) => {
+          if (onClickRef.current) {
+            onClickRef.current(e.latlng.lat, e.latlng.lng)
+          }
+        })
 
         mapRef.current = map
         setMapReady(true)
@@ -127,7 +132,7 @@ export default function MapPointPicker({
         mapRef.current = null
       }
     }
-  }, [venueCenter.lat, venueCenter.lng, onClick])
+  }, [venueCenter.lat, venueCenter.lng])
 
   // Update tile layer when mapLayer changes
   useEffect(() => {

@@ -310,8 +310,8 @@ export default function CustomMapCalibrator({
   const instructions = getInstructionText()
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl w-full max-w-7xl max-h-[95vh] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-xl w-full max-w-7xl max-h-[95vh] flex flex-col my-auto">
         {/* Header */}
         <div className="p-4 border-b shrink-0">
           <div className="flex items-center justify-between mb-3">
@@ -387,19 +387,21 @@ export default function CustomMapCalibrator({
 
           <div className="flex-1" />
 
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600">Overlay opacity:</label>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              value={opacity}
-              onChange={(e) => setOpacity(parseFloat(e.target.value))}
-              className="w-24"
-            />
-            <span className="text-sm text-gray-500 w-8">{Math.round(opacity * 100)}%</span>
-          </div>
+          {showPreview && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-gray-600">Overlay opacity:</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                value={opacity}
+                onChange={(e) => setOpacity(parseFloat(e.target.value))}
+                className="w-24"
+              />
+              <span className="text-sm text-gray-500 w-8">{Math.round(opacity * 100)}%</span>
+            </div>
+          )}
         </div>
 
         {/* Main Content - use explicit min-height for reliable sizing */}
