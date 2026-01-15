@@ -31,6 +31,7 @@ export default function CalibrationPreview({
   const markersRef = useRef<L.Marker[]>([])
   const [mapLayer, setMapLayer] = useState<'satellite' | 'street'>('satellite')
   const [showOverlay, setShowOverlay] = useState(true)
+  const [mapReady, setMapReady] = useState(false)
   const tileLayerRef = useRef<L.TileLayer | null>(null)
 
   // Tile layer URLs
@@ -67,10 +68,12 @@ export default function CalibrationPreview({
     L.control.zoom({ position: 'bottomright' }).addTo(map)
 
     mapRef.current = map
+    setMapReady(true)
 
     return () => {
       map.remove()
       mapRef.current = null
+      setMapReady(false)
     }
   }, [venueCenter])
 
@@ -82,7 +85,7 @@ export default function CalibrationPreview({
 
   // Update overlay when bounds or opacity changes
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current || !mapReady) return
 
     // Remove existing overlay
     if (overlayRef.current) {
@@ -105,11 +108,11 @@ export default function CalibrationPreview({
       // Fit map to bounds
       mapRef.current.fitBounds(imageBounds, { padding: [20, 20] })
     }
-  }, [bounds, opacity, imageUrl, showOverlay])
+  }, [bounds, opacity, imageUrl, showOverlay, mapReady])
 
   // Update GCP markers
   useEffect(() => {
-    if (!mapRef.current) return
+    if (!mapRef.current || !mapReady) return
 
     // Clear existing markers
     markersRef.current.forEach(marker => marker.remove())
@@ -147,7 +150,7 @@ export default function CalibrationPreview({
 
       markersRef.current.push(marker)
     })
-  }, [gcps])
+  }, [gcps, mapReady])
 
   if (!bounds) {
     return (
@@ -158,8 +161,8 @@ export default function CalibrationPreview({
   }
 
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapContainerRef} className="w-full h-full rounded-lg" />
+    <div className="relative w-full h-full" style={{ minHeight: '350px' }}>
+      <div ref={mapContainerRef} className="absolute inset-0 rounded-lg" />
 
       {/* Controls */}
       <div className="absolute top-4 left-4 z-[1000] flex gap-2">

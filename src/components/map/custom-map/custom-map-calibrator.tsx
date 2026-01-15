@@ -404,10 +404,10 @@ export default function CustomMapCalibrator({
           )}
         </div>
 
-        {/* Main Content - use explicit min-height for reliable sizing */}
-        <div className="flex-1 min-h-0 overflow-hidden" style={{ minHeight: '400px' }}>
+        {/* Main Content - use explicit height for reliable sizing */}
+        <div className="flex-1 overflow-hidden" style={{ minHeight: '400px', height: '400px' }}>
           {showPreview ? (
-            <div className="h-full p-4">
+            <div className="w-full h-full p-4">
               <CalibrationPreview
                 imageUrl={imageUrl}
                 bounds={calculatedBounds}
