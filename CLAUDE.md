@@ -58,6 +58,16 @@ src/
 - IndexedDB caching for offline support
 - Demo mode with `DEMO` access code
 
+## Performance Patterns
+
+Following [Vercel React Best Practices](https://github.com/vercel-labs/agent-skills):
+
+- **Bundle optimization:** `optimizePackageImports` enabled for `lucide-react` in `next.config.ts`
+- **Parallel async:** API routes use `Promise.all()` for independent operations (params + request.json)
+- **Dynamic imports:** Heavy components (maps, calibrators) loaded with `next/dynamic` and `ssr: false`
+- **Passive listeners:** Scroll event listeners use `{ passive: true }` for smoother scrolling
+- **Data fetching:** TanStack Query handles caching, deduplication, and stale-while-revalidate
+
 ## API Endpoints
 
 - `GET/PATCH /api/projects/[id]` - Project CRUD
