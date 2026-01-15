@@ -246,6 +246,20 @@ export default function CustomMapCalibrator({
     }
   }, [pendingImagePoint, addGCP])
 
+  // Handle dragging a marker on the custom map image
+  const handleImageGCPDrag = useCallback((id: string, imageX: number, imageY: number) => {
+    setGCPs(prev => prev.map(gcp =>
+      gcp.id === id ? { ...gcp, imageX, imageY } : gcp
+    ))
+  }, [])
+
+  // Handle dragging a marker on the satellite map
+  const handleMapGCPDrag = useCallback((id: string, lat: number, lng: number) => {
+    setGCPs(prev => prev.map(gcp =>
+      gcp.id === id ? { ...gcp, latitude: lat, longitude: lng } : gcp
+    ))
+  }, [])
+
   // Calculate bounds from GCPs
   const calculatedBounds = gcps.length >= 3 && imageNaturalSize
     ? calculateBoundsFromGCPs(gcps, imageNaturalSize.width, imageNaturalSize.height)
@@ -443,6 +457,7 @@ export default function CustomMapCalibrator({
                     pendingPoint={pendingImagePoint}
                     onClick={currentStep === 'image' ? handleImageClick : undefined}
                     onImageLoad={setImageNaturalSize}
+                    onGCPDrag={handleImageGCPDrag}
                   />
                 </div>
               </div>
@@ -470,6 +485,7 @@ export default function CustomMapCalibrator({
                     gcps={gcps}
                     venueCenter={venueCenter}
                     onClick={currentStep === 'map' ? handleMapClick : undefined}
+                    onGCPDrag={handleMapGCPDrag}
                   />
                 </div>
               </div>

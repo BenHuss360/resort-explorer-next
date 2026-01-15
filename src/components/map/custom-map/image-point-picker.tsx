@@ -9,6 +9,7 @@ interface ImagePointPickerProps {
   pendingPoint?: { x: number; y: number } | null
   onClick?: (x: number, y: number) => void
   onImageLoad?: (size: { width: number; height: number }) => void
+  onGCPDrag?: (id: string, imageX: number, imageY: number) => void
 }
 
 interface ViewState {
@@ -23,12 +24,14 @@ export default function ImagePointPicker({
   pendingPoint,
   onClick,
   onImageLoad,
+  onGCPDrag,
 }: ImagePointPickerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
   const [view, setView] = useState<ViewState>({ scale: 1, posX: 0, posY: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [draggingMarkerId, setDraggingMarkerId] = useState<string | null>(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState<string | null>(null)
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null)
@@ -159,6 +162,24 @@ export default function ImagePointPicker({
 
   // Handle mouse move for drag
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    // Handle marker dragging
+    if (draggingMarkerId && onGCPDrag && containerRef.current && displaySize && containerSize) {
+      const container = containerRef.current.getBoundingClientRect()
+      const containerX = e.clientX - container.left
+      const containerY = e.clientY - container.top
+
+      const imgX = (containerSize.width - displaySize.width) / 2 + view.posX
+      const imgY = (containerSize.height - displaySize.height) / 2 + view.posY
+
+      // Calculate normalized position
+      const normalizedX = Math.max(0, Math.min(1, (containerX - imgX) / displaySize.width))
+      const normalizedY = Math.max(0, Math.min(1, (containerY - imgY) / displaySize.height))
+
+      onGCPDrag(draggingMarkerId, normalizedX, normalizedY)
+      return
+    }
+
+    // Handle pan dragging
     if (isDragging) {
       setView(prev => ({
         ...prev,
@@ -166,11 +187,12 @@ export default function ImagePointPicker({
         posY: e.clientY - dragStart.y,
       }))
     }
-  }, [isDragging, dragStart])
+  }, [isDragging, dragStart, draggingMarkerId, onGCPDrag, displaySize, containerSize, view.posX, view.posY])
 
   // Handle mouse up
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
+    setDraggingMarkerId(null)
   }, [])
 
   // Handle click to place point
@@ -257,18 +279,28 @@ export default function ImagePointPicker({
         const pos = getMarkerPosition(gcp)
         if (!pos) return null
 
+        const isBeingDragged = draggingMarkerId === gcp.id
+
         return (
           <div
             key={gcp.id}
-            className="absolute z-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            className={`absolute z-10 -translate-x-1/2 -translate-y-1/2 ${onGCPDrag ? 'cursor-grab active:cursor-grabbing' : 'pointer-events-none'}`}
             style={{ left: pos.left, top: pos.top }}
+            onMouseDown={(e) => {
+              if (onGCPDrag) {
+                e.stopPropagation()
+                setDraggingMarkerId(gcp.id)
+              }
+            }}
           >
             <div className="relative">
-              <div className="w-6 h-6 rounded-full bg-blue-500 border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold">
+              <div className={`w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-white text-xs font-bold transition-transform ${
+                isBeingDragged ? 'bg-amber-500 scale-125' : 'bg-blue-500 hover:scale-110'
+              }`}>
                 {index + 1}
               </div>
-              {gcp.label && (
-                <div className="absolute left-8 top-1/2 -translate-y-1/2 bg-black/75 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              {gcp.label && !isBeingDragged && (
+                <div className="absolute left-8 top-1/2 -translate-y-1/2 bg-black/75 text-white text-xs px-2 py-1 rounded whitespace-nowrap pointer-events-none">
                   {gcp.label}
                 </div>
               )}

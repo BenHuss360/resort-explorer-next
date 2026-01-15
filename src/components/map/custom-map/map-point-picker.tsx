@@ -9,6 +9,7 @@ interface MapPointPickerProps {
   gcps: GroundControlPoint[]
   venueCenter: { lat: number; lng: number }
   onClick?: (lat: number, lng: number) => void
+  onGCPDrag?: (id: string, lat: number, lng: number) => void
   showPendingIndicator?: boolean
   pendingPointNumber?: number
 }
@@ -17,6 +18,7 @@ export default function MapPointPicker({
   gcps,
   venueCenter,
   onClick,
+  onGCPDrag,
 }: MapPointPickerProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -67,6 +69,12 @@ export default function MapPointPicker({
   useEffect(() => {
     onClickRef.current = onClick
   }, [onClick])
+
+  // Store onGCPDrag in a ref
+  const onGCPDragRef = useRef(onGCPDrag)
+  useEffect(() => {
+    onGCPDragRef.current = onGCPDrag
+  }, [onGCPDrag])
 
   // Initialize map
   useEffect(() => {
@@ -154,6 +162,7 @@ export default function MapPointPicker({
     gcps.forEach((gcp, index) => {
       const marker = L.marker([gcp.latitude, gcp.longitude], {
         icon: createMarkerIcon(index),
+        draggable: !!onGCPDragRef.current,
       }).addTo(mapRef.current!)
 
       if (gcp.label) {
@@ -162,6 +171,14 @@ export default function MapPointPicker({
           direction: 'right',
         })
       }
+
+      // Add drag event handler
+      marker.on('dragend', () => {
+        if (onGCPDragRef.current) {
+          const newPos = marker.getLatLng()
+          onGCPDragRef.current(gcp.id, newPos.lat, newPos.lng)
+        }
+      })
 
       markersRef.current.push(marker)
     })
