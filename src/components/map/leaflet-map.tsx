@@ -241,13 +241,22 @@ export default function LeafletMap({
 
   // Helper function to get 4 corner anchors from GCPs
   const getCornerAnchors = useCallback((gcps: GroundControlPoint[], calibrationMode: string): L.LatLngExpression[] | null => {
-    // For both 4-corner and GCPs mode: use affine transform to compute corner coordinates
-    // This ensures the image corners (0,0), (1,0), (1,1), (0,1) map correctly
-    // even if the user didn't click exactly on the image corners
-    if ((calibrationMode === 'corners' || calibrationMode === 'gcps') && gcps.length >= 3) {
+    // For 4-corner mode: use GCPs directly as anchors (user clicks on actual corners)
+    if (calibrationMode === 'corners' && gcps.length === 4) {
+      // In 4-corner mode, user clicked: top-left, top-right, bottom-right, bottom-left
+      // Use their GPS positions directly as anchors
+      return [
+        [gcps[0].latitude, gcps[0].longitude], // top-left
+        [gcps[1].latitude, gcps[1].longitude], // top-right
+        [gcps[2].latitude, gcps[2].longitude], // bottom-right
+        [gcps[3].latitude, gcps[3].longitude], // bottom-left
+      ]
+    }
+
+    // For GCPs mode: use affine transform to compute corner coordinates
+    if (calibrationMode === 'gcps' && gcps.length >= 3) {
       try {
         const matrix = calculateAffineTransform(gcps)
-        // Transform image corners (0,0), (1,0), (1,1), (0,1) to GPS
         const topLeft = imageToGPS(0, 0, matrix)
         const topRight = imageToGPS(1, 0, matrix)
         const bottomRight = imageToGPS(1, 1, matrix)

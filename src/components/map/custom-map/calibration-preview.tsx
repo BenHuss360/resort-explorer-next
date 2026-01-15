@@ -42,23 +42,37 @@ export default function CalibrationPreview({
 
   // Helper function to get 4 corner anchors from GCPs
   const getCornerAnchors = useCallback((): L.LatLngExpression[] | null => {
-    // For both 4-corner and GCPs mode: use affine transform to compute corner coordinates
-    // This ensures the image corners (0,0), (1,0), (1,1), (0,1) map correctly
-    // even if the user didn't click exactly on the image corners
-    if ((calibrationMode === 'corners' || calibrationMode === 'gcps') && gcps.length >= 3) {
+    // For 4-corner mode: use GCPs directly as anchors (user clicks on actual corners)
+    // For GCPs mode: use affine transform to compute corner coordinates
+    if (calibrationMode === 'corners' && gcps.length === 4) {
+      // In 4-corner mode, assume user clicked: top-left, top-right, bottom-right, bottom-left
+      // Use their GPS positions directly as anchors
+      console.log('4-corner mode: using GCP positions directly as anchors')
+      return [
+        [gcps[0].latitude, gcps[0].longitude], // top-left
+        [gcps[1].latitude, gcps[1].longitude], // top-right
+        [gcps[2].latitude, gcps[2].longitude], // bottom-right
+        [gcps[3].latitude, gcps[3].longitude], // bottom-left
+      ]
+    }
+
+    if (calibrationMode === 'gcps' && gcps.length >= 3) {
       try {
+        // For GCPs mode, use affine transform to compute where image corners should be
         const matrix = calculateAffineTransform(gcps)
         const topLeft = imageToGPS(0, 0, matrix)
         const topRight = imageToGPS(1, 0, matrix)
         const bottomRight = imageToGPS(1, 1, matrix)
         const bottomLeft = imageToGPS(0, 1, matrix)
+
         return [
           [topLeft.lat, topLeft.lng],
           [topRight.lat, topRight.lng],
           [bottomRight.lat, bottomRight.lng],
           [bottomLeft.lat, bottomLeft.lng],
         ]
-      } catch {
+      } catch (error) {
+        console.error('Error computing anchors:', error)
         return null
       }
     }
@@ -130,12 +144,32 @@ export default function CalibrationPreview({
       // Try to use imageTransform for 4-corner or GCPs mode
       const anchors = getCornerAnchors()
 
+      console.log('=== Overlay Creation ===')
+      console.log('calibrationMode:', calibrationMode)
+      console.log('anchors:', anchors)
+      console.log('using imageTransform:', !!(anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')))
+
       if (anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')) {
         // Use imageTransform for proper perspective transformation
-        overlayRef.current = (L as any).imageTransform(imageUrl, anchors, {
-          opacity,
-          interactive: false,
-        }).addTo(mapRef.current)
+        console.log('Creating L.imageTransform with anchors:', anchors)
+        console.log('L.imageTransform available:', typeof (L as any).imageTransform)
+
+        if (typeof (L as any).imageTransform !== 'function') {
+          console.error('L.imageTransform is not available! Falling back to bounds.')
+          const imageBounds: L.LatLngBoundsExpression = [
+            [bounds.south, bounds.west],
+            [bounds.north, bounds.east],
+          ]
+          overlayRef.current = L.imageOverlay(imageUrl, imageBounds, {
+            opacity,
+            interactive: false,
+          }).addTo(mapRef.current)
+        } else {
+          overlayRef.current = (L as any).imageTransform(imageUrl, anchors, {
+            opacity,
+            interactive: false,
+          }).addTo(mapRef.current)
+        }
       } else {
         // Fall back to simple axis-aligned bounds for 2-corner mode
         const imageBounds: L.LatLngBoundsExpression = [
