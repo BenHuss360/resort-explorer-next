@@ -148,12 +148,19 @@ export default function LeafletMap({
     hotspots.forEach((hotspot) => {
       const marker = L.marker([hotspot.latitude, hotspot.longitude], {
         icon: createMarkerIcon(hotspot),
+        interactive: true,
       })
         .addTo(mapRef.current!)
-        .on('click', () => {
+
+      // Use direct DOM click handler for more reliable click detection
+      const iconElement = marker.getElement()
+      if (iconElement) {
+        iconElement.addEventListener('click', (e) => {
+          e.stopPropagation()
           console.log('Marker clicked:', hotspot.title)
           onHotspotClickRef.current(hotspot)
         })
+      }
 
       // Add permanent label if enabled
       if (hotspot.showLabelOnMap) {
