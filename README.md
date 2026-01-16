@@ -24,8 +24,17 @@ Wandernest provides embeddable, interactive maps that properties share with thei
 - Rich media hotspots (images, audio)
 - Two experience modes: Full (tap) and Interactive (auto-trigger)
 - Offline support via IndexedDB
-- Custom map overlays and boundaries
+- Custom map overlays with calibration support
 - Access code authentication
+
+## Custom Map Overlays
+
+Properties can upload illustrated maps that overlay on top of the base map:
+
+- **2-Corner Mode:** For north-aligned rectangular maps. Click top-left and bottom-right corners.
+- **3-Corner Mode:** For rotated/skewed maps. Click top-left, top-right, and bottom-left corners.
+
+The system uses Leaflet's ImageOverlay (2-corner) or ImageOverlay.Rotated (3-corner) for stable rendering at all zoom levels.
 
 ## Tech Stack
 

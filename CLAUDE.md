@@ -6,7 +6,7 @@ GPS-powered exploration platform for resorts and hospitality properties. Guests 
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
 - **Database:** PostgreSQL (Neon serverless) with Drizzle ORM
-- **Maps:** Leaflet + React-Leaflet
+- **Maps:** Leaflet + leaflet-imageoverlay-rotated (for rotated custom maps)
 - **State:** TanStack Query for server state, Context for project state
 - **Styling:** Tailwind CSS 4
 - **UI:** Radix UI components
@@ -47,8 +47,31 @@ src/
 
 ## Database Schema
 
-**projects** - Resort configuration, access codes, map settings, venue location
+**projects** - Resort configuration, access codes, map settings, venue location, custom map overlay settings
 **hotspots** - Points of interest with location, media, marker styling
+
+## Custom Map Calibration
+
+Properties can overlay illustrated maps on top of the base map. Two calibration modes are supported:
+
+### 2-Corner Mode (Default)
+- For north-aligned rectangular maps
+- User clicks top-left and bottom-right corners on both the image and satellite map
+- Uses standard `L.imageOverlay` with simple bounding box
+- Most stable and recommended for aligned maps
+
+### 3-Corner Mode
+- For rotated or skewed maps that aren't north-aligned
+- User clicks top-left, top-right, and bottom-left corners
+- 4th corner inferred mathematically: `BR = TR - TL + BL`
+- Uses `leaflet-imageoverlay-rotated` package with CSS `matrix()` transform
+- More stable than 4-point projective transforms at different zoom levels
+
+### Key Files
+- `src/components/map/custom-map/custom-map-calibrator.tsx` - Calibration UI with wizard
+- `src/components/map/custom-map/calibration-preview.tsx` - Preview overlay alignment
+- `src/components/map/leaflet-map.tsx` - Main map renderer with overlay support
+- `src/lib/db/schema.ts` - `CalibrationMode` type (`'2corners' | '3corners' | 'gcps'`)
 
 ## Key Patterns
 
