@@ -83,15 +83,15 @@ export default function PortalPreviewPage() {
                     onHotspotClick={setSelectedHotspot}
                   />
                 )}
-
-                {/* Hotspot detail panel (inside phone frame) */}
-                {selectedHotspot && (
-                  <PreviewHotspotPanel
-                    hotspot={selectedHotspot}
-                    onClose={() => setSelectedHotspot(null)}
-                  />
-                )}
               </div>
+
+              {/* Hotspot detail panel (covers full phone screen) */}
+              {selectedHotspot && (
+                <PreviewHotspotPanel
+                  hotspot={selectedHotspot}
+                  onClose={() => setSelectedHotspot(null)}
+                />
+              )}
 
               {/* Home indicator */}
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-300 rounded-full z-50" />
