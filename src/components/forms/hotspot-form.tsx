@@ -30,14 +30,14 @@ const LocationPicker = dynamic(
 )
 
 const MARKER_COLORS = [
-  { name: 'Blue', value: '#3B82F6' },
-  { name: 'Green', value: '#10B981' },
-  { name: 'Red', value: '#EF4444' },
-  { name: 'Purple', value: '#8B5CF6' },
-  { name: 'Orange', value: '#F97316' },
-  { name: 'Pink', value: '#EC4899' },
-  { name: 'Yellow', value: '#EAB308' },
-  { name: 'Teal', value: '#14B8A6' },
+  { name: 'Gold', value: '#FFD27F' },
+  { name: 'Forest', value: '#2F4F4F' },
+  { name: 'Slate', value: '#708090' },
+  { name: 'Sage', value: '#87A96B' },
+  { name: 'Terracotta', value: '#C4A484' },
+  { name: 'Copper', value: '#B87333' },
+  { name: 'Cream', value: '#FFFDD0' },
+  { name: 'Charcoal', value: '#36454F' },
 ]
 
 const MARKER_TYPES = [
@@ -47,19 +47,19 @@ const MARKER_TYPES = [
   { name: 'Diamond', value: 'diamond' },
 ]
 
-// Marker shape previews
+// Marker shape previews with luxury styling
 const MarkerPreview = ({ shape, color }: { shape: string; color: string }) => {
   switch (shape) {
     case 'pin':
       return (
-        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 210, 127, 0.4))' }}>
           <path
             d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
             fill={color}
-            stroke="white"
+            stroke="#F5F0E6"
             strokeWidth="1.5"
           />
-          <circle cx="12" cy="9" r="2.5" fill="white" />
+          <circle cx="12" cy="9" r="2.5" fill="#F5F0E6" />
         </svg>
       )
     case 'circle':
@@ -69,19 +69,19 @@ const MarkerPreview = ({ shape, color }: { shape: string; color: string }) => {
             width: 32,
             height: 32,
             background: color,
-            border: '3px solid white',
+            border: '3px solid #F5F0E6',
             borderRadius: '50%',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            boxShadow: `0 0 12px ${color}66, 0 2px 6px rgba(47,79,79,0.15)`,
           }}
         />
       )
     case 'star':
       return (
-        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg width="40" height="40" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ filter: 'drop-shadow(0 0 6px rgba(255, 210, 127, 0.4))' }}>
           <path
             d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
             fill={color}
-            stroke="white"
+            stroke="#F5F0E6"
             strokeWidth="1.5"
           />
         </svg>
@@ -93,9 +93,10 @@ const MarkerPreview = ({ shape, color }: { shape: string; color: string }) => {
             width: 28,
             height: 28,
             background: color,
-            border: '3px solid white',
+            border: '3px solid #F5F0E6',
             transform: 'rotate(45deg)',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+            boxShadow: `0 0 12px ${color}66, 0 2px 6px rgba(47,79,79,0.15)`,
+            borderRadius: '3px',
           }}
         />
       )
@@ -183,7 +184,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
   const [longitude, setLongitude] = useState(hotspot?.longitude?.toString() || '')
   const [imageUrl, setImageUrl] = useState(hotspot?.imageUrl || '')
   const [audioUrl, setAudioUrl] = useState(hotspot?.audioUrl || '')
-  const [markerColor, setMarkerColor] = useState(hotspot?.markerColor || '#3B82F6')
+  const [markerColor, setMarkerColor] = useState(hotspot?.markerColor || '#FFD27F')
   const [markerType, setMarkerType] = useState(hotspot?.markerType || 'pin')
   const [showLabelOnMap, setShowLabelOnMap] = useState(hotspot?.showLabelOnMap ?? false)
   const [optionalFields, setOptionalFields] = useState<OptionalField[]>(

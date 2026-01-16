@@ -1,19 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Nunito, Lato } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { ProjectProvider } from '@/components/providers/project-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
 import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/seo/json-ld'
 import './globals.css'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const nunito = Nunito({
+  variable: '--font-heading',
   subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const lato = Lato({
+  variable: '--font-body',
   subsets: ['latin'],
+  weight: ['300', '400', '700'],
 })
 
 export const metadata: Metadata = {
@@ -85,7 +87,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#059669',
+  themeColor: '#2F4F4F',
 }
 
 export default function RootLayout({
@@ -99,7 +101,7 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebsiteJsonLd />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${nunito.variable} ${lato.variable} antialiased`}>
         <QueryProvider>
           <ProjectProvider>
             {children}
