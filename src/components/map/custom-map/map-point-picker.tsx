@@ -104,6 +104,7 @@ export default function MapPointPicker({
           center: [venueCenter.lat, venueCenter.lng],
           zoom: 16,
           zoomControl: false,
+          doubleClickZoom: false, // Disable zoom on double-click for calibration
         })
 
         // Add initial tile layer

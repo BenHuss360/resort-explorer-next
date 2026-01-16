@@ -150,6 +150,12 @@ export function calculateAffineTransform(gcps: GroundControlPoint[]): AffineMatr
     throw new Error('At least 3 GCPs are required')
   }
 
+  // Always use 3-point solution for now - the least-squares has a bug
+  // For 4 corners, use points 1, 2, 4 (top-left, top-right, bottom-left) to form a triangle
+  if (gcps.length === 4) {
+    return calculateAffineFrom3Points([gcps[0], gcps[1], gcps[3]])
+  }
+
   if (gcps.length === 3) {
     return calculateAffineFrom3Points(gcps)
   }

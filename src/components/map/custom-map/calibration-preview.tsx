@@ -4,10 +4,9 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
-import { calculateAffineTransform, imageToGPS } from '@/lib/utils/affine-transform'
 
-// Import Leaflet.imageTransform plugin
-import 'leaflet-imagetransform/src/L.ImageTransform.js'
+// Import Leaflet.ImageOverlay.Rotated plugin for 3-corner mode
+import 'leaflet-imageoverlay-rotated'
 
 interface CalibrationPreviewProps {
   imageUrl: string
@@ -40,31 +39,18 @@ export default function CalibrationPreview({
   const [mapReady, setMapReady] = useState(false)
   const tileLayerRef = useRef<L.TileLayer | null>(null)
 
-  // Helper function to get 4 corner anchors from GCPs
-  const getCornerAnchors = useCallback((): L.LatLngExpression[] | null => {
-    // For both 4-corner and GCPs mode: use affine transform to compute corner coordinates
-    // This allows users to click on any 4 points that define the map area (not just image edges)
-    // The transform extrapolates where image corners should be based on clicked points
-    if ((calibrationMode === 'corners' || calibrationMode === 'gcps') && gcps.length >= 3) {
-      try {
-        const matrix = calculateAffineTransform(gcps)
-        const topLeft = imageToGPS(0, 0, matrix)
-        const topRight = imageToGPS(1, 0, matrix)
-        const bottomRight = imageToGPS(1, 1, matrix)
-        const bottomLeft = imageToGPS(0, 1, matrix)
-
-        return [
-          [topLeft.lat, topLeft.lng],
-          [topRight.lat, topRight.lng],
-          [bottomRight.lat, bottomRight.lng],
-          [bottomLeft.lat, bottomLeft.lng],
-        ]
-      } catch (error) {
-        console.error('Error computing anchors:', error)
-        return null
+  // Helper function to get 3 corner anchors from GCPs for 3-corner mode
+  // Returns [topLeft, topRight, bottomLeft] for L.imageOverlay.rotated
+  const getThreeCornerAnchors = useCallback((): { topLeft: L.LatLng; topRight: L.LatLng; bottomLeft: L.LatLng } | null => {
+    // For 3-corner mode: GCPs are already placed at Top-Left, Top-Right, Bottom-Left
+    if (calibrationMode === '3corners' && gcps.length >= 3) {
+      const [topLeft, topRight, bottomLeft] = gcps
+      return {
+        topLeft: L.latLng(topLeft.latitude, topLeft.longitude),
+        topRight: L.latLng(topRight.latitude, topRight.longitude),
+        bottomLeft: L.latLng(bottomLeft.latitude, bottomLeft.longitude),
       }
     }
-
     return null
   }, [gcps, calibrationMode])
 
@@ -129,21 +115,25 @@ export default function CalibrationPreview({
 
     // Add new overlay if bounds exist and showOverlay is true
     if (bounds && showOverlay) {
-      // Try to use imageTransform for 4-corner or GCPs mode
-      const anchors = getCornerAnchors()
+      // For 3-corner mode: use L.imageOverlay.rotated which supports rotation/skew
+      const threeCorners = getThreeCornerAnchors()
 
-      console.log('=== Overlay Creation ===')
-      console.log('calibrationMode:', calibrationMode)
-      console.log('anchors:', anchors)
-      console.log('using imageTransform:', !!(anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')))
-
-      if (anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')) {
-        // Use imageTransform for proper perspective transformation
-        console.log('Creating L.imageTransform with anchors:', anchors)
-        console.log('L.imageTransform available:', typeof (L as any).imageTransform)
-
-        if (typeof (L as any).imageTransform !== 'function') {
-          console.error('L.imageTransform is not available! Falling back to bounds.')
+      if (threeCorners && calibrationMode === '3corners') {
+        // Use rotated overlay for 3-corner mode (supports rotation)
+        if (typeof (L as any).imageOverlay?.rotated === 'function') {
+          overlayRef.current = (L as any).imageOverlay.rotated(
+            imageUrl,
+            threeCorners.topLeft,
+            threeCorners.topRight,
+            threeCorners.bottomLeft,
+            {
+              opacity,
+              interactive: false,
+            }
+          ).addTo(mapRef.current)
+        } else {
+          // Fallback to simple bounds if rotated not available
+          console.warn('L.imageOverlay.rotated not available, falling back to simple bounds')
           const imageBounds: L.LatLngBoundsExpression = [
             [bounds.south, bounds.west],
             [bounds.north, bounds.east],
@@ -152,14 +142,9 @@ export default function CalibrationPreview({
             opacity,
             interactive: false,
           }).addTo(mapRef.current)
-        } else {
-          overlayRef.current = (L as any).imageTransform(imageUrl, anchors, {
-            opacity,
-            interactive: false,
-          }).addTo(mapRef.current)
         }
       } else {
-        // Fall back to simple axis-aligned bounds for 2-corner mode
+        // Use simple axis-aligned bounds for 2-corner mode
         const imageBounds: L.LatLngBoundsExpression = [
           [bounds.south, bounds.west],
           [bounds.north, bounds.east],
@@ -178,7 +163,7 @@ export default function CalibrationPreview({
       ]
       mapRef.current.fitBounds(imageBounds, { padding: [20, 20] })
     }
-  }, [bounds, opacity, imageUrl, showOverlay, mapReady, calibrationMode, getCornerAnchors])
+  }, [bounds, opacity, imageUrl, showOverlay, mapReady, calibrationMode, getThreeCornerAnchors])
 
   // Update GCP markers
   useEffect(() => {
@@ -188,7 +173,7 @@ export default function CalibrationPreview({
     markersRef.current.forEach(marker => marker.remove())
     markersRef.current = []
 
-    // Add GCP markers
+    // Add GCP markers (green)
     gcps.forEach((gcp, index) => {
       const marker = L.marker([gcp.latitude, gcp.longitude], {
         icon: L.divIcon({
@@ -223,9 +208,10 @@ export default function CalibrationPreview({
   }, [gcps, mapReady])
 
   if (!bounds) {
+    const requiredPoints = calibrationMode === '2corners' ? 2 : 3
     return (
       <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
-        <p className="text-gray-500">Add at least 3 reference points to preview</p>
+        <p className="text-gray-500">Add {requiredPoints} reference points to preview</p>
       </div>
     )
   }

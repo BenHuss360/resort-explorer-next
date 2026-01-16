@@ -258,23 +258,30 @@ export default function ImagePointPicker({
       onClick={handleClick}
       style={{ cursor: onClick ? (isDragging ? 'grabbing' : 'crosshair') : 'grab' }}
     >
-      {/* Image - simplified for debugging */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={imageRef}
-          src={imageUrl}
-          alt="Custom map"
-          crossOrigin="anonymous"
-          className="max-w-full max-h-full object-contain"
+      {/* Image - explicitly sized to match displaySize for accurate click detection */}
+      {displaySize && (
+        <div
+          className="absolute overflow-hidden"
           style={{
-            transform: `translate(${view.posX}px, ${view.posY}px) scale(${view.scale})`,
+            left: (containerSize!.width - displaySize.width) / 2 + view.posX,
+            top: (containerSize!.height - displaySize.height) / 2 + view.posY,
+            width: displaySize.width,
+            height: displaySize.height,
           }}
-          onLoad={handleImageLoad}
-          onError={handleImageError}
-          draggable={false}
-        />
-      </div>
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={imageRef}
+            src={imageUrl}
+            alt="Custom map"
+            crossOrigin="anonymous"
+            className="w-full h-full object-fill"
+            onLoad={handleImageLoad}
+            onError={handleImageError}
+            draggable={false}
+          />
+        </div>
+      )}
 
       {/* Polygon outline connecting markers */}
       {imageLoaded && gcps.length >= 2 && containerSize && (

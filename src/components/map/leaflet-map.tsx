@@ -4,14 +4,21 @@ import { useEffect, useRef, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { Hotspot, Boundaries, CustomMapOverlay, GroundControlPoint } from '@/lib/db/schema'
-import { calculateAffineTransform, imageToGPS } from '@/lib/utils/affine-transform'
 
-// Import Leaflet.imageTransform plugin (extends L globally)
-import 'leaflet-imagetransform/src/L.ImageTransform.js'
+// Import Leaflet.ImageOverlay.Rotated plugin for 3-corner mode
+import 'leaflet-imageoverlay-rotated'
 
-// Declare the extended L type for TypeScript
+// Declare the extended L.imageOverlay.rotated type for TypeScript
 declare module 'leaflet' {
-  function imageTransform(url: string, anchors: L.LatLngExpression[], options?: L.ImageOverlayOptions): L.ImageOverlay
+  namespace imageOverlay {
+    function rotated(
+      url: string,
+      topLeft: L.LatLng,
+      topRight: L.LatLng,
+      bottomLeft: L.LatLng,
+      options?: L.ImageOverlayOptions
+    ): L.ImageOverlay
+  }
 }
 
 // Fix default marker icon issue in Leaflet with bundlers
@@ -239,29 +246,18 @@ export default function LeafletMap({
     }
   }, [userLocation])
 
-  // Helper function to get 4 corner anchors from GCPs
-  const getCornerAnchors = useCallback((gcps: GroundControlPoint[], calibrationMode: string): L.LatLngExpression[] | null => {
-    // For both 4-corner and GCPs mode: use affine transform to compute corner coordinates
-    // This allows users to click on any points that define the map area
-    // The transform extrapolates where image corners should be based on clicked points
-    if ((calibrationMode === 'corners' || calibrationMode === 'gcps') && gcps.length >= 3) {
-      try {
-        const matrix = calculateAffineTransform(gcps)
-        const topLeft = imageToGPS(0, 0, matrix)
-        const topRight = imageToGPS(1, 0, matrix)
-        const bottomRight = imageToGPS(1, 1, matrix)
-        const bottomLeft = imageToGPS(0, 1, matrix)
-        return [
-          [topLeft.lat, topLeft.lng],
-          [topRight.lat, topRight.lng],
-          [bottomRight.lat, bottomRight.lng],
-          [bottomLeft.lat, bottomLeft.lng],
-        ]
-      } catch {
-        return null
+  // Helper function to get 3 corner anchors from GCPs for 3-corner mode
+  // Returns { topLeft, topRight, bottomLeft } for L.imageOverlay.rotated
+  const getThreeCornerAnchors = useCallback((gcps: GroundControlPoint[], calibrationMode: string): { topLeft: L.LatLng; topRight: L.LatLng; bottomLeft: L.LatLng } | null => {
+    // For 3-corner mode: GCPs are placed at Top-Left, Top-Right, Bottom-Left
+    if (calibrationMode === '3corners' && gcps.length >= 3) {
+      const [topLeft, topRight, bottomLeft] = gcps
+      return {
+        topLeft: L.latLng(topLeft.latitude, topLeft.longitude),
+        topRight: L.latLng(topRight.latitude, topRight.longitude),
+        bottomLeft: L.latLng(bottomLeft.latitude, bottomLeft.longitude),
       }
     }
-
     return null
   }, [])
 
@@ -288,17 +284,23 @@ export default function LeafletMap({
       const calibrationMode = customOverlay.calibrationMode || '2corners'
       const gcps = customOverlay.gcps || []
 
-      // Try to use imageTransform for 4-corner or GCPs mode
-      const anchors = getCornerAnchors(gcps, calibrationMode)
+      // For 3-corner mode: use L.imageOverlay.rotated which supports rotation/skew
+      const threeCorners = getThreeCornerAnchors(gcps, calibrationMode)
 
-      if (anchors && (calibrationMode === 'corners' || calibrationMode === 'gcps')) {
-        // Use imageTransform for proper perspective/affine transformation
-        overlayRef.current = L.imageTransform(customOverlay.imageUrl, anchors, {
-          opacity,
-          interactive: false,
-        }).addTo(mapRef.current)
+      if (threeCorners && calibrationMode === '3corners') {
+        // Use rotated overlay for 3-corner mode (supports rotation)
+        overlayRef.current = L.imageOverlay.rotated(
+          customOverlay.imageUrl,
+          threeCorners.topLeft,
+          threeCorners.topRight,
+          threeCorners.bottomLeft,
+          {
+            opacity,
+            interactive: false,
+          }
+        ).addTo(mapRef.current)
       } else {
-        // Fall back to simple axis-aligned bounds for 2-corner mode
+        // Use simple axis-aligned bounds for 2-corner mode
         const bounds: L.LatLngBoundsExpression = [
           [customOverlay.southLat, customOverlay.westLng], // Southwest
           [customOverlay.northLat, customOverlay.eastLng], // Northeast
@@ -314,7 +316,7 @@ export default function LeafletMap({
       // Ensure overlay is below markers
       overlayRef.current.bringToBack()
     }
-  }, [customOverlay, getCornerAnchors])
+  }, [customOverlay, getThreeCornerAnchors])
 
   // Center on user location
   const centerOnUser = useCallback(() => {

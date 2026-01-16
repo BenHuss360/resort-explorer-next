@@ -192,18 +192,18 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
   }
 
   const getRecommendedMode = (): { mode: CalibrationMode; reason: string } => {
-    // If not north-aligned, need 4-corner mode for rotation
+    // If not north-aligned, need 3-corner mode for rotation
     if (isNorthAligned === false) {
       return {
-        mode: 'corners',
-        reason: 'Your map needs rotation support, so we\'ll use 4-corner calibration.',
+        mode: '3corners',
+        reason: 'Your map needs rotation support, so we\'ll use 3-corner calibration.',
       }
     }
     // If north-aligned but not to scale, might need more control
     if (isToScale === false) {
       return {
-        mode: 'corners',
-        reason: 'Since your map may not be perfectly to scale, 4-corner mode gives better control.',
+        mode: '3corners',
+        reason: 'Since your map may not be perfectly to scale, 3-corner mode gives better control.',
       }
     }
     // Default: 2-corner is simplest for standard maps
@@ -279,7 +279,7 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
         <div className="space-y-4">
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-green-800 mb-2">
-              Recommended: {mode === '2corners' ? '2 Corners' : mode === 'corners' ? '4 Corners' : 'Multiple Points'}
+              Recommended: {mode === '2corners' ? '2 Corners' : mode === '3corners' ? '3 Corners' : 'Multiple Points'}
             </h3>
             <p className="text-sm text-green-700">{reason}</p>
           </div>
@@ -297,10 +297,10 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
               2 Corners
             </button>
             <button
-              onClick={() => onComplete('corners')}
+              onClick={() => onComplete('3corners')}
               className="py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors"
             >
-              4 Corners
+              3 Corners
             </button>
           </div>
           <p className="text-xs text-gray-500 text-center">
@@ -323,7 +323,7 @@ export default function CustomMapCalibrator({
 }: CustomMapCalibratorProps) {
   const [gcps, setGCPs] = useState<GroundControlPoint[]>(existingGCPs)
   const [calibrationMode, setCalibrationMode] = useState<CalibrationMode>(
-    existingGCPs.length > 4 ? 'gcps' : existingGCPs.length > 2 ? 'corners' : '2corners'
+    existingGCPs.length > 3 ? 'gcps' : existingGCPs.length > 2 ? '3corners' : '2corners'
   )
   const [currentStep, setCurrentStep] = useState<Step>('image')
   const [pendingImagePoint, setPendingImagePoint] = useState<{ x: number; y: number } | null>(null)
@@ -336,13 +336,15 @@ export default function CustomMapCalibrator({
   // Labels for corner modes
   const cornerLabels = calibrationMode === '2corners'
     ? ['Top-Left', 'Bottom-Right']
-    : ['Top-Left', 'Top-Right', 'Bottom-Right', 'Bottom-Left']
+    : calibrationMode === '3corners'
+      ? ['Top-Left', 'Top-Right', 'Bottom-Left']
+      : ['Point 1', 'Point 2', 'Point 3', 'Point 4']
 
-  const maxPoints = calibrationMode === '2corners' ? 2 : calibrationMode === 'corners' ? 4 : 20
+  const maxPoints = calibrationMode === '2corners' ? 2 : calibrationMode === '3corners' ? 3 : 20
 
   // Add a new GCP
   const addGCP = useCallback((imageX: number, imageY: number, lat: number, lng: number) => {
-    const label = (calibrationMode === 'corners' || calibrationMode === '2corners')
+    const label = (calibrationMode === '3corners' || calibrationMode === '2corners')
       ? cornerLabels[gcps.length]
       : `Point ${gcps.length + 1}`
 
@@ -419,7 +421,32 @@ export default function CustomMapCalibrator({
       }
     }
 
-    // 4-corners and GCPs mode: use affine transformation
+    // 3-corner mode: calculate 4th corner and compute bounding box
+    if (calibrationMode === '3corners') {
+      if (gcps.length < 3) {
+        return { calculatedBounds: null, boundsError: null }
+      }
+      // GCPs are: Top-Left, Top-Right, Bottom-Left
+      // Calculate Bottom-Right as: BR = TR - TL + BL
+      const [topLeft, topRight, bottomLeft] = gcps
+      const bottomRight = {
+        latitude: topRight.latitude - topLeft.latitude + bottomLeft.latitude,
+        longitude: topRight.longitude - topLeft.longitude + bottomLeft.longitude,
+      }
+      const allLats = [topLeft.latitude, topRight.latitude, bottomLeft.latitude, bottomRight.latitude]
+      const allLngs = [topLeft.longitude, topRight.longitude, bottomLeft.longitude, bottomRight.longitude]
+      return {
+        calculatedBounds: {
+          north: Math.max(...allLats),
+          south: Math.min(...allLats),
+          east: Math.max(...allLngs),
+          west: Math.min(...allLngs),
+        },
+        boundsError: null,
+      }
+    }
+
+    // GCPs mode: use affine transformation
     if (gcps.length < 3 || !imageNaturalSize) {
       return { calculatedBounds: null, boundsError: null }
     }
@@ -435,8 +462,8 @@ export default function CustomMapCalibrator({
   // Check if we can save
   const canSave = calibrationMode === '2corners'
     ? gcps.length === 2 && calculatedBounds !== null
-    : calibrationMode === 'corners'
-      ? gcps.length === 4 && calculatedBounds !== null
+    : calibrationMode === '3corners'
+      ? gcps.length === 3 && calculatedBounds !== null
       : gcps.length >= 3 && calculatedBounds !== null
 
   // Handle save
@@ -463,7 +490,7 @@ export default function CustomMapCalibrator({
     if (currentStep === 'image') {
       if (gcps.length >= maxPoints) {
         const modeLabel = calibrationMode === '2corners' ? 'Both corners' :
-                         calibrationMode === 'corners' ? 'All 4 corners' : 'All points'
+                         calibrationMode === '3corners' ? 'All 3 corners' : 'All points'
         return {
           main: `${modeLabel} placed!`,
           sub: 'Click "Preview" to check alignment, or "Save" if you\'re satisfied.',
@@ -476,11 +503,11 @@ export default function CustomMapCalibrator({
           main: `Step 1: Click the ${cornerName} area`,
           sub: `Find a recognizable point in the ${cornerName.toLowerCase()} area of your map. (${gcps.length === 0 ? '2' : '1'} of 2 remaining)`,
         }
-      } else if (calibrationMode === 'corners') {
+      } else if (calibrationMode === '3corners') {
         const cornerName = cornerLabels[gcps.length]
         return {
           main: `Step 1: Click the ${cornerName} area`,
-          sub: `Find a recognizable point in the ${cornerName.toLowerCase()} area of your map content. Spread points across the full map area for best results. (${maxPoints - gcps.length} of 4 remaining)`,
+          sub: `Find a recognizable point in the ${cornerName.toLowerCase()} area of your map. This mode supports rotation. (${maxPoints - gcps.length} of 3 remaining)`,
         }
       } else {
         return {
@@ -598,21 +625,21 @@ export default function CustomMapCalibrator({
               </button>
               <button
                 onClick={() => {
-                  if (calibrationMode !== 'corners') {
-                    setCalibrationMode('corners')
+                  if (calibrationMode !== '3corners') {
+                    setCalibrationMode('3corners')
                     setGCPs([]) // Clear GCPs when switching modes to avoid label mismatch
                     setPendingImagePoint(null)
                     setCurrentStep('image')
                   }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  calibrationMode === 'corners'
+                  calibrationMode === '3corners'
                     ? 'bg-white shadow text-gray-900'
                     : 'text-gray-600 hover:text-gray-900'
                 }`}
-                title="Mark the 4 corners for more precision."
+                title="Mark 3 corners for rotated maps."
               >
-                4 Corners
+                3 Corners
               </button>
               <button
                 onClick={() => {
@@ -636,8 +663,8 @@ export default function CustomMapCalibrator({
             <span className="text-xs text-gray-400 hidden sm:inline">
               {calibrationMode === '2corners'
                 ? '(Simplest - for rectangular maps)'
-                : calibrationMode === 'corners'
-                  ? '(Mark all 4 corners)'
+                : calibrationMode === '3corners'
+                  ? '(For rotated maps)'
                   : '(For irregular maps)'}
             </span>
           </div>
@@ -759,9 +786,9 @@ export default function CustomMapCalibrator({
                 (need {2 - gcps.length} more)
               </span>
             )}
-            {calibrationMode === 'corners' && gcps.length < 4 && (
+            {calibrationMode === '3corners' && gcps.length < 3 && (
               <span className="text-amber-600 ml-2">
-                (need {4 - gcps.length} more)
+                (need {3 - gcps.length} more)
               </span>
             )}
             {boundsError && (
