@@ -72,6 +72,8 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
       { icon: '⏰', title: 'Best Time', subtitle: 'Spring & Autumn' },
     ],
     isActive: true,
+    isDraft: false,
+    createdVia: 'portal',
     createdAt: new Date(),
   },
   {
@@ -92,6 +94,8 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
       { icon: '🗺️', title: 'Feature', subtitle: 'Panoramic Views' },
     ],
     isActive: true,
+    isDraft: false,
+    createdVia: 'portal',
     createdAt: new Date(),
   },
   {
@@ -112,6 +116,8 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
       { icon: '⏰', title: 'Feeding', subtitle: '11 AM & 3 PM' },
     ],
     isActive: true,
+    isDraft: false,
+    createdVia: 'portal',
     createdAt: new Date(),
   },
   {
@@ -132,6 +138,8 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
       { icon: '🛍️', title: 'Shop', subtitle: 'Local Produce' },
     ],
     isActive: true,
+    isDraft: false,
+    createdVia: 'portal',
     createdAt: new Date(),
   },
   {
@@ -152,6 +160,8 @@ export const DEMO_HOTSPOTS: Hotspot[] = [
       { icon: '🌳', title: 'Features', subtitle: 'Ancient Woodland' },
     ],
     isActive: true,
+    isDraft: false,
+    createdVia: 'portal',
     createdAt: new Date(),
   },
 ]

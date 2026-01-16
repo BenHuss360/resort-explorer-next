@@ -46,10 +46,10 @@ export default function PortalLayout({
             </div>
             {!isDemo && (
               <Link
-                href="/map"
+                href="/"
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                ← Back to Map
+                ← Home
               </Link>
             )}
           </div>

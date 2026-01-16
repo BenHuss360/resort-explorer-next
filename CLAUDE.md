@@ -91,12 +91,36 @@ Following [Vercel React Best Practices](https://github.com/vercel-labs/agent-ski
 - **Passive listeners:** Scroll event listeners use `{ passive: true }` for smoother scrolling
 - **Data fetching:** TanStack Query handles caching, deduplication, and stale-while-revalidate
 
+## Mobile Hotspot Creation (QR Flow)
+
+Scan a QR code on your phone to add hotspots on location. Hotspots are submitted as drafts for review.
+
+### Flow
+1. Generate QR code from portal settings (with expiry: 1h/4h/24h/1 week)
+2. Scan on phone → `/add/[code]?token=...`
+3. GPS captured, enter title + take photo
+4. Draft appears in portal "Pending Review" section
+5. Review/publish from portal
+
+### Key Files
+- `src/app/add/[code]/` - Mobile hotspot creation page
+- `src/app/api/tokens/` - Token generation and validation
+- `src/app/portal/settings/page.tsx` - QR code generator section
+
+### Security TODO (Low Priority)
+> The current token-based auth is minimal. Eventually consider:
+> - Rate limiting on token generation and draft creation
+> - IP-based restrictions or device fingerprinting
+> - Audit logging for draft submissions
+
 ## API Endpoints
 
 - `GET/PATCH /api/projects/[id]` - Project CRUD
 - `GET /api/projects/by-code/[code]` - Lookup by access code
-- `GET/POST /api/projects/[id]/hotspots` - List/create hotspots
+- `GET/POST /api/projects/[id]/hotspots` - List/create hotspots (supports `?includeDrafts=true`)
 - `GET/PATCH/DELETE /api/hotspots/[id]` - Hotspot CRUD
+- `POST /api/tokens` - Generate add-hotspot token
+- `GET/DELETE /api/tokens/[token]` - Validate or revoke token
 - `POST /api/upload` - File upload (10MB max)
 
 ## Environment Variables
