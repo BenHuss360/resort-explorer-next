@@ -19,12 +19,17 @@ export default function PortalHotspotsPage() {
       if (isDemoMode()) {
         return DEMO_HOTSPOTS
       }
-      const res = await fetch(`/api/projects/${project!.id}/hotspots`)
+      // Include drafts for portal view
+      const res = await fetch(`/api/projects/${project!.id}/hotspots?includeDrafts=true`)
       if (!res.ok) throw new Error('Failed to fetch hotspots')
       return res.json() as Promise<Hotspot[]>
     },
     enabled: !!project?.id,
   })
+
+  // Separate drafts from published hotspots
+  const drafts = hotspots.filter(h => h.isDraft)
+  const published = hotspots.filter(h => !h.isDraft)
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
@@ -34,6 +39,20 @@ export default function PortalHotspotsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hotspots', project?.id] })
       setDeletingId(null)
+    },
+  })
+
+  const publishMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/hotspots/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDraft: false }),
+      })
+      if (!res.ok) throw new Error('Failed to publish hotspot')
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['hotspots', project?.id] })
     },
   })
 
@@ -47,14 +66,97 @@ export default function PortalHotspotsPage() {
     }
   }
 
+  const handlePublish = (hotspot: Hotspot) => {
+    if (isDemoMode()) {
+      alert('Publishing is disabled in demo mode. Sign up to manage your own hotspots!')
+      return
+    }
+    publishMutation.mutate(hotspot.id)
+  }
+
   if (isLoading) {
     return <div className="text-gray-500">Loading hotspots...</div>
   }
 
   return (
     <div className="space-y-6">
+      {/* Drafts Section */}
+      {drafts.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold">Pending Review</h2>
+            <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
+              {drafts.length} draft{drafts.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="bg-amber-50 rounded-lg border border-amber-200 divide-y divide-amber-200">
+            {drafts.map((hotspot) => (
+              <div key={hotspot.id} className="p-4 flex items-center gap-4">
+                {/* Thumbnail or Marker */}
+                {hotspot.imageUrl ? (
+                  <img
+                    src={hotspot.imageUrl}
+                    alt={hotspot.title}
+                    className="w-12 h-12 rounded-lg object-cover shrink-0"
+                  />
+                ) : (
+                  <div
+                    className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: hotspot.markerColor || '#FFD27F' }}
+                  >
+                    <span className="text-white text-sm font-bold">
+                      {hotspot.markerType?.charAt(0).toUpperCase() || 'P'}
+                    </span>
+                  </div>
+                )}
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium truncate">{hotspot.title}</h3>
+                    {hotspot.createdVia === 'mobile' && (
+                      <span className="text-xs bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">
+                        Mobile
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    {hotspot.latitude.toFixed(4)}, {hotspot.longitude.toFixed(4)}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/portal/hotspots/${hotspot.id}/edit`}
+                    className="px-3 py-1.5 text-sm text-gray-600 hover:bg-amber-100 rounded transition-colors"
+                  >
+                    Review
+                  </Link>
+                  <button
+                    onClick={() => handlePublish(hotspot)}
+                    disabled={publishMutation.isPending}
+                    className="px-3 py-1.5 text-sm bg-emerald-500 text-white hover:bg-emerald-600 rounded transition-colors disabled:opacity-50"
+                  >
+                    Publish
+                  </button>
+                  <button
+                    onClick={() => handleDelete(hotspot)}
+                    disabled={deleteMutation.isPending}
+                    className="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Published Hotspots */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Hotspots ({hotspots.length})</h2>
+        <h2 className="text-lg font-semibold">Hotspots ({published.length})</h2>
         <Link
           href="/portal/hotspots/new"
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
@@ -63,9 +165,9 @@ export default function PortalHotspotsPage() {
         </Link>
       </div>
 
-      {hotspots.length === 0 ? (
+      {published.length === 0 ? (
         <div className="bg-white rounded-lg border p-8 text-center">
-          <p className="text-gray-500 mb-4">No hotspots yet. Create your first one!</p>
+          <p className="text-gray-500 mb-4">No published hotspots yet. Create your first one!</p>
           <Link
             href="/portal/hotspots/new"
             className="text-blue-600 hover:text-blue-700"
@@ -75,7 +177,7 @@ export default function PortalHotspotsPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg border divide-y">
-          {hotspots.map((hotspot) => (
+          {published.map((hotspot) => (
             <div key={hotspot.id} className="p-4 flex items-center gap-4">
               {/* Marker Preview */}
               <div

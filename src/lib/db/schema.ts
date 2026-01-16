@@ -55,6 +55,16 @@ export const hotspots = pgTable('hotspots', {
   showLabelOnMap: boolean('show_label_on_map').default(false),
   optionalFields: jsonb('optional_fields').default([]),
   isActive: boolean('is_active').notNull().default(true),
+  isDraft: boolean('is_draft').notNull().default(false),
+  createdVia: text('created_via').default('portal'),
+  createdAt: timestamp('created_at').defaultNow(),
+})
+
+export const addTokens = pgTable('add_tokens', {
+  id: serial('id').primaryKey(),
+  projectId: integer('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  token: varchar('token', { length: 64 }).notNull().unique(),
+  expiresAt: timestamp('expires_at').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 })
 
@@ -64,6 +74,14 @@ export const hotspots = pgTable('hotspots', {
 
 export const projectsRelations = relations(projects, ({ many }) => ({
   hotspots: many(hotspots),
+  addTokens: many(addTokens),
+}))
+
+export const addTokensRelations = relations(addTokens, ({ one }) => ({
+  project: one(projects, {
+    fields: [addTokens.projectId],
+    references: [projects.id],
+  }),
 }))
 
 export const hotspotsRelations = relations(hotspots, ({ one }) => ({
@@ -81,6 +99,8 @@ export type Project = typeof projects.$inferSelect
 export type NewProject = typeof projects.$inferInsert
 export type Hotspot = typeof hotspots.$inferSelect
 export type NewHotspot = typeof hotspots.$inferInsert
+export type AddToken = typeof addTokens.$inferSelect
+export type NewAddToken = typeof addTokens.$inferInsert
 
 export type OptionalField = {
   icon: string
@@ -89,6 +109,8 @@ export type OptionalField = {
 }
 
 export type MapExperience = 'full' | 'interactive'
+
+export type CreatedVia = 'portal' | 'mobile'
 
 export type Boundaries = {
   north: number | null
@@ -180,4 +202,20 @@ export const customMapOverlaySchema = z.object({
   enabled: z.boolean().default(false),
   gcps: z.array(groundControlPointSchema).default([]),
   calibrationMode: z.enum(['2corners', '3corners', 'gcps']).default('2corners'),
+})
+
+// Schema for mobile draft hotspot creation (minimal fields)
+export const draftHotspotSchema = z.object({
+  projectId: z.number(),
+  title: z.string().min(1, 'Title is required'),
+  latitude: z.number(),
+  longitude: z.number(),
+  imageUrl: z.string().url().optional().nullable(),
+  token: z.string().min(1, 'Token is required'),
+})
+
+// Schema for add token creation
+export const addTokenSchema = z.object({
+  projectId: z.number(),
+  expiresInHours: z.number().min(1).max(168).default(24), // 1 hour to 1 week
 })

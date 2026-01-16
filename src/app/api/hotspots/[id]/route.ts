@@ -27,12 +27,24 @@ export async function PATCH(
 ) {
   const [{ id }, body] = await Promise.all([params, request.json()])
 
+  // Extract only valid hotspot fields to prevent injection of arbitrary fields
+  const updateData: Record<string, unknown> = {}
+  const allowedFields = [
+    'title', 'description', 'latitude', 'longitude',
+    'imageUrl', 'audioUrl', 'markerColor', 'markerType',
+    'customMarkerUrl', 'showLabelOnMap', 'optionalFields',
+    'isActive', 'isDraft'
+  ]
+
+  for (const field of allowedFields) {
+    if (field in body) {
+      updateData[field] = body[field]
+    }
+  }
+
   const [updated] = await db
     .update(hotspots)
-    .set({
-      ...body,
-      updatedAt: new Date(),
-    })
+    .set(updateData)
     .where(eq(hotspots.id, parseInt(id)))
     .returning()
 

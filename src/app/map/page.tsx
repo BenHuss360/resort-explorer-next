@@ -1,21 +1,6 @@
-import type { Metadata } from 'next'
-import { MapContainer } from '@/components/map/map-container'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: 'Explore Map',
-  description:
-    'Discover points of interest with our GPS-powered interactive map. Navigate your resort or property with real-time location tracking and proximity-triggered content.',
-  openGraph: {
-    title: 'Explore Map | Wandernest',
-    description:
-      'Discover points of interest with our GPS-powered interactive map.',
-  },
-  robots: {
-    index: false,
-    follow: false,
-  },
-}
-
+// Deprecated: redirect to home to re-enter access code
 export default function MapPage() {
-  return <MapContainer />
+  redirect('/')
 }

@@ -434,7 +434,7 @@ function UnifiedLoginCard() {
         const data = await res.json()
         setProject(data)
         toast.success(`Welcome to ${data.resortName}!`)
-        router.push('/map')
+        router.push(`/embed/${accessCode.trim().toUpperCase()}`)
       } else {
         toast.error('Invalid access code. Please check and try again.')
       }
