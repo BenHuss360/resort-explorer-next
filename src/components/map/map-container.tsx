@@ -20,8 +20,8 @@ const LeafletMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center">
-        <div className="text-gray-500">Loading map...</div>
+      <div className="w-full h-full bg-[#F5F0E6] animate-pulse flex items-center justify-center">
+        <div className="text-[#708090]">Loading map...</div>
       </div>
     ),
   }
@@ -158,8 +158,8 @@ export function MapContainer() {
 
   if (projectLoading) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="text-gray-500">Loading...</div>
+      <div className="h-screen flex items-center justify-center bg-[#F5F0E6]">
+        <div className="text-[#708090]">Loading...</div>
       </div>
     )
   }
@@ -168,31 +168,31 @@ export function MapContainer() {
     <div className="h-screen flex flex-col">
       {/* Offline Banner */}
       {isOffline && (
-        <div className="bg-gray-800 text-white px-4 py-2 text-sm text-center">
+        <div className="bg-[#2F4F4F] text-[#F5F0E6] px-4 py-2 text-sm text-center">
           You're offline - using cached data
         </div>
       )}
 
       {/* Header */}
-      <header className="bg-white border-b px-4 py-3 flex items-center justify-between shrink-0">
+      <header className="bg-[#F5F0E6] border-b border-[#2F4F4F]/10 px-4 py-4 flex items-center justify-between shrink-0">
         <div>
-          <h1 className="font-semibold text-lg">{project?.resortName || 'Wandernest'}</h1>
+          <h1 className="font-bold text-lg text-[#2F4F4F]">{project?.resortName || 'Wandernest'}</h1>
           {nearestHotspot ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[#708090]">
               Nearest: {nearestHotspot.title} ({formatDistance(nearestHotspot.distance)})
             </p>
           ) : (
-            <p className="text-sm text-gray-500">Discover amazing spots around you</p>
+            <p className="text-sm text-[#708090]">Discover amazing spots around you</p>
           )}
         </div>
         <div className="flex items-center gap-2">
           {location && (
             <button
               onClick={() => setShowNearbyOnly(!showNearbyOnly)}
-              className={`px-3 py-1.5 text-sm rounded-full transition-colors ${
+              className={`px-4 py-2 text-sm rounded-full transition-all duration-300 font-medium ${
                 showNearbyOnly
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-[#2F4F4F] text-[#F5F0E6]'
+                  : 'bg-white/60 text-[#2F4F4F] hover:bg-white border border-[#2F4F4F]/10'
               }`}
             >
               {showNearbyOnly ? 'Showing Nearby' : 'Show Nearby'}
@@ -200,7 +200,7 @@ export function MapContainer() {
           )}
           <Link
             href="/portal"
-            className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-full transition-colors"
+            className="px-4 py-2 text-sm bg-white/60 text-[#2F4F4F] hover:bg-white rounded-full transition-all duration-300 border border-[#2F4F4F]/10 font-medium"
           >
             Portal
           </Link>
@@ -209,11 +209,11 @@ export function MapContainer() {
 
       {/* GPS Error Banner */}
       {gpsError && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800 flex items-center justify-between">
+        <div className="bg-[#FFD27F]/20 border-b border-[#FFD27F]/40 px-4 py-2 text-sm text-[#2F4F4F] flex items-center justify-between">
           <span>{gpsError}</span>
           <button
             onClick={retryGps}
-            className="ml-4 px-3 py-1 bg-amber-200 hover:bg-amber-300 rounded text-amber-900 font-medium"
+            className="ml-4 px-3 py-1 bg-[#FFD27F] hover:bg-[#f5c55a] rounded-full text-[#2F4F4F] font-medium transition-colors duration-300"
           >
             Retry
           </button>
@@ -222,19 +222,19 @@ export function MapContainer() {
 
       {/* GPS Loading */}
       {gpsLoading && !gpsError && (
-        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 text-sm text-blue-800">
+        <div className="bg-[#2F4F4F]/5 border-b border-[#2F4F4F]/10 px-4 py-2 text-sm text-[#2F4F4F]">
           Getting your location...
         </div>
       )}
 
       {/* Mock Location Indicator */}
       {isMockLocation && (
-        <div className="bg-purple-50 border-b border-purple-200 px-4 py-2 text-sm text-purple-800 flex items-center justify-between">
+        <div className="bg-[#2F4F4F]/5 border-b border-[#2F4F4F]/10 px-4 py-2 text-sm text-[#2F4F4F] flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" />
+            <span className="w-2 h-2 bg-[#FFD27F] rounded-full animate-pulse" />
             Demo mode - Using venue location
             {distanceToVenue && (
-              <span className="text-purple-600">
+              <span className="text-[#708090]">
                 (You're {formatDistance(distanceToVenue)} away)
               </span>
             )}
@@ -256,7 +256,7 @@ export function MapContainer() {
         {nearestHotspot && project?.mapExperience !== 'interactive' && (
           <button
             onClick={() => setSelectedHotspot(nearestHotspot)}
-            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-blue-500 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+            className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-[#2F4F4F] text-[#F5F0E6] px-6 py-3.5 rounded-full shadow-xl hover:bg-[#3a5f5f] transition-all duration-300 flex items-center gap-2 font-semibold"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -47,28 +47,28 @@ function GrainOverlay() {
 function AnimatedGradientBg() {
   return (
     <div className="absolute inset-0 overflow-hidden">
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-700 to-teal-700" />
+      {/* Base gradient - Forest Green */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#2F4F4F] via-[#3a5f5f] to-[#4a6f6f]" />
 
-      {/* Animated color blobs */}
+      {/* Animated color blobs - Forest Green variants */}
       <div
-        className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-30"
+        className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-25"
         style={{
-          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.8) 0%, transparent 50%)',
+          background: 'radial-gradient(circle, rgba(47, 79, 79, 0.8) 0%, transparent 50%)',
           animation: 'moveBlob1 15s ease-in-out infinite',
         }}
       />
       <div
-        className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-30"
+        className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-25"
         style={{
-          background: 'radial-gradient(circle, rgba(20, 184, 166, 0.8) 0%, transparent 50%)',
+          background: 'radial-gradient(circle, rgba(58, 95, 95, 0.8) 0%, transparent 50%)',
           animation: 'moveBlob2 18s ease-in-out infinite',
         }}
       />
       <div
-        className="absolute top-1/4 right-1/4 w-1/2 h-1/2 rounded-full opacity-20"
+        className="absolute top-1/4 right-1/4 w-1/2 h-1/2 rounded-full opacity-15"
         style={{
-          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.8) 0%, transparent 50%)',
+          background: 'radial-gradient(circle, rgba(255, 210, 127, 0.6) 0%, transparent 50%)',
           animation: 'moveBlob3 20s ease-in-out infinite',
         }}
       />
@@ -97,8 +97,8 @@ function AnimatedGradientBg() {
 function AnimatedLogo({ className = '', iconClassName = '' }: { className?: string; iconClassName?: string }) {
   return (
     <div className={`relative ${className}`}>
-      {/* Glow effect behind logo */}
-      <div className="absolute inset-0 bg-emerald-400/30 rounded-3xl blur-xl animate-pulse" />
+      {/* Glow effect behind logo - Gold */}
+      <div className="absolute inset-0 bg-[#FFD27F]/30 rounded-3xl blur-xl animate-pulse" />
       <div className="relative bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/20 w-full h-full">
         <Footprints
           className={`text-white transition-transform ${iconClassName}`}
@@ -123,7 +123,7 @@ function AnimatedLogo({ className = '', iconClassName = '' }: { className?: stri
 function ShimmerText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <span className={`relative inline-block ${className}`}>
-      <span className="bg-gradient-to-r from-emerald-200 via-teal-100 to-cyan-200 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
+      <span className="bg-gradient-to-r from-[#FFD27F] via-[#F5F0E6] to-[#FFD27F] bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
         {children}
       </span>
       <style jsx>{`
@@ -250,17 +250,17 @@ function FloatingElements() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Animated gradient orbs with parallax */}
+      {/* Animated gradient orbs with parallax - Forest Green/Gold variants */}
       <div
-        className="absolute top-20 left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-teal-400/20 rounded-full blur-3xl animate-pulse"
+        className="absolute top-20 left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-[#FFD27F]/15 rounded-full blur-3xl animate-pulse"
         style={{ transform: `translateY(${offset * 0.5}px)` }}
       />
       <div
-        className="absolute top-40 right-[15%] w-56 h-56 bg-gradient-to-br from-emerald-300/15 to-cyan-400/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"
+        className="absolute top-40 right-[15%] w-56 h-56 bg-gradient-to-br from-[#F5F0E6]/10 to-[#FFD27F]/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"
         style={{ transform: `translateY(${offset * 0.3}px)` }}
       />
       <div
-        className="absolute bottom-32 left-[20%] w-40 h-40 bg-gradient-to-br from-teal-200/15 to-emerald-300/10 rounded-full blur-2xl animate-pulse [animation-delay:2s]"
+        className="absolute bottom-32 left-[20%] w-40 h-40 bg-gradient-to-br from-[#FFD27F]/10 to-[#F5F0E6]/10 rounded-full blur-2xl animate-pulse [animation-delay:2s]"
         style={{ transform: `translateY(${offset * 0.7}px)` }}
       />
       <div
@@ -273,25 +273,25 @@ function FloatingElements() {
         className="absolute top-32 left-[8%] opacity-20 animate-bounce [animation-duration:3s]"
         style={{ transform: `translateY(${offset * 0.2}px)` }}
       >
-        <Mountain className="w-8 h-8 text-white" />
+        <Mountain className="w-8 h-8 text-[#F5F0E6]" />
       </div>
       <div
         className="absolute top-24 right-[12%] opacity-15 animate-bounce [animation-duration:4s] [animation-delay:0.5s]"
         style={{ transform: `translateY(${offset * 0.4}px)` }}
       >
-        <Compass className="w-10 h-10 text-white" />
+        <Compass className="w-10 h-10 text-[#F5F0E6]" />
       </div>
       <div
         className="absolute bottom-44 right-[8%] opacity-20 animate-bounce [animation-duration:3.5s] [animation-delay:1s]"
         style={{ transform: `translateY(${offset * 0.3}px)` }}
       >
-        <Leaf className="w-6 h-6 text-white" />
+        <Leaf className="w-6 h-6 text-[#F5F0E6]" />
       </div>
       <div
         className="absolute bottom-52 left-[15%] opacity-15 animate-bounce [animation-duration:4.5s] [animation-delay:1.5s]"
         style={{ transform: `translateY(${offset * 0.5}px)` }}
       >
-        <TreePine className="w-7 h-7 text-white" />
+        <TreePine className="w-7 h-7 text-[#F5F0E6]" />
       </div>
     </div>
   )
@@ -313,9 +313,9 @@ function ScrollIndicator() {
     <div
       className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
     >
-      <span className="text-white/70 text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
-      <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1">
-        <div className="w-1.5 h-3 bg-white/70 rounded-full animate-scrollBounce" />
+      <span className="text-[#F5F0E6]/70 text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
+      <div className="w-6 h-10 rounded-full border-2 border-[#F5F0E6]/30 flex items-start justify-center p-1">
+        <div className="w-1.5 h-3 bg-[#FFD27F]/70 rounded-full animate-scrollBounce" />
       </div>
       <style jsx>{`
         @keyframes scrollBounce {
@@ -354,7 +354,7 @@ function FloatingDemoCTA() {
   return (
     <button
       onClick={handleDemo}
-      className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-full shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-105 transition-all duration-300 ${
+      className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] text-[#F5F0E6] font-semibold rounded-full shadow-lg shadow-[#FFD27F]/30 hover:shadow-[#FFD27F]/50 hover:scale-105 transition-all duration-300 ${
         isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
       }`}
     >
@@ -381,12 +381,12 @@ function QuickDemoButton() {
   return (
     <button
       onClick={handleDemo}
-      className="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-95"
+      className="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-[#F5F0E6]/20 text-[#F5F0E6] font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-95"
     >
       {ripples.map(ripple => (
         <span
           key={ripple.id}
-          className="absolute bg-white/30 rounded-full animate-ping"
+          className="absolute bg-[#FFD27F]/30 rounded-full animate-ping"
           style={{
             left: ripple.x - 10,
             top: ripple.y - 10,
@@ -469,23 +469,23 @@ function UnifiedLoginCard() {
   return (
     <Card className="relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-2xl">
       {/* Top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2F4F4F] via-[#FFD27F] to-[#2F4F4F]" />
 
       <CardHeader className="text-center pb-4 pt-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-emerald-500/30">
-          <Footprints className="w-8 h-8 text-white" />
+        <div className="w-16 h-16 bg-gradient-to-br from-[#2F4F4F] via-[#3a5f5f] to-[#4a6f6f] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-[#2F4F4F]/30">
+          <Footprints className="w-8 h-8 text-[#F5F0E6]" />
         </div>
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent">
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#2F4F4F] via-[#3a5f5f] to-[#2F4F4F] bg-clip-text text-transparent">
           Welcome to Wandernest
         </CardTitle>
-        <CardDescription className="text-stone-600 mt-1">
+        <CardDescription className="text-[#708090] mt-1">
           Enter your access code or sign in to manage your property
         </CardDescription>
       </CardHeader>
 
       <CardContent className="pb-8 px-6">
         <Tabs defaultValue="guest" className="w-full">
-          <TabsList className="w-full mb-6 bg-stone-100 p-1 rounded-lg">
+          <TabsList className="w-full mb-6 bg-[#F5F0E6] p-1 rounded-lg">
             <TabsTrigger value="guest" className="flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md">
               <Footprints className="w-4 h-4 mr-2" />
               Guest Access
@@ -499,7 +499,7 @@ function UnifiedLoginCard() {
           <TabsContent value="guest">
             <form onSubmit={handleGuestSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="access-code" className="text-sm font-medium text-stone-600">
+                <Label htmlFor="access-code" className="text-sm font-medium text-[#708090]">
                   Access Code
                 </Label>
                 <Input
@@ -508,14 +508,14 @@ function UnifiedLoginCard() {
                   placeholder="Enter your code"
                   value={accessCode}
                   onChange={(e) => setAccessCode(e.target.value)}
-                  className="mt-2 text-center text-lg font-bold tracking-[0.2em] uppercase h-12 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="mt-2 text-center text-lg font-bold tracking-[0.2em] uppercase h-12 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
                   maxLength={10}
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                className="w-full h-12 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] hover:from-[#3a5f5f] hover:to-[#4a6f6f] text-[#F5F0E6] font-semibold shadow-lg shadow-[#FFD27F]/25"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -531,7 +531,7 @@ function UnifiedLoginCard() {
                 )}
               </Button>
 
-              <p className="text-center text-sm text-stone-500">
+              <p className="text-center text-sm text-[#708090]">
                 Ask your property's front desk for an access code
               </p>
             </form>
@@ -540,7 +540,7 @@ function UnifiedLoginCard() {
           <TabsContent value="property">
             <form onSubmit={handlePropertySubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email" className="text-sm font-medium text-stone-600">
+                <Label htmlFor="email" className="text-sm font-medium text-[#708090]">
                   Email
                 </Label>
                 <Input
@@ -549,12 +549,12 @@ function UnifiedLoginCard() {
                   placeholder="you@property.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="mt-2 h-10 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="mt-2 h-10 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
                 />
               </div>
 
               <div>
-                <Label htmlFor="password" className="text-sm font-medium text-stone-600">
+                <Label htmlFor="password" className="text-sm font-medium text-[#708090]">
                   Password
                 </Label>
                 <Input
@@ -563,13 +563,13 @@ function UnifiedLoginCard() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-2 h-10 border-stone-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+                  className="mt-2 h-10 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                className="w-full h-12 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] hover:from-[#3a5f5f] hover:to-[#4a6f6f] text-[#F5F0E6] font-semibold shadow-lg shadow-[#FFD27F]/25"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -585,17 +585,17 @@ function UnifiedLoginCard() {
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="w-full text-center text-sm text-stone-400 hover:text-stone-600 transition-colors"
+                className="w-full text-center text-sm text-[#708090]/70 hover:text-[#708090] transition-colors"
               >
                 Forgot your password?
               </button>
 
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-stone-200" />
+                  <div className="w-full border-t border-[#2F4F4F]/10" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-white text-stone-400">or</span>
+                  <span className="px-2 bg-white text-[#708090]">or</span>
                 </div>
               </div>
 
@@ -607,7 +607,7 @@ function UnifiedLoginCard() {
                   toast.success('Welcome to Demo Mode!')
                   router.push('/portal/preview')
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#2F4F4F] hover:text-[#3a5f5f] hover:bg-[#F5F0E6] rounded-lg transition-colors"
               >
                 <Play className="w-4 h-4" />
                 Explore the demo
@@ -625,58 +625,58 @@ function PhoneMockup() {
   return (
     <div className="relative mx-auto max-w-[320px] lg:max-w-none">
       {/* Phone frame */}
-      <div className="relative bg-stone-900 rounded-[3rem] p-3 shadow-2xl shadow-stone-900/30">
+      <div className="relative bg-[#2F4F4F] rounded-[3rem] p-3 shadow-2xl shadow-[#2F4F4F]/30">
         {/* Screen */}
-        <div className="bg-gradient-to-b from-emerald-50 to-white rounded-[2.5rem] overflow-hidden aspect-[9/19]">
+        <div className="bg-gradient-to-b from-[#F5F0E6] to-white rounded-[2.5rem] overflow-hidden aspect-[9/19]">
           {/* Status bar */}
-          <div className="bg-emerald-700 px-6 py-3 flex items-center justify-between">
-            <span className="text-white/90 text-xs font-medium">9:41</span>
+          <div className="bg-[#2F4F4F] px-6 py-3 flex items-center justify-between">
+            <span className="text-[#F5F0E6]/90 text-xs font-medium">9:41</span>
             <div className="flex items-center gap-1">
-              <div className="w-4 h-2 bg-white/90 rounded-sm" />
+              <div className="w-4 h-2 bg-[#F5F0E6]/90 rounded-sm" />
             </div>
           </div>
 
           {/* App header */}
-          <div className="bg-gradient-to-b from-emerald-700 to-emerald-600 px-5 py-4">
+          <div className="bg-gradient-to-b from-[#2F4F4F] to-[#3a5f5f] px-5 py-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <TreePine className="w-5 h-5 text-white" />
+                <TreePine className="w-5 h-5 text-[#F5F0E6]" />
               </div>
               <div>
-                <p className="text-white font-semibold">Mountain Retreat</p>
-                <p className="text-emerald-100 text-xs">12 spots to discover</p>
+                <p className="text-[#F5F0E6] font-semibold">Mountain Retreat</p>
+                <p className="text-[#F5F0E6]/70 text-xs">12 spots to discover</p>
               </div>
             </div>
           </div>
 
           {/* Map area */}
-          <div className="relative h-48 bg-gradient-to-b from-emerald-100/50 to-teal-50/50">
+          <div className="relative h-48 bg-gradient-to-b from-[#F5F0E6]/50 to-white/50">
             {/* Simulated map elements */}
             <div className="absolute inset-4">
               {/* Paths */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                <path d="M20,80 Q40,60 50,50 T80,30" stroke="#059669" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
-                <path d="M10,40 Q30,50 60,45 T90,60" stroke="#0d9488" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
+                <path d="M20,80 Q40,60 50,50 T80,30" stroke="#2F4F4F" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
+                <path d="M10,40 Q30,50 60,45 T90,60" stroke="#708090" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
               </svg>
 
               {/* Animated map pins */}
-              <div className="absolute top-[20%] left-[30%] w-8 h-8 bg-gradient-to-b from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg animate-pinPulse">
-                <MapPin className="w-4 h-4 text-white" />
+              <div className="absolute top-[20%] left-[30%] w-8 h-8 bg-gradient-to-b from-[#FFD27F] to-[#f5c55a] rounded-full flex items-center justify-center shadow-lg animate-pinPulse">
+                <MapPin className="w-4 h-4 text-[#2F4F4F]" />
               </div>
-              <div className="absolute top-[50%] left-[60%] w-6 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:0.5s]">
-                <MapPin className="w-3 h-3 text-white" />
+              <div className="absolute top-[50%] left-[60%] w-6 h-6 bg-gradient-to-b from-[#2F4F4F] to-[#3a5f5f] rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:0.5s]">
+                <MapPin className="w-3 h-3 text-[#F5F0E6]" />
               </div>
-              <div className="absolute top-[70%] left-[25%] w-6 h-6 bg-gradient-to-b from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:1s]">
-                <MapPin className="w-3 h-3 text-white" />
+              <div className="absolute top-[70%] left-[25%] w-6 h-6 bg-gradient-to-b from-[#708090] to-[#5a6a7a] rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:1s]">
+                <MapPin className="w-3 h-3 text-[#F5F0E6]" />
               </div>
-              <div className="absolute top-[35%] right-[15%] w-5 h-5 bg-stone-300 rounded-full flex items-center justify-center opacity-60">
-                <MapPin className="w-2.5 h-2.5 text-stone-500" />
+              <div className="absolute top-[35%] right-[15%] w-5 h-5 bg-[#708090]/40 rounded-full flex items-center justify-center opacity-60">
+                <MapPin className="w-2.5 h-2.5 text-[#708090]" />
               </div>
 
-              {/* Animated user location */}
+              {/* Animated user location - Forest Green */}
               <div className="absolute animate-userMove">
-                <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg" />
-                <div className="absolute inset-0 w-4 h-4 bg-blue-500 rounded-full animate-ping opacity-30" />
+                <div className="w-4 h-4 bg-[#2F4F4F] rounded-full border-2 border-[#F5F0E6] shadow-lg" />
+                <div className="absolute inset-0 w-4 h-4 bg-[#2F4F4F] rounded-full animate-ping opacity-20" />
               </div>
             </div>
 
@@ -702,31 +702,31 @@ function PhoneMockup() {
 
           {/* Nearby card */}
           <div className="px-4 py-3">
-            <div className="bg-white rounded-2xl p-4 shadow-lg border border-stone-100">
+            <div className="bg-white rounded-2xl p-4 shadow-lg border border-[#2F4F4F]/10">
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-6 h-6 text-white" />
+                <div className="w-12 h-12 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-6 h-6 text-[#FFD27F]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-stone-800 text-sm">Meditation Garden</p>
-                  <p className="text-xs text-emerald-600 font-medium">50m away · Unlocked!</p>
-                  <p className="text-xs text-stone-500 mt-1 line-clamp-2">A tranquil space for morning meditation...</p>
+                  <p className="font-semibold text-[#2F4F4F] text-sm">Meditation Garden</p>
+                  <p className="text-xs text-[#FFD27F] font-medium">50m away · Unlocked!</p>
+                  <p className="text-xs text-[#708090] mt-1 line-clamp-2">A tranquil space for morning meditation...</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Bottom nav hint */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-stone-300 rounded-full" />
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-[#2F4F4F]/20 rounded-full" />
         </div>
 
         {/* Notch */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-stone-900 rounded-full" />
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#2F4F4F] rounded-full" />
       </div>
 
       {/* Decorative elements around phone */}
-      <div className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-2xl opacity-20 blur-xl" />
-      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-teal-400 to-cyan-400 rounded-full opacity-20 blur-xl" />
+      <div className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-[#FFD27F] to-[#f5c55a] rounded-2xl opacity-20 blur-xl" />
+      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-full opacity-20 blur-xl" />
     </div>
   )
 }
@@ -741,23 +741,23 @@ function ProductPreviewSection() {
   ]
 
   return (
-    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-stone-50 to-white relative overflow-hidden">
+    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-[#F5F0E6]/50 to-white relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-emerald-100/50 to-transparent rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-teal-100/50 to-transparent rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-[#FFD27F]/20 to-transparent rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#2F4F4F]/10 to-transparent rounded-full blur-3xl" />
 
       <div className="max-w-6xl mx-auto relative">
         <AnimatedSection className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-700 text-sm font-medium rounded-full mb-4">
+          <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-[#FFD27F]/30 to-[#F5F0E6] text-[#2F4F4F] text-sm font-medium rounded-full mb-4">
             See It In Action
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-stone-800 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F4F4F] mb-4">
             Exploration Made{' '}
-            <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] bg-clip-text text-transparent">
               Beautiful
             </span>
           </h2>
-          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#708090] max-w-2xl mx-auto">
             A seamless mobile experience that guides guests through your property with interactive maps and location-aware content
           </p>
         </AnimatedSection>
@@ -773,12 +773,12 @@ function ProductPreviewSection() {
             {features.map((feature, index) => (
               <AnimatedSection key={index} delay={300 + index * 100}>
                 <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 group">
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-110 transition-transform flex-shrink-0">
-                    <feature.icon className="w-7 h-7 text-white" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-2xl flex items-center justify-center shadow-lg shadow-[#FFD27F]/20 group-hover:scale-110 transition-transform flex-shrink-0">
+                    <feature.icon className="w-7 h-7 text-[#F5F0E6]" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg text-stone-800 mb-1">{feature.label}</h3>
-                    <p className="text-stone-600">{feature.description}</p>
+                    <h3 className="font-bold text-lg text-[#2F4F4F] mb-1">{feature.label}</h3>
+                    <p className="text-[#708090]">{feature.description}</p>
                   </div>
                 </div>
               </AnimatedSection>
@@ -797,41 +797,41 @@ function HowItWorksSection() {
       icon: MapPin,
       title: 'Get Your Code',
       description: 'Your property provides a unique access code for your stay',
-      color: 'from-rose-500 to-pink-600',
-      shadowColor: 'shadow-rose-500/25',
+      color: 'from-[#FFD27F] to-[#f5c55a]',
+      shadowColor: 'shadow-[#FFD27F]/25',
     },
     {
       icon: Footprints,
       title: 'Wander Freely',
       description: 'Explore the grounds at your own pace with GPS guidance',
-      color: 'from-emerald-500 to-teal-600',
-      shadowColor: 'shadow-emerald-500/25',
+      color: 'from-[#2F4F4F] to-[#3a5f5f]',
+      shadowColor: 'shadow-[#2F4F4F]/25',
     },
     {
       icon: Sparkles,
       title: 'Discover More',
       description: 'Hidden content reveals as you approach interesting spots',
-      color: 'from-violet-500 to-purple-600',
-      shadowColor: 'shadow-violet-500/25',
+      color: 'from-[#708090] to-[#5a6a7a]',
+      shadowColor: 'shadow-[#708090]/25',
     },
   ]
 
   return (
     <section className="py-20 md:py-28 px-4 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-stone-50/50 to-white" />
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-[#F5F0E6]/30 to-white" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#FFD27F]/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#2F4F4F]/10 rounded-full blur-3xl" />
 
       <div className="max-w-5xl mx-auto relative">
         <AnimatedSection className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-sm font-medium rounded-full mb-4">
+          <span className="inline-block px-4 py-1.5 bg-[#FFD27F]/30 text-[#2F4F4F] text-sm font-medium rounded-full mb-4">
             Simple & Intuitive
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-stone-800 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F4F4F] mb-4">
             How It Works
           </h2>
-          <p className="text-lg text-stone-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#708090] max-w-2xl mx-auto">
             GPS-powered discovery that unfolds naturally as you wander through the property
           </p>
         </AnimatedSection>
@@ -842,22 +842,22 @@ function HowItWorksSection() {
               <div className="relative group">
                 {/* Connector line */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-stone-200 to-transparent" />
+                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-[#2F4F4F]/20 to-transparent" />
                 )}
 
                 <div className="text-center p-6">
                   {/* Step number */}
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 bg-white border-2 border-stone-200 rounded-full flex items-center justify-center text-xs font-bold text-stone-500 group-hover:border-emerald-500 group-hover:text-emerald-600 transition-colors shadow-sm">
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-7 h-7 bg-white border-2 border-[#2F4F4F]/20 rounded-full flex items-center justify-center text-xs font-bold text-[#708090] group-hover:border-[#FFD27F] group-hover:text-[#2F4F4F] transition-colors shadow-sm">
                     {index + 1}
                   </div>
 
                   <div className={`w-24 h-24 bg-gradient-to-br ${step.color} rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl ${step.shadowColor} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                    <step.icon className="w-12 h-12 text-white" />
+                    <step.icon className="w-12 h-12 text-[#F5F0E6]" />
                   </div>
-                  <h3 className="font-bold text-xl text-stone-800 mb-3">
+                  <h3 className="font-bold text-xl text-[#2F4F4F] mb-3">
                     {step.title}
                   </h3>
-                  <p className="text-stone-600 leading-relaxed">
+                  <p className="text-[#708090] leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -880,11 +880,11 @@ function FeaturesSection() {
   ]
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 relative overflow-hidden">
+    <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-[#2F4F4F] via-[#3a5f5f] to-[#2F4F4F] relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(16,185,129,0.15),transparent_50%)]" />
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(245,158,11,0.15),transparent_50%)]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(255,210,127,0.15),transparent_50%)]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(47,79,79,0.15),transparent_50%)]" />
       </div>
 
       <div className="max-w-5xl mx-auto relative">
@@ -893,10 +893,10 @@ function FeaturesSection() {
             {features.map((feature, index) => (
               <div key={index} className="text-center p-4 group">
                 <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-white/20 group-hover:scale-110 transition-all">
-                  <feature.icon className="w-6 h-6 text-emerald-400" />
+                  <feature.icon className="w-6 h-6 text-[#FFD27F]" />
                 </div>
-                <h4 className="font-semibold text-white mb-1">{feature.title}</h4>
-                <p className="text-sm text-stone-400">{feature.description}</p>
+                <h4 className="font-semibold text-[#F5F0E6] mb-1">{feature.title}</h4>
+                <p className="text-sm text-[#F5F0E6]/60">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -922,14 +922,14 @@ export default function LandingPage() {
 
         {/* Mesh gradient overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.08),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(20,184,166,0.15),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(6,78,59,0.5),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(255,210,127,0.1),transparent_40%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(47,79,79,0.5),transparent_50%)]" />
 
         <div className="flex-1 flex items-center">
           <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6 md:mb-8 border border-white/10">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-emerald-100 text-sm font-medium">GPS-Powered Exploration</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6 md:mb-8 border border-[#F5F0E6]/10">
+              <span className="w-2 h-2 bg-[#FFD27F] rounded-full animate-pulse" />
+              <span className="text-[#F5F0E6] text-sm font-medium">GPS-Powered Exploration</span>
             </div>
 
             {/* Animated swaying logo */}
@@ -944,7 +944,7 @@ export default function LandingPage() {
               <ShimmerText>Experience.</ShimmerText>
             </h1>
 
-            <p className="text-lg sm:text-xl md:text-2xl text-emerald-100/90 max-w-2xl mx-auto leading-relaxed mb-8 md:mb-10 px-4">
+            <p className="text-lg sm:text-xl md:text-2xl text-[#F5F0E6]/90 max-w-2xl mx-auto leading-relaxed mb-8 md:mb-10 px-4">
               GPS-powered exploration for wellness retreats and luxury properties.
               Let your guests discover at their own pace.
             </p>
@@ -971,17 +971,17 @@ export default function LandingPage() {
       <FeaturesSection />
 
       {/* Footer */}
-      <footer className="py-12 md:py-16 bg-stone-50 border-t border-stone-200">
+      <footer className="py-12 md:py-16 bg-[#F5F0E6] border-t border-[#2F4F4F]/10">
         <div className="max-w-5xl mx-auto px-4">
           <AnimatedSection>
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 group-hover:scale-110 transition-all duration-300">
-                  <Footprints className="w-6 h-6 text-white group-hover:rotate-12 transition-transform duration-300" />
+                <div className="w-12 h-12 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-xl flex items-center justify-center shadow-lg shadow-[#2F4F4F]/20 group-hover:shadow-[#FFD27F]/40 group-hover:scale-110 transition-all duration-300">
+                  <Footprints className="w-6 h-6 text-[#F5F0E6] group-hover:rotate-12 transition-transform duration-300" />
                 </div>
-                <span className="font-bold text-2xl text-stone-800 group-hover:text-emerald-700 transition-colors">Wandernest</span>
+                <span className="font-bold text-2xl text-[#2F4F4F] group-hover:text-[#3a5f5f] transition-colors">Wandernest</span>
               </div>
-              <p className="text-sm text-stone-500 text-center md:text-right max-w-md">
+              <p className="text-sm text-[#708090] text-center md:text-right max-w-md">
                 GPS-powered exploration for properties that care about guest experience.
               </p>
             </div>
