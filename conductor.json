@@ -1,6 +1,6 @@
 {
-  "scripts": {
-    "setup": "npm install && npx vercel link --project wandernest --yes",
-    "run": "npm run dev"
-  }
+    "scripts": {
+        "setup": "npm install && npx -y vercel link --project wandernest --yes; exit",
+        "run": "npm run dev"
+    }
 }
