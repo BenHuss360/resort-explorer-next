@@ -39,9 +39,7 @@ export async function POST(request: Request) {
     const filename = `${isImage ? 'images' : 'audio'}/${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`
 
     // Upload to Vercel Blob
-    const blob = await put(filename, file, {
-      access: 'public',
-    })
+    const blob = await put(filename, file)
 
     return NextResponse.json({ url: blob.url })
   } catch (error) {
