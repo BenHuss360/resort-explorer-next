@@ -669,108 +669,179 @@ function UnifiedLoginCard() {
   )
 }
 
-// Phone mockup with animated elements
+// Phone mockup with animated elements - matches actual app experience
 function PhoneMockup() {
   return (
     <div className="relative mx-auto max-w-[320px] lg:max-w-none">
       {/* Phone frame */}
-      <div className="relative bg-[#2F4F4F] rounded-[3rem] p-3 shadow-2xl shadow-[#2F4F4F]/30">
+      <div className="relative bg-[#1a1a1a] rounded-[3rem] p-3 shadow-2xl shadow-black/30">
         {/* Screen */}
-        <div className="bg-gradient-to-b from-[#F5F0E6] to-white rounded-[2.5rem] overflow-hidden aspect-[9/19]">
+        <div className="bg-[#e8e4dc] rounded-[2.5rem] overflow-hidden aspect-[9/19] relative">
           {/* Status bar */}
-          <div className="bg-[#2F4F4F] px-6 py-3 flex items-center justify-between">
-            <span className="text-[#F5F0E6]/90 text-xs font-medium">9:41</span>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-2 bg-[#F5F0E6]/90 rounded-sm" />
-            </div>
-          </div>
-
-          {/* App header */}
-          <div className="bg-gradient-to-b from-[#2F4F4F] to-[#3a5f5f] px-5 py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <TreePine className="w-5 h-5 text-[#F5F0E6]" />
-              </div>
-              <div>
-                <p className="text-[#F5F0E6] font-semibold">Mountain Retreat</p>
-                <p className="text-[#F5F0E6]/70 text-xs">12 spots to discover</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Map area */}
-          <div className="relative h-48 bg-gradient-to-b from-[#F5F0E6]/50 to-white/50">
-            {/* Simulated map elements */}
-            <div className="absolute inset-4">
-              {/* Paths */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                <path d="M20,80 Q40,60 50,50 T80,30" stroke="#2F4F4F" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
-                <path d="M10,40 Q30,50 60,45 T90,60" stroke="#708090" strokeWidth="1" fill="none" strokeDasharray="3,3" opacity="0.4" />
+          <div className="bg-[#1a1a1a] px-6 py-2 flex items-center justify-between relative z-10">
+            <span className="text-white/90 text-xs font-medium">9:41</span>
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3C8.5 3 5.5 4.5 3.5 7L12 21l8.5-14C18.5 4.5 15.5 3 12 3z" opacity="0.3"/>
+                <path d="M12 6C9.5 6 7.5 7.5 6 9.5L12 18l6-8.5C16.5 7.5 14.5 6 12 6z"/>
               </svg>
+              <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="2" y="7" width="20" height="10" rx="2" opacity="0.3"/>
+                <rect x="4" y="9" width="14" height="6" rx="1"/>
+              </svg>
+            </div>
+          </div>
 
-              {/* Animated map pins */}
-              <div className="absolute top-[20%] left-[30%] w-8 h-8 bg-gradient-to-b from-[#FFD27F] to-[#f5c55a] rounded-full flex items-center justify-center shadow-lg animate-pinPulse">
-                <MapPin className="w-4 h-4 text-[#2F4F4F]" />
-              </div>
-              <div className="absolute top-[50%] left-[60%] w-6 h-6 bg-gradient-to-b from-[#2F4F4F] to-[#3a5f5f] rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:0.5s]">
-                <MapPin className="w-3 h-3 text-[#F5F0E6]" />
-              </div>
-              <div className="absolute top-[70%] left-[25%] w-6 h-6 bg-gradient-to-b from-[#708090] to-[#5a6a7a] rounded-full flex items-center justify-center shadow-md animate-pinPulse [animation-delay:1s]">
-                <MapPin className="w-3 h-3 text-[#F5F0E6]" />
-              </div>
-              <div className="absolute top-[35%] right-[15%] w-5 h-5 bg-[#708090]/40 rounded-full flex items-center justify-center opacity-60">
-                <MapPin className="w-2.5 h-2.5 text-[#708090]" />
+          {/* App header - matches actual embed header */}
+          <div className="bg-emerald-600 px-4 py-2 flex items-center justify-between relative z-10">
+            <span className="text-white font-medium text-sm">The Retreat at Blue Mountain</span>
+            <span className="text-emerald-100 text-xs">8 spots</span>
+          </div>
+
+          {/* Map area - abstract stylized background */}
+          <div className="relative flex-1 bg-[#e8e4dc]" style={{height: 'calc(100% - 76px)'}}>
+            {/* Abstract map background */}
+            <div className="absolute inset-0">
+              <svg className="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice">
+                {/* Soft organic shapes for terrain */}
+                <ellipse cx="40" cy="200" rx="60" ry="40" fill="#c5d9a4" opacity="0.4"/>
+                <ellipse cx="160" cy="80" rx="50" ry="35" fill="#c5d9a4" opacity="0.35"/>
+                <ellipse cx="100" cy="260" rx="80" ry="30" fill="#a8d4e6" opacity="0.3"/>
+                {/* Subtle paths */}
+                <path d="M20,140 Q60,120 100,140 T180,130" stroke="#d4d0c8" strokeWidth="3" fill="none" opacity="0.5"/>
+                <path d="M0,200 Q80,180 140,210 T200,190" stroke="#d4d0c8" strokeWidth="2" fill="none" opacity="0.4"/>
+              </svg>
+            </div>
+
+            {/* Hotspot markers with glows */}
+            <div className="absolute inset-0">
+              {/* Gold pin marker (featured) */}
+              <div className="absolute top-[12%] left-[22%] animate-pinPulse">
+                <div className="relative">
+                  <div className="absolute w-8 h-8 bg-[#FFD27F] rounded-full blur-md opacity-40 -top-1 -left-1"/>
+                  <svg width="24" height="30" viewBox="0 0 24 30" className="drop-shadow-lg">
+                    <path d="M12 0C6.5 0 2 4.5 2 10c0 7 10 18 10 18s10-11 10-18c0-5.5-4.5-10-10-10z" fill="#FFD27F" stroke="#F5F0E6" strokeWidth="1.5"/>
+                    <circle cx="12" cy="10" r="3" fill="#F5F0E6"/>
+                  </svg>
+                </div>
               </div>
 
-              {/* Animated user location - Forest Green */}
-              <div className="absolute animate-userMove">
-                <div className="w-4 h-4 bg-[#2F4F4F] rounded-full border-2 border-[#F5F0E6] shadow-lg" />
-                <div className="absolute inset-0 w-4 h-4 bg-[#2F4F4F] rounded-full animate-ping opacity-20" />
+              {/* Forest green circle marker */}
+              <div className="absolute top-[35%] left-[58%] animate-pinPulse [animation-delay:0.4s]">
+                <div className="relative">
+                  <div className="absolute w-6 h-6 bg-[#2F4F4F] rounded-full blur-sm opacity-30 -top-0.5 -left-0.5"/>
+                  <div className="w-5 h-5 bg-[#2F4F4F] rounded-full border-2 border-[#F5F0E6] shadow-lg"/>
+                </div>
+              </div>
+
+              {/* Blue pin marker */}
+              <div className="absolute top-[55%] left-[30%] animate-pinPulse [animation-delay:0.8s]">
+                <div className="relative">
+                  <div className="absolute w-6 h-6 bg-[#3B82F6] rounded-full blur-sm opacity-35 -top-0.5 -left-0.5"/>
+                  <svg width="20" height="26" viewBox="0 0 24 30" className="drop-shadow-md">
+                    <path d="M12 0C6.5 0 2 4.5 2 10c0 7 10 18 10 18s10-11 10-18c0-5.5-4.5-10-10-10z" fill="#3B82F6" stroke="#F5F0E6" strokeWidth="1.5"/>
+                    <circle cx="12" cy="10" r="3" fill="#F5F0E6"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Slate circle marker */}
+              <div className="absolute top-[25%] right-[22%] animate-pinPulse [animation-delay:1.2s]">
+                <div className="relative">
+                  <div className="absolute w-5 h-5 bg-[#708090] rounded-full blur-sm opacity-30"/>
+                  <div className="w-4 h-4 bg-[#708090] rounded-full border-2 border-[#F5F0E6] shadow-md"/>
+                </div>
+              </div>
+
+              {/* User location dot */}
+              <div className="absolute top-[42%] left-[44%]">
+                <div className="relative">
+                  <div className="absolute w-8 h-8 bg-[#2F4F4F] rounded-full opacity-15 -top-2 -left-2 animate-ping"/>
+                  <div className="w-4 h-4 bg-[#2F4F4F] rounded-full border-[2.5px] border-[#F5F0E6] shadow-lg"/>
+                </div>
+              </div>
+            </div>
+
+            {/* Zoom controls */}
+            <div className="absolute bottom-16 right-2 flex flex-col bg-white rounded shadow-md overflow-hidden z-10">
+              <button className="w-6 h-6 flex items-center justify-center text-[#2F4F4F] text-sm">+</button>
+              <div className="h-px bg-gray-200"/>
+              <button className="w-6 h-6 flex items-center justify-center text-[#2F4F4F] text-sm">−</button>
+            </div>
+
+            {/* Powered by badge - matches actual app */}
+            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[7px] text-gray-500 flex items-center gap-1 shadow-sm z-10">
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2c-2.8 0-5 2.2-5 5 0 .5.1.9.2 1.3l4.8 11.5 4.8-11.5c.1-.4.2-.8.2-1.3 0-2.8-2.2-5-5-5z"/>
+              </svg>
+              Powered by Wandernest
+            </div>
+
+            {/* Modal overlay - shows actual hotspot detail experience */}
+            <div className="absolute inset-x-3 bottom-3 bg-[#F5F0E6] rounded-2xl shadow-2xl overflow-hidden z-20 animate-slideUp">
+              {/* Modal image */}
+              <div className="h-20 bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2040%22%3E%3Cpath%20d%3D%22M0%2040%20Q20%2025%2040%2030%20T70%2020%20T100%2028%20L100%2040%20Z%22%20fill%3D%22rgba(255,255,255,0.1)%22%2F%3E%3C%2Fsvg%3E')] bg-cover bg-bottom"/>
+                {/* Close button */}
+                <button className="absolute top-2 right-2 w-5 h-5 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                  <svg width="10" height="10" viewBox="0 0 24 24" stroke="#F5F0E6" strokeWidth="2.5" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+
+              {/* Modal content - matches hotspot-modal.tsx exactly */}
+              <div className="p-3 space-y-2">
+                {/* Header with gold bar */}
+                <div className="flex items-center gap-1.5">
+                  <div className="w-6 h-0.5 bg-[#FFD27F]"/>
+                  <span className="text-[8px] uppercase tracking-wider text-[#708090] font-medium">Point of Interest</span>
+                </div>
+                <h4 className="font-bold text-[#2F4F4F] text-base leading-tight">Meditation Garden</h4>
+                <p className="text-[10px] text-[#708090] leading-relaxed">A tranquil sanctuary surrounded by ancient oaks, perfect for morning reflection and mindfulness practice.</p>
+
+                {/* Audio player - matches hotspot modal styling */}
+                <div className="bg-white/60 rounded-lg p-2 border border-[#FFD27F]/30 flex items-center gap-2">
+                  <button className="w-8 h-8 rounded-full bg-[#2F4F4F] flex items-center justify-center flex-shrink-0 shadow">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#F5F0E6">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[9px] font-semibold text-[#2F4F4F]">Audio Guide</p>
+                    <div className="h-1 bg-[#2F4F4F]/10 rounded-full mt-1 overflow-hidden">
+                      <div className="w-1/3 h-full bg-[#FFD27F] rounded-full"/>
+                    </div>
+                  </div>
+                  <span className="text-[9px] text-[#708090] font-medium">3:24</span>
+                </div>
               </div>
             </div>
 
             <style jsx>{`
               @keyframes pinPulse {
                 0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.1); }
+                50% { transform: scale(1.05); }
               }
-              @keyframes userMove {
-                0%, 100% { top: 45%; left: 40%; }
-                25% { top: 42%; left: 45%; }
-                50% { top: 48%; left: 42%; }
-                75% { top: 44%; left: 38%; }
+              @keyframes slideUp {
+                0% { transform: translateY(10px); opacity: 0.8; }
+                100% { transform: translateY(0); opacity: 1; }
               }
               .animate-pinPulse {
-                animation: pinPulse 2s ease-in-out infinite;
+                animation: pinPulse 3s ease-in-out infinite;
               }
-              .animate-userMove {
-                animation: userMove 8s ease-in-out infinite;
+              .animate-slideUp {
+                animation: slideUp 0.3s ease-out forwards;
               }
             `}</style>
           </div>
 
-          {/* Nearby card */}
-          <div className="px-4 py-3">
-            <div className="bg-white rounded-2xl p-4 shadow-lg border border-[#2F4F4F]/10">
-              <div className="flex items-start gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-6 h-6 text-[#FFD27F]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#2F4F4F] text-sm">Meditation Garden</p>
-                  <p className="text-xs text-[#FFD27F] font-medium">50m away · Unlocked!</p>
-                  <p className="text-xs text-[#708090] mt-1 line-clamp-2">A tranquil space for morning meditation...</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom nav hint */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-[#2F4F4F]/20 rounded-full" />
+          {/* Bottom home indicator */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 bg-[#2F4F4F]/20 rounded-full z-30" />
         </div>
 
-        {/* Notch */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#2F4F4F] rounded-full" />
+        {/* Notch / Dynamic Island */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#1a1a1a] rounded-full" />
       </div>
 
       {/* Decorative elements around phone */}
