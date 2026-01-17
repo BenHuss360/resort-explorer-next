@@ -455,11 +455,60 @@ function UnifiedLoginCard() {
     setIsLoading(true)
     await new Promise(resolve => setTimeout(resolve, 800))
 
-    activateDemoMode()
-    setProject(DEMO_PROJECT)
-
-    toast.success('Welcome to Demo Mode! Explore with sample data.')
-    router.push('/portal')
+    // Test account check
+    if (email.trim().toLowerCase() === 'ben@appletrees.com' && password === '123') {
+      // Clear demo mode and fetch real project
+      localStorage.removeItem('demoMode')
+      try {
+        const res = await fetch('/api/projects/by-code/APPLETREES')
+        if (res.ok) {
+          const data = await res.json()
+          setProject({
+            id: data.id,
+            resortName: data.resortName,
+            accessCode: data.accessCode,
+            homepageContent: data.homepageContent || '',
+            mapExperience: data.mapExperience || 'full',
+            boundaries: {
+              north: data.northBoundary,
+              south: data.southBoundary,
+              east: data.eastBoundary,
+              west: data.westBoundary,
+            },
+            customMapOverlay: {
+              imageUrl: data.customMapImageUrl,
+              northLat: data.customMapNorthLat,
+              southLat: data.customMapSouthLat,
+              westLng: data.customMapWestLng,
+              eastLng: data.customMapEastLng,
+              opacity: data.customMapOpacity ?? 1.0,
+              enabled: data.customMapEnabled || false,
+              gcps: data.customMapGCPs || [],
+              calibrationMode: data.customMapCalibrationMode || '2corners',
+            },
+            venueLocation: {
+              latitude: data.venueLocationLat,
+              longitude: data.venueLocationLng,
+            },
+            embedSettings: {
+              showHeader: data.embedShowHeader ?? true,
+              showBranding: data.embedShowBranding ?? true,
+            },
+          })
+          toast.success(`Welcome! Managing ${data.resortName}`)
+          router.push('/portal')
+        } else {
+          setIsLoading(false)
+          toast.error('No project found. Please create one first.')
+        }
+      } catch {
+        setIsLoading(false)
+        toast.error('Failed to load project.')
+      }
+    } else {
+      setIsLoading(false)
+      toast.error('Invalid email or password.')
+    }
   }
 
   const handleForgotPassword = () => {
