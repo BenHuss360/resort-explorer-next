@@ -1,6 +1,11 @@
 'use client'
 
+import { useState } from 'react'
+import { SignInModal } from '@/components/modals/sign-in-modal'
+
 export function LandingHeader() {
+  const [showSignIn, setShowSignIn] = useState(false)
+
   return (
     <header className="absolute top-0 inset-x-0 z-50">
       {/* Main header content */}
@@ -13,17 +18,20 @@ export function LandingHeader() {
           </div>
 
           {/* CTA link - Right side */}
-          <a
-            href="#for-properties"
+          <button
+            onClick={() => setShowSignIn(true)}
             className="absolute right-0 text-sm text-[#F5F0E6]/80 hover:text-[#FFD27F] transition-colors font-medium"
           >
-            For Properties
-          </a>
+            Sign in
+          </button>
         </div>
       </div>
 
       {/* Decorative gold accent line at bottom */}
       <div className="h-1 bg-gradient-to-r from-transparent via-[#FFD27F]/70 to-transparent" />
+
+      {/* Sign in modal */}
+      <SignInModal open={showSignIn} onOpenChange={setShowSignIn} />
     </header>
   )
 }
