@@ -224,7 +224,7 @@ export default function LandingPage() {
       <GrainOverlay />
 
       {/* Hero Section */}
-      <HeroSection heroImageUrl="/herobackground.png" />
+      <HeroSection />
 
       {/* Mobile Hotspot Card - shown below hero on mobile only */}
       <div className="sm:hidden bg-gradient-to-b from-[#c9b896] to-[#F5F0E6] px-4 py-6 -mt-1">
