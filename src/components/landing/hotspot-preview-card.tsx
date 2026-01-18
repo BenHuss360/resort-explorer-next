@@ -138,7 +138,7 @@ export function HotspotPreviewCard({
         bg-[#F5F0E6] rounded-2xl overflow-hidden
         border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
         transition-all duration-300 hover:scale-[1.02]
-        max-w-sm
+        w-[280px] sm:w-auto sm:max-w-sm
         ${className}
       `}
       style={{
