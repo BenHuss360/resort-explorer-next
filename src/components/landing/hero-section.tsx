@@ -230,7 +230,7 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
       <div className="absolute z-40 left-1/2 -translate-x-1/2 bottom-14 md:left-6 md:translate-x-0 md:bottom-8 lg:left-12 lg:bottom-12">
         <CTABadge
           className="animate-ctaBadgePopIn"
-          style={{ '--pop-delay': '1.5s' } as React.CSSProperties}
+          style={{ '--pop-delay': '0.2s' } as React.CSSProperties}
         />
       </div>
 
@@ -254,14 +254,14 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
               variant="featured"
               onWatchVideo={() => {}}
               className="animate-heroCardPopIn relative z-10"
-              style={{ '--pop-delay': '1.6s' } as React.CSSProperties}
+              style={{ '--pop-delay': '0.3s' } as React.CSSProperties}
             />
             <HotspotPreviewCard
               {...theme.secondary}
               variant="secondary"
               hasVideo={false}
               className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
-              style={{ '--pop-delay': '1.8s' } as React.CSSProperties}
+              style={{ '--pop-delay': '0.45s' } as React.CSSProperties}
             />
           </div>
         ))}
