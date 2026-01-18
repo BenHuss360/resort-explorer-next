@@ -12,6 +12,58 @@ const heroImages = [
   '/englishcountryside.png',
 ]
 
+// Themed hotspot data for each hero image
+const themedHotspots = [
+  // Ski Resort theme
+  {
+    featured: {
+      title: 'Alpine Summit',
+      description:
+        'Experience panoramic views from our highest peak. Perfect for sunrise photography and après-ski relaxation.',
+      audioDuration: '2:48',
+      imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=400&h=300&fit=crop',
+    },
+    secondary: {
+      title: 'Chairlift Vista',
+      description: 'Scenic views along our historic chairlift route through the pines.',
+      audioDuration: '1:55',
+      imageUrl: 'https://images.unsplash.com/photo-1516939884455-1445c8652f83?w=400&h=300&fit=crop',
+    },
+  },
+  // Tuscany theme
+  {
+    featured: {
+      title: 'Vineyard Terrace',
+      description:
+        'Savor the golden hour among ancient vines. A timeless spot for wine tasting and sunset views.',
+      audioDuration: '3:24',
+      imageUrl: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=400&h=300&fit=crop',
+    },
+    secondary: {
+      title: 'Villa Garden',
+      description: 'Wander through centuries-old olive trees and fragrant herb gardens.',
+      audioDuration: '2:12',
+      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+    },
+  },
+  // English Countryside theme
+  {
+    featured: {
+      title: 'Manor Gardens',
+      description:
+        'Explore our award-winning English gardens. Discover hidden paths, topiaries, and the iconic rose walk.',
+      audioDuration: '4:05',
+      imageUrl: 'https://images.unsplash.com/photo-1582542021985-549ba224e01b?w=400&h=300&fit=crop',
+    },
+    secondary: {
+      title: 'Riverside Path',
+      description: 'A peaceful trail along the estate river, perfect for morning strolls.',
+      audioDuration: '2:30',
+      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+    },
+  },
+]
+
 // Grain texture overlay
 function GrainOverlay() {
   return (
@@ -119,22 +171,6 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
     return () => clearInterval(interval)
   }, [heroImageUrl])
 
-  // Demo hotspot data
-  const featuredHotspot = {
-    title: 'Hilltop Viewpoint',
-    description:
-      'Enjoy a breathtaking panorama from our hilltop lookout. A perfect spot to relax and take in the sunset.',
-    audioDuration: '3:12',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-  }
-
-  const secondaryHotspot = {
-    title: 'Lakeside Pavilion',
-    description: 'Relax by the water\'s edge in our tranquil lakeside pavilion.',
-    audioDuration: '2:45',
-    imageUrl: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop',
-  }
-
   return (
     <section className="relative h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden">
       {/* Header */}
@@ -199,21 +235,36 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
       </div>
 
       {/* Hotspot Preview Cards - Right side, stacked with overlap (hidden on mobile, shown below hero instead) */}
+      {/* Renders all themed card sets and fades between them in sync with background */}
       <div className="absolute hidden sm:flex sm:right-6 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 lg:right-12 z-20 flex-col">
-        <HotspotPreviewCard
-          {...featuredHotspot}
-          variant="featured"
-          onWatchVideo={() => {}}
-          className="animate-heroCardPopIn relative z-10"
-          style={{ '--pop-delay': '1.6s' } as React.CSSProperties}
-        />
-        <HotspotPreviewCard
-          {...secondaryHotspot}
-          variant="secondary"
-          hasVideo={false}
-          className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
-          style={{ '--pop-delay': '1.8s' } as React.CSSProperties}
-        />
+        {themedHotspots.map((theme, index) => (
+          <div
+            key={index}
+            className="transition-opacity duration-[1500ms] ease-in-out"
+            style={{
+              opacity: index === currentImageIndex ? 1 : 0,
+              position: index === 0 ? 'relative' : 'absolute',
+              top: index === 0 ? undefined : 0,
+              right: index === 0 ? undefined : 0,
+              pointerEvents: index === currentImageIndex ? 'auto' : 'none',
+            }}
+          >
+            <HotspotPreviewCard
+              {...theme.featured}
+              variant="featured"
+              onWatchVideo={() => {}}
+              className="animate-heroCardPopIn relative z-10"
+              style={{ '--pop-delay': '1.6s' } as React.CSSProperties}
+            />
+            <HotspotPreviewCard
+              {...theme.secondary}
+              variant="secondary"
+              hasVideo={false}
+              className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
+              style={{ '--pop-delay': '1.8s' } as React.CSSProperties}
+            />
+          </div>
+        ))}
       </div>
 
     </section>
