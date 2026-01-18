@@ -24,7 +24,7 @@ export async function GET(
         projectId: addTokens.projectId,
         expiresAt: addTokens.expiresAt,
         projectName: projects.resortName,
-        accessCode: projects.accessCode,
+        slug: projects.slug,
       })
       .from(addTokens)
       .innerJoin(projects, eq(addTokens.projectId, projects.id))
@@ -52,7 +52,7 @@ export async function GET(
       valid: true,
       projectId: tokenRecord.projectId,
       projectName: tokenRecord.projectName,
-      accessCode: tokenRecord.accessCode,
+      slug: tokenRecord.slug,
       expiresAt: tokenRecord.expiresAt,
     })
   } catch (error) {

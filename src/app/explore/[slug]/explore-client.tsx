@@ -18,18 +18,18 @@ const LeafletMap = dynamic(
   }
 )
 
-interface EmbedClientProps {
-  code: string
+interface ExploreClientProps {
+  slug: string
 }
 
-export function EmbedClient({ code }: EmbedClientProps) {
+export function ExploreClient({ slug }: ExploreClientProps) {
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null)
 
-  // Fetch project by access code
+  // Fetch project by slug
   const { data: rawProject, isLoading: projectLoading, error: projectError } = useQuery({
-    queryKey: ['project', code],
+    queryKey: ['project', slug],
     queryFn: async () => {
-      const res = await fetch(`/api/projects/by-code/${code}`)
+      const res = await fetch(`/api/projects/by-slug/${slug}`)
       if (!res.ok) throw new Error('Project not found')
       return res.json() as Promise<Project>
     },
@@ -98,7 +98,7 @@ export function EmbedClient({ code }: EmbedClientProps) {
             </svg>
           </div>
           <p className="text-gray-600 font-medium">Map not found</p>
-          <p className="text-sm text-gray-400 mt-1">Check that the access code is correct</p>
+          <p className="text-sm text-gray-400 mt-1">Check that the property code is correct</p>
         </div>
       </div>
     )

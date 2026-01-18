@@ -17,7 +17,7 @@ interface SignInModalProps {
 
 export function SignInModal({ open, onOpenChange }: SignInModalProps) {
   const router = useRouter()
-  const [username, setUsername] = useState('')
+  const [propertyCode, setPropertyCode] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -28,12 +28,12 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
     setIsLoading(true)
 
     try {
-      // For now, use the username as the access code to look up the project
-      const res = await fetch(`/api/projects/by-code/${encodeURIComponent(username)}`)
+      // Use the property code (slug) to look up the project
+      const res = await fetch(`/api/projects/by-slug/${encodeURIComponent(propertyCode.toLowerCase())}`)
 
       if (!res.ok) {
         if (res.status === 404) {
-          setError('Invalid username or password.')
+          setError('Invalid property code or password.')
         } else {
           setError('Something went wrong. Please try again.')
         }
@@ -66,15 +66,15 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-[#708090] mb-1.5">
-              Username
+            <label htmlFor="propertyCode" className="block text-sm font-medium text-[#708090] mb-1.5">
+              Property Code
             </label>
             <input
-              id="username"
+              id="propertyCode"
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your username"
+              value={propertyCode}
+              onChange={(e) => setPropertyCode(e.target.value)}
+              placeholder="e.g., the-newt-somerset"
               className="w-full px-4 py-3 rounded-lg border border-[#708090]/20 bg-white text-[#2F4F4F] placeholder:text-[#708090]/50 focus:outline-none focus:ring-2 focus:ring-[#FFD27F] focus:border-transparent transition-all"
               autoFocus
             />
@@ -99,7 +99,7 @@ export function SignInModal({ open, onOpenChange }: SignInModalProps) {
 
           <button
             type="submit"
-            disabled={!username.trim() || !password.trim() || isLoading}
+            disabled={!propertyCode.trim() || !password.trim() || isLoading}
             className="w-full py-3 px-4 bg-[#2F4F4F] text-[#F5F0E6] rounded-lg font-medium hover:bg-[#3D6363] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Signing in...' : 'Sign in'}

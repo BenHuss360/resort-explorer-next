@@ -11,7 +11,7 @@ async function seed() {
   // Create a test project - Appletrees, Castle Cary, BA7 7PQ
   const [project] = await db.insert(projects).values({
     resortName: 'Appletrees',
-    accessCode: 'APPLETREES',
+    slug: 'appletrees',
     homepageContent: 'Welcome to Appletrees! Explore our beautiful property in Castle Cary.',
     mapExperience: 'full',
     northBoundary: 51.0968,

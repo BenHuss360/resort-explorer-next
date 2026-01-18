@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
-import { EmbedClient } from './embed-client'
+import { ExploreClient } from './explore-client'
 
-interface EmbedPageProps {
-  params: Promise<{ code: string }>
+interface ExplorePageProps {
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({
   params,
-}: EmbedPageProps): Promise<Metadata> {
-  const { code } = await params
+}: ExplorePageProps): Promise<Metadata> {
+  const { slug } = await params
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://wandernest.app'
 
   try {
-    const res = await fetch(`${baseUrl}/api/projects/by-code/${code}`, {
+    const res = await fetch(`${baseUrl}/api/projects/by-slug/${slug}`, {
       next: { revalidate: 3600 },
     })
 
@@ -46,7 +46,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function EmbedPage({ params }: EmbedPageProps) {
-  const { code } = await params
-  return <EmbedClient code={code} />
+export default async function ExplorePage({ params }: ExplorePageProps) {
+  const { slug } = await params
+  return <ExploreClient slug={slug} />
 }

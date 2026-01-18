@@ -12,7 +12,7 @@ export interface VenueLocation {
 export interface ProjectContextData {
   id: number
   resortName: string
-  accessCode: string
+  slug: string
   homepageContent: string
   mapExperience: MapExperience
   boundaries: Boundaries
@@ -42,7 +42,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         const projectData: ProjectContextData = {
           id: data.id,
           resortName: data.resortName,
-          accessCode: data.accessCode,
+          slug: data.slug,
           homepageContent: data.homepageContent || '',
           mapExperience: data.mapExperience || 'full',
           boundaries: {

@@ -5,14 +5,14 @@ import { eq } from 'drizzle-orm'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ code: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { code } = await params
+    const { slug } = await params
 
-    if (!code) {
+    if (!slug) {
       return NextResponse.json(
-        { error: 'Access code required' },
+        { error: 'Property code required' },
         { status: 400 }
       )
     }
@@ -20,7 +20,7 @@ export async function GET(
     const [project] = await db
       .select()
       .from(projects)
-      .where(eq(projects.accessCode, code))
+      .where(eq(projects.slug, slug))
 
     if (!project) {
       return NextResponse.json(
@@ -31,7 +31,7 @@ export async function GET(
 
     return NextResponse.json(project)
   } catch (error) {
-    console.error('Error fetching project by code:', error)
+    console.error('Error fetching project by slug:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

@@ -42,7 +42,7 @@ export default function PortalLayout({
                 )}
               </div>
               <p className="text-sm text-gray-500">
-                Access Code: <code className="bg-gray-100 px-2 py-0.5 rounded">{project?.accessCode}</code>
+                Property Code: <code className="bg-gray-100 px-2 py-0.5 rounded">{project?.slug}</code>
               </p>
             </div>
             {!isDemo && (

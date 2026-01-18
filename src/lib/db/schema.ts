@@ -9,7 +9,7 @@ import { z } from 'zod'
 export const projects = pgTable('projects', {
   id: serial('id').primaryKey(),
   resortName: text('resort_name').notNull(),
-  accessCode: varchar('access_code', { length: 10 }).notNull().unique(),
+  slug: varchar('slug', { length: 50 }).notNull().unique(),
   homepageContent: text('homepage_content'),
   mapType: text('map_type').notNull().default('openstreetmap'),
   customMapUrl: text('custom_map_url'),
@@ -174,7 +174,7 @@ export const hotspotSchema = z.object({
 
 export const projectSchema = z.object({
   resortName: z.string().min(1, 'Resort name is required'),
-  accessCode: z.string().min(1).max(10),
+  slug: z.string().min(1).max(50).regex(/^[a-z0-9-]+$/, 'Slug must be lowercase letters, numbers, and hyphens only'),
   homepageContent: z.string().optional().nullable(),
   mapExperience: z.enum(['full', 'interactive']).default('full'),
   northBoundary: z.number().optional().nullable(),

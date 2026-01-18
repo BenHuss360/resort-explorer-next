@@ -162,7 +162,7 @@ export default function PortalHotspotsPage() {
         <div className="flex items-center gap-2">
           <QRGeneratorDialog
             projectId={project?.id}
-            accessCode={project?.accessCode}
+            slug={project?.slug}
             trigger={
               <button
                 type="button"

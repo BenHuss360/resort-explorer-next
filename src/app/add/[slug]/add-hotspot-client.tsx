@@ -8,19 +8,19 @@ interface TokenInfo {
   valid: boolean
   projectId: number
   projectName: string
-  accessCode: string
+  slug: string
   expiresAt: string
   error?: string
 }
 
 interface AddHotspotClientProps {
-  code: string
+  slug: string
   token?: string
 }
 
 type ViewState = 'validating' | 'invalid' | 'form' | 'uploading' | 'success'
 
-export function AddHotspotClient({ code, token }: AddHotspotClientProps) {
+export function AddHotspotClient({ slug, token }: AddHotspotClientProps) {
   const [viewState, setViewState] = useState<ViewState>('validating')
   const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -57,8 +57,8 @@ export function AddHotspotClient({ code, token }: AddHotspotClientProps) {
           return
         }
 
-        // Verify the access code matches
-        if (data.accessCode.toUpperCase() !== code.toUpperCase()) {
+        // Verify the slug matches
+        if (data.slug.toLowerCase() !== slug.toLowerCase()) {
           setError('Token does not match this project')
           setViewState('invalid')
           return
@@ -73,7 +73,7 @@ export function AddHotspotClient({ code, token }: AddHotspotClientProps) {
     }
 
     validateToken()
-  }, [token, code])
+  }, [token, slug])
 
   // Handle file upload
   const handleFileSelect = useCallback(async (file: File) => {
