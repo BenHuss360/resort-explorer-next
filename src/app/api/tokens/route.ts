@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     // Verify project exists
     const [project] = await db
-      .select({ id: projects.id, accessCode: projects.accessCode })
+      .select({ id: projects.id, slug: projects.slug })
       .from(projects)
       .where(eq(projects.id, projectId))
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     // Build the QR URL
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
-    const qrUrl = `${baseUrl}/add/${project.accessCode}?token=${token}`
+    const qrUrl = `${baseUrl}/add/${project.slug}?token=${token}`
 
     return NextResponse.json({
       token: newToken.token,

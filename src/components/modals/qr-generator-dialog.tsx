@@ -14,11 +14,11 @@ import type { AddToken } from '@/lib/db/schema'
 
 interface QRGeneratorDialogProps {
   projectId?: number
-  accessCode?: string
+  slug?: string
   trigger: React.ReactNode
 }
 
-export function QRGeneratorDialog({ projectId, accessCode, trigger }: QRGeneratorDialogProps) {
+export function QRGeneratorDialog({ projectId, slug, trigger }: QRGeneratorDialogProps) {
   const queryClient = useQueryClient()
   const qrRef = useRef<HTMLDivElement>(null)
   const [expiryHours, setExpiryHours] = useState(24)
@@ -85,7 +85,7 @@ export function QRGeneratorDialog({ projectId, accessCode, trigger }: QRGenerato
       ctx?.drawImage(img, 0, 0, 300, 300)
       const pngUrl = canvas.toDataURL('image/png')
       const link = document.createElement('a')
-      link.download = `${accessCode}-add-hotspot-qr.png`
+      link.download = `${slug}-add-hotspot-qr.png`
       link.href = pngUrl
       link.click()
     }

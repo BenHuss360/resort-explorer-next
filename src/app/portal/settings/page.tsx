@@ -36,7 +36,7 @@ const CustomMapCalibrator = dynamic(
 )
 
 // Embed Code Section - can be gated behind premium later
-function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
+function EmbedCodeSection({ slug }: { slug?: string }) {
   const [embedSize, setEmbedSize] = useState<'small' | 'medium' | 'large'>('medium')
   const [copiedIframe, setCopiedIframe] = useState(false)
   const [copiedUrl, setCopiedUrl] = useState(false)
@@ -53,7 +53,7 @@ function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
     medium: { width: 600, height: 700 },
     large: { width: 800, height: 900 },
   }
-  const embedUrl = `${baseUrl}/embed/${accessCode}`
+  const embedUrl = `${baseUrl}/explore/${slug}`
   const { width, height } = sizes[embedSize]
 
   const embedCode = `<iframe
@@ -418,31 +418,31 @@ export default function PortalSettingsPage() {
     })
   }, [])
 
-  const copyAccessCode = () => {
-    navigator.clipboard.writeText(project?.accessCode || '')
-    alert('Access code copied to clipboard!')
+  const copyPropertyCode = () => {
+    navigator.clipboard.writeText(project?.slug || '')
+    alert('Property code copied to clipboard!')
   }
 
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Settings</h2>
 
-      {/* Access Code */}
+      {/* Property Code */}
       <div className="bg-white rounded-lg border p-6">
-        <h3 className="font-semibold mb-4">Access Code</h3>
+        <h3 className="font-semibold mb-4">Property Code</h3>
         <div className="flex items-center gap-4">
           <code className="bg-gray-100 px-4 py-2 rounded-lg text-lg font-mono">
-            {project?.accessCode}
+            {project?.slug}
           </code>
           <button
-            onClick={copyAccessCode}
+            onClick={copyPropertyCode}
             className="text-blue-600 hover:text-blue-700 text-sm"
           >
             Copy
           </button>
         </div>
         <p className="text-sm text-gray-500 mt-2">
-          Share this code with guests so they can access your resort map.
+          Share this code with guests so they can access your resort map at /explore/{project?.slug}
         </p>
       </div>
 
@@ -720,7 +720,7 @@ export default function PortalSettingsPage() {
         </div>
 
         {/* Embed Code - Future premium feature */}
-        <EmbedCodeSection accessCode={project?.accessCode} />
+        <EmbedCodeSection slug={project?.slug} />
 
         {/* Save Button */}
         <div className="flex items-center gap-4">

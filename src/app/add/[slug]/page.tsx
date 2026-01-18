@@ -11,11 +11,11 @@ export default async function AddHotspotPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ code: string }>
+  params: Promise<{ slug: string }>
   searchParams: Promise<{ token?: string }>
 }) {
-  const { code } = await params
+  const { slug } = await params
   const { token } = await searchParams
 
-  return <AddHotspotClient code={code} token={token} />
+  return <AddHotspotClient slug={slug} token={token} />
 }

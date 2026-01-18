@@ -5,7 +5,7 @@ import type { ProjectContextData } from '@/components/providers/project-provider
 export const DEMO_PROJECT: ProjectContextData = {
   id: 999999,
   resortName: 'The Newt in Somerset',
-  accessCode: 'DEMO',
+  slug: 'the-newt-somerset',
   homepageContent: 'Welcome to The Newt in Somerset! Explore our working country estate with beautiful gardens, farm experiences, and exceptional dining. Discover all our hotspots on the interactive map.',
   mapExperience: 'full',
   boundaries: {
