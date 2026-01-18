@@ -402,8 +402,13 @@ export default function PortalSettingsPage() {
   const handleIllustratedMapExpand = useCallback(() => {
     if (!customMapExpanded) {
       // Expanding - check if we should show warning
-      const hasSeenWarning = localStorage.getItem('illustratedMapWarningDismissed')
-      if (!hasSeenWarning) {
+      try {
+        const hasSeenWarning = localStorage.getItem('illustratedMapWarningDismissed')
+        if (!hasSeenWarning) {
+          setShowIllustratedMapWarning(true)
+        }
+      } catch {
+        // localStorage unavailable (e.g., private browsing), show warning anyway
         setShowIllustratedMapWarning(true)
       }
     }
@@ -1197,7 +1202,11 @@ export default function PortalSettingsPage() {
             <button
               type="button"
               onClick={() => {
-                localStorage.setItem('illustratedMapWarningDismissed', 'true')
+                try {
+                  localStorage.setItem('illustratedMapWarningDismissed', 'true')
+                } catch {
+                  // Ignore - user will see warning again next time
+                }
                 setShowIllustratedMapWarning(false)
               }}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
