@@ -91,7 +91,7 @@ export function HotspotPreviewCard({
     return (
       <div
         className={`
-          bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/20
+          bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/40
           border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
           transition-all duration-300 hover:scale-[1.02]
           max-w-xs
@@ -132,7 +132,7 @@ export function HotspotPreviewCard({
   return (
     <div
       className={`
-        bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/20
+        bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/40
         border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
         transition-all duration-300 hover:scale-[1.02]
         max-w-sm
