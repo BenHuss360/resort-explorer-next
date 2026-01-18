@@ -255,6 +255,7 @@ export default function PortalSettingsPage() {
   )
   const [showCalibrator, setShowCalibrator] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [customMapExpanded, setCustomMapExpanded] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Update state when project loads
@@ -536,25 +537,58 @@ export default function PortalSettingsPage() {
           </div>
         </div>
 
-        {/* Custom Map Overlay */}
-        <div className="bg-white rounded-lg border p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">Custom Map Overlay</h3>
-            {customMapImageUrl && customMapBounds.northLat && (
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={customMapEnabled}
-                  onChange={(e) => setCustomMapEnabled(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-600">Enable overlay</span>
-              </label>
-            )}
-          </div>
-          <p className="text-sm text-gray-500">
-            Upload a custom map (scanned or hand-drawn) and calibrate it with GPS coordinates to overlay on the main map.
-          </p>
+        {/* Custom Map Overlay - Collapsible Beta Section */}
+        <div className="bg-white rounded-lg border overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setCustomMapExpanded(!customMapExpanded)}
+            className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`text-gray-400 transition-transform ${customMapExpanded ? 'rotate-90' : ''}`}
+              >
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+              <h3 className="font-semibold">Custom Map Overlay</h3>
+              <span className="text-xs bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
+                Beta
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              {customMapImageUrl && customMapBounds.northLat && (
+                <span className="text-xs text-green-600 font-medium">Configured</span>
+              )}
+            </div>
+          </button>
+
+          {customMapExpanded && (
+            <div className="px-6 pb-6 space-y-4 border-t">
+              <div className="pt-4 flex items-center justify-between">
+                <p className="text-sm text-gray-500">
+                  Upload a custom map (scanned or hand-drawn) and calibrate it with GPS coordinates to overlay on the main map.
+                </p>
+                {customMapImageUrl && customMapBounds.northLat && (
+                  <label className="flex items-center gap-2 cursor-pointer ml-4 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={customMapEnabled}
+                      onChange={(e) => setCustomMapEnabled(e.target.checked)}
+                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-600">Enable overlay</span>
+                  </label>
+                )}
+              </div>
 
           {!customMapImageUrl ? (
             // Upload dropzone
@@ -652,6 +686,8 @@ export default function PortalSettingsPage() {
                 </div>
               )}
 
+            </div>
+          )}
             </div>
           )}
         </div>
