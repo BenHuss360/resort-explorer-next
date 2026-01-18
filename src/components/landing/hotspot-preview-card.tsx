@@ -168,7 +168,7 @@ export function HotspotPreviewCard({
       </div>
 
       {/* Content */}
-      <div className="p-5 space-y-3">
+      <div className="p-5 lg:p-6 xl:p-7 space-y-3">
         {/* Header with gold bar */}
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 bg-[#FFD27F]" />
