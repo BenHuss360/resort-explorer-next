@@ -15,7 +15,7 @@ export const DEMO_PROJECT: ProjectContextData = {
     west: -2.4950,
   },
   customMapOverlay: {
-    imageUrl: '/assets/custommap.webp',
+    imageUrl: '/custommap.webp',
     northLat: 51.1150,
     southLat: 51.1000,
     westLng: -2.4950,
