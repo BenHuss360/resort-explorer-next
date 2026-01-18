@@ -94,6 +94,7 @@ export default function LeafletMap({
   const userPulseRef = useRef<L.CircleMarker | null>(null)
   const overlayRef = useRef<L.ImageOverlay | null>(null)
   const onHotspotClickRef = useRef(onHotspotClick)
+  const hasFitToHotspotsRef = useRef(false)
 
   // Keep callback ref updated
   useEffect(() => {
@@ -121,6 +122,12 @@ export default function LeafletMap({
       iconAnchor: shape === 'pin' ? [18, 36] : [18, 18],
     })
   }, [])
+
+  // Get bounds that include all hotspots
+  const getHotspotBounds = useCallback((): L.LatLngBounds | null => {
+    if (hotspots.length < 2) return null
+    return L.latLngBounds(hotspots.map(h => L.latLng(h.latitude, h.longitude)))
+  }, [hotspots])
 
   // Initialize map
   useEffect(() => {
@@ -158,8 +165,12 @@ export default function LeafletMap({
 
     mapRef.current = map
 
-    // Fit to boundaries if available
-    if (boundaries?.north && boundaries?.south && boundaries?.east && boundaries?.west) {
+    // Fit to hotspot bounds if available, otherwise fall back to boundaries
+    const hotspotBounds = getHotspotBounds()
+    if (hotspotBounds) {
+      map.fitBounds(hotspotBounds, { padding: [40, 40] })
+      hasFitToHotspotsRef.current = true
+    } else if (boundaries?.north && boundaries?.south && boundaries?.east && boundaries?.west) {
       map.fitBounds([
         [boundaries.south, boundaries.west],
         [boundaries.north, boundaries.east],
@@ -212,6 +223,17 @@ export default function LeafletMap({
       markersRef.current.push(marker)
     })
   }, [hotspots, createMarkerIcon])
+
+  // Fit to hotspot bounds when hotspots first load
+  useEffect(() => {
+    if (!mapRef.current || hasFitToHotspotsRef.current || hotspots.length < 2) return
+
+    const hotspotBounds = getHotspotBounds()
+    if (hotspotBounds) {
+      mapRef.current.fitBounds(hotspotBounds, { padding: [40, 40] })
+      hasFitToHotspotsRef.current = true
+    }
+  }, [hotspots, getHotspotBounds])
 
   // Update user location marker
   useEffect(() => {
