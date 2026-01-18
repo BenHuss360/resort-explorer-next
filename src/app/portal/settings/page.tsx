@@ -8,6 +8,14 @@ import { MOCK_DISTANCE_THRESHOLD } from '@/lib/location-settings'
 import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import { GoogleFontsLoader } from '@/components/google-fonts-loader'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 // Dynamic import for map component (no SSR)
 const VenueLocationPicker = dynamic(
@@ -381,7 +389,31 @@ export default function PortalSettingsPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [customMapExpanded, setCustomMapExpanded] = useState(false)
   const [brandingExpanded, setBrandingExpanded] = useState(false)
+  const [shareBaseUrl, setShareBaseUrl] = useState('')
+  const [showIllustratedMapWarning, setShowIllustratedMapWarning] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Set base URL after mount to avoid hydration mismatch
+  useEffect(() => {
+    setShareBaseUrl(window.location.origin)
+  }, [])
+
+  // Handle illustrated map section expansion with experimental warning
+  const handleIllustratedMapExpand = useCallback(() => {
+    if (!customMapExpanded) {
+      // Expanding - check if we should show warning
+      try {
+        const hasSeenWarning = localStorage.getItem('illustratedMapWarningDismissed')
+        if (!hasSeenWarning) {
+          setShowIllustratedMapWarning(true)
+        }
+      } catch {
+        // localStorage unavailable (e.g., private browsing), show warning anyway
+        setShowIllustratedMapWarning(true)
+      }
+    }
+    setCustomMapExpanded(!customMapExpanded)
+  }, [customMapExpanded])
 
   // Update state when project loads
   useEffect(() => {
@@ -905,11 +937,11 @@ export default function PortalSettingsPage() {
           </div>
         </div>
 
-        {/* Custom Map Overlay - Collapsible Beta Section */}
+        {/* Illustrated Map - Collapsible Beta Section */}
         <div className="bg-white rounded-lg border overflow-hidden">
           <button
             type="button"
-            onClick={() => setCustomMapExpanded(!customMapExpanded)}
+            onClick={handleIllustratedMapExpand}
             className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-2">
@@ -927,7 +959,7 @@ export default function PortalSettingsPage() {
               >
                 <path d="m9 18 6-6-6-6"/>
               </svg>
-              <h3 className="font-semibold">Custom Map Overlay</h3>
+              <h3 className="font-semibold">Illustrated Map</h3>
               <span className="text-xs bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 px-2 py-0.5 rounded-full font-medium">
                 Beta
               </span>
@@ -943,7 +975,7 @@ export default function PortalSettingsPage() {
             <div className="px-6 pb-6 space-y-4 border-t">
               <div className="pt-4 flex items-center justify-between">
                 <p className="text-sm text-gray-500">
-                  Upload a custom map (scanned or hand-drawn) and calibrate it with GPS coordinates to overlay on the main map.
+                  Overlay your own illustrated or hand-drawn map on top of the satellite view.
                 </p>
                 {customMapImageUrl && customMapBounds.northLat && (
                   <label className="flex items-center gap-2 cursor-pointer ml-4 shrink-0">
@@ -1071,7 +1103,7 @@ export default function PortalSettingsPage() {
           </p>
           <div className="flex items-center gap-2">
             <code className="flex-1 bg-gray-100 px-3 py-2 rounded-lg text-sm font-mono text-gray-700 truncate">
-              {typeof window !== 'undefined' ? window.location.origin : ''}/explore/{project?.slug}
+              {shareBaseUrl}/explore/{project?.slug}
             </code>
             <button
               type="button"
@@ -1134,6 +1166,56 @@ export default function PortalSettingsPage() {
           onCancel={() => setShowCalibrator(false)}
         />
       )}
+
+      {/* Illustrated Map Experimental Warning Modal */}
+      <Dialog open={showIllustratedMapWarning} onOpenChange={setShowIllustratedMapWarning}>
+        <DialogContent className="sm:max-w-md bg-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-amber-500"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Experimental Feature
+            </DialogTitle>
+            <DialogDescription className="text-gray-600 pt-2">
+              The illustrated map feature lets you overlay your own hand-drawn or custom map on top of the satellite view.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+            <p className="font-medium mb-1">This feature is in beta</p>
+            <p>Calibrating your map to GPS coordinates can be tricky and may require some trial and error. Results may vary depending on your map&apos;s accuracy.</p>
+          </div>
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  localStorage.setItem('illustratedMapWarningDismissed', 'true')
+                } catch {
+                  // Ignore - user will see warning again next time
+                }
+                setShowIllustratedMapWarning(false)
+              }}
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              Got it
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
