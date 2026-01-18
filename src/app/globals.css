@@ -243,3 +243,22 @@
 .animate-glow-pulse {
   animation: glowPulse 3s ease-in-out infinite;
 }
+
+/* Landing page animations */
+@keyframes pinFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes cardFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(0.5deg); }
+}
+
+.animate-pinFloat {
+  animation: pinFloat 4s ease-in-out infinite;
+}
+
+.animate-cardFloat {
+  animation: cardFloat 6s ease-in-out infinite;
+}

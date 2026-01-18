@@ -1,0 +1,23 @@
+'use client'
+
+export function LandingHeader() {
+  return (
+    <header className="absolute top-0 inset-x-0 z-50 bg-[#2F4F4F] px-4 md:px-6 py-5">
+      <div className="max-w-7xl mx-auto flex items-center justify-center relative">
+        {/* Logo - Centered */}
+        <div className="flex items-center gap-3">
+          <img src="/wnlogo.svg" alt="WanderNest" className="h-12 w-auto" />
+          <span className="font-bold text-2xl text-[#F5F0E6]">WanderNest</span>
+        </div>
+
+        {/* CTA link - Right side */}
+        <a
+          href="#for-properties"
+          className="absolute right-0 text-sm text-[#F5F0E6]/80 hover:text-[#FFD27F] transition-colors font-medium"
+        >
+          For Properties
+        </a>
+      </div>
+    </header>
+  )
+}
