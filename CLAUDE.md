@@ -51,7 +51,7 @@ src/
 
 ## Database Schema
 
-**projects** - Resort configuration, access codes, map settings, venue location, custom map overlay settings
+**projects** - Resort configuration, slugs, map settings, venue location, custom map overlay settings
 **hotspots** - Points of interest with location, media, marker styling
 
 ## Custom Map Calibration
@@ -80,10 +80,10 @@ Properties can overlay illustrated maps on top of the base map. Two calibration 
 ## Key Patterns
 
 - Map components use `dynamic()` with `ssr: false`
-- Access via codes (no auth system) - verified by project lookup
+- Access via slugs (no auth system) - verified by project lookup
 - Smart location mocking when user >5km from venue
 - IndexedDB caching for offline support
-- Demo mode with `DEMO` access code
+- Demo mode via "Try the Demo" button on landing page
 
 ## Performance Patterns
 
@@ -120,7 +120,7 @@ Scan a QR code on your phone to add hotspots on location. Hotspots are submitted
 ## API Endpoints
 
 - `GET/PATCH /api/projects/[id]` - Project CRUD
-- `GET /api/projects/by-code/[code]` - Lookup by access code
+- `GET /api/projects/by-slug/[slug]` - Lookup by slug
 - `GET/POST /api/projects/[id]/hotspots` - List/create hotspots (supports `?includeDrafts=true`)
 - `GET/PATCH/DELETE /api/hotspots/[id]` - Hotspot CRUD
 - `POST /api/tokens` - Generate add-hotspot token
