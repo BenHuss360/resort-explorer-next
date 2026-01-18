@@ -236,7 +236,7 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
 
       {/* Hotspot Preview Cards - Right side, stacked with overlap (hidden on mobile, shown below hero instead) */}
       {/* Renders all themed card sets and fades between them in sync with background */}
-      <div className="absolute hidden sm:flex sm:right-6 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 lg:right-12 z-20 flex-col">
+      <div className="absolute hidden sm:flex sm:right-6 sm:bottom-auto sm:top-[55%] sm:-translate-y-1/2 lg:right-12 z-20 flex-col">
         {themedHotspots.map((theme, index) => (
           <div
             key={index}
