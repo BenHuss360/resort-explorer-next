@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import Image from 'next/image'
 import { Play, Pause, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -113,9 +114,9 @@ export function HotspotPreviewCard({
       >
         <div className="flex gap-3 p-3">
           {/* Thumbnail image */}
-          <div className="w-20 h-16 lg:w-24 lg:h-20 xl:w-28 xl:h-24 rounded-lg overflow-hidden flex-shrink-0">
+          <div className="w-20 h-16 lg:w-24 lg:h-20 xl:w-28 xl:h-24 rounded-lg overflow-hidden flex-shrink-0 relative">
             {imageUrl ? (
-              <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
+              <Image src={imageUrl} alt={title} fill className="object-cover" sizes="(min-width: 1280px) 112px, (min-width: 1024px) 96px, 80px" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-[#4a7c59] via-[#3d6b4f] to-[#2d5a3f]" />
             )}
@@ -159,11 +160,12 @@ export function HotspotPreviewCard({
       {/* Image */}
       <div className="relative overflow-hidden h-32 lg:h-40 xl:h-48">
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-            loading="lazy"
+            fill
+            className="object-cover transition-transform duration-500 hover:scale-105"
+            sizes="(min-width: 1536px) 576px, (min-width: 1280px) 512px, (min-width: 1024px) 448px, (min-width: 640px) 384px, 280px"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#4a7c59] via-[#3d6b4f] to-[#2d5a3f]">

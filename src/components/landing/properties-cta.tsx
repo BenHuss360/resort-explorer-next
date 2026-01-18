@@ -1,13 +1,19 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { Play, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { activateDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
 import { useProject } from '@/components/providers/project-provider'
 import { toast } from 'sonner'
-import { ContactModal } from '@/components/modals/contact-modal'
+
+// Lazy-load ContactModal since it's only shown on user interaction
+const ContactModal = dynamic(
+  () => import('@/components/modals/contact-modal').then(m => m.ContactModal),
+  { ssr: false }
+)
 
 export function PropertiesCTA() {
   const router = useRouter()

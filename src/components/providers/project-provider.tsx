@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
 import type { Boundaries, CustomMapOverlay, MapExperience, EmbedSettings, BrandColors, BrandFonts } from '@/lib/db/schema'
 import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import { isDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
@@ -36,6 +37,7 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 export function ProjectProvider({ children }: { children: ReactNode }) {
   const [project, setProjectState] = useState<ProjectContextData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const pathname = usePathname()
 
   const fetchProject = useCallback(async (projectId: number) => {
     try {
@@ -92,11 +94,20 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // On mount, load project from API or use demo data
+  // Only auto-fetch on routes that need project data (portal, etc.)
   useEffect(() => {
     // Check if in demo mode first
     if (isDemoMode()) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: initialization on mount
       setProjectState(DEMO_PROJECT as ProjectContextData)
+      setIsLoading(false)
+      return
+    }
+
+    // Only auto-fetch on portal routes (the only routes using useProject hook)
+    // Other routes like /explore load project data via slug lookup
+    const needsProject = pathname.startsWith('/portal')
+    if (!needsProject) {
       setIsLoading(false)
       return
     }
@@ -109,7 +120,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       }
       setIsLoading(false)
     })
-  }, [fetchProject])
+  }, [fetchProject, pathname])
 
   const setProject = (project: ProjectContextData | null) => {
     setProjectState(project)
