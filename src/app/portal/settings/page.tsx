@@ -480,7 +480,21 @@ export default function PortalSettingsPage() {
 
         {/* Venue Location */}
         <div className="bg-white rounded-lg border p-6 space-y-4">
-          <h3 className="font-semibold">Venue Location</h3>
+          <div className="flex items-center gap-3">
+            <h3 className="font-semibold">Venue Location</h3>
+            {venueLocationLat && venueLocationLng && (
+              <>
+                <span className="text-xs text-green-600 font-medium">Location set</span>
+                <button
+                  type="button"
+                  onClick={() => handleVenueLocationChange(null, null)}
+                  className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                >
+                  Clear
+                </button>
+              </>
+            )}
+          </div>
           <p className="text-sm text-gray-500">
             Set your venue&apos;s location. Search for an address, click on the map, or use your current location.
             When guests are more than {MOCK_DISTANCE_THRESHOLD / 1000}km away, they&apos;ll see a simulated location at your venue so they can explore the map remotely.
