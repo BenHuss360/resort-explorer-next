@@ -255,10 +255,46 @@
   50% { transform: translateY(-4px) rotate(0.5deg); }
 }
 
+@keyframes heroCardPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes ctaBadgePopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .animate-pinFloat {
   animation: pinFloat 4s ease-in-out infinite;
 }
 
 .animate-cardFloat {
   animation: cardFloat 6s ease-in-out infinite;
+}
+
+.animate-heroCardPopIn {
+  opacity: 0;
+  animation:
+    heroCardPopIn 1s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards,
+    cardFloat 6s ease-in-out calc(var(--pop-delay, 0s) + 1s) infinite;
+}
+
+.animate-ctaBadgePopIn {
+  opacity: 0;
+  animation:
+    ctaBadgePopIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards,
+    cardFloat 6s ease-in-out calc(var(--pop-delay, 0s) + 0.8s) infinite;
 }
