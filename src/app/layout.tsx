@@ -3,7 +3,12 @@ import { Nunito, Inter } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { ProjectProvider } from '@/components/providers/project-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
-import { OrganizationJsonLd, WebsiteJsonLd } from '@/components/seo/json-ld'
+import {
+  OrganizationJsonLd,
+  WebsiteJsonLd,
+  SoftwareApplicationJsonLd,
+  FAQJsonLd,
+} from '@/components/seo/json-ld'
 import './globals.css'
 
 const nunito = Nunito({
@@ -22,39 +27,49 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'WanderNest - GPS-Powered Guest Exploration',
+    default: 'WanderNest - GPS-Powered Guest Exploration for Resorts & Properties',
     template: '%s | WanderNest',
   },
   description:
-    'GPS-powered exploration platform for wellness retreats, resorts, and luxury properties. Let your guests discover points of interest with interactive maps and proximity-triggered content.',
+    'Transform your resort or property with GPS-powered exploration. Guests discover hotspots via interactive maps with proximity-triggered audio, video, and rich content. No app download required.',
   keywords: [
-    'GPS exploration',
+    'GPS exploration platform',
     'resort guest experience',
     'interactive property maps',
     'wellness retreat technology',
     'hospitality navigation',
     'guest engagement platform',
     'proximity-based content',
-    'property points of interest',
+    'hotel wayfinding',
+    'resort digital experience',
+    'property tour app',
+    'outdoor exploration',
+    'location-based storytelling',
+    'self-guided tours',
+    'hospitality tech',
+    'guest journey mapping',
   ],
-  authors: [{ name: 'WanderNest' }],
+  authors: [{ name: 'WanderNest', url: 'https://wandernest.co.uk' }],
   creator: 'WanderNest',
   publisher: 'WanderNest',
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'https://wandernest.app'
+    process.env.NEXT_PUBLIC_BASE_URL || 'https://wandernest.co.uk'
   ),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_GB',
     siteName: 'WanderNest',
     title: 'WanderNest - GPS-Powered Guest Exploration',
     description:
-      'GPS-powered exploration platform for wellness retreats, resorts, and luxury properties. Interactive maps with proximity-triggered content.',
+      'Transform your resort with GPS-powered exploration. Interactive maps with proximity-triggered audio, video, and rich content. No app download required.',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
+        url: '/herobackground.png',
+        width: 1920,
+        height: 1080,
         alt: 'WanderNest - GPS-Powered Guest Exploration Platform',
       },
     ],
@@ -63,8 +78,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'WanderNest - GPS-Powered Guest Exploration',
     description:
-      'GPS-powered exploration for wellness retreats and luxury properties. Interactive maps with proximity-triggered content.',
-    images: ['/og-image.png'],
+      'Transform your resort with GPS-powered exploration. Interactive maps with proximity-triggered content. No app required.',
+    images: ['/herobackground.png'],
+    creator: '@wandernest',
   },
   robots: {
     index: true,
@@ -79,12 +95,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/wnlogo.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
+    apple: '/apple-touch-icon.png',
   },
   manifest: '/manifest.json',
+  category: 'technology',
 }
 
 export const viewport: Viewport = {
@@ -105,6 +121,8 @@ export default function RootLayout({
       <head>
         <OrganizationJsonLd />
         <WebsiteJsonLd />
+        <SoftwareApplicationJsonLd />
+        <FAQJsonLd />
       </head>
       <body className={`${nunito.variable} ${inter.variable} antialiased`}>
         <QueryProvider>

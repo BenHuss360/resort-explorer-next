@@ -1,0 +1,40 @@
+{
+  "name": "WanderNest",
+  "short_name": "WanderNest",
+  "description": "GPS-powered exploration platform for resorts and hospitality properties. Discover hotspots via interactive maps with proximity-triggered content.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F0E6",
+  "theme_color": "#2F4F4F",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/wnlogo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "navigation", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/herobackground.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "WanderNest map exploration interface"
+    }
+  ]
+}
