@@ -91,12 +91,15 @@ export function HotspotPreviewCard({
     return (
       <div
         className={`
-          bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/40
+          bg-[#F5F0E6] rounded-2xl overflow-hidden
           border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
           transition-all duration-300 hover:scale-[1.02]
           max-w-xs
           ${className}
         `}
+        style={{
+          boxShadow: '0 10px 25px -5px rgba(47, 79, 79, 0.4), 0 20px 40px -10px rgba(47, 79, 79, 0.3), 0 4px 6px -2px rgba(47, 79, 79, 0.2)',
+        }}
       >
         <div className="flex gap-3 p-3">
           {/* Thumbnail image */}
@@ -132,12 +135,15 @@ export function HotspotPreviewCard({
   return (
     <div
       className={`
-        bg-[#F5F0E6] rounded-2xl overflow-hidden shadow-2xl shadow-[#2F4F4F]/40
+        bg-[#F5F0E6] rounded-2xl overflow-hidden
         border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
         transition-all duration-300 hover:scale-[1.02]
         max-w-sm
         ${className}
       `}
+      style={{
+        boxShadow: '0 10px 25px -5px rgba(47, 79, 79, 0.5), 0 25px 50px -12px rgba(47, 79, 79, 0.4), 0 4px 6px -2px rgba(47, 79, 79, 0.25)',
+      }}
     >
       {/* Image */}
       <div className="relative overflow-hidden h-32">
