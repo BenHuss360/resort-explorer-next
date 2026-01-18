@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Nunito, Lato } from 'next/font/google'
+import { Nunito, Inter } from 'next/font/google'
 import { Toaster } from '@/components/ui/sonner'
 import { ProjectProvider } from '@/components/providers/project-provider'
 import { QueryProvider } from '@/components/providers/query-provider'
@@ -9,13 +9,15 @@ import './globals.css'
 const nunito = Nunito({
   variable: '--font-heading',
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
+  weight: ['600', '700'],
+  display: 'swap',
 })
 
-const lato = Lato({
+const inter = Inter({
   variable: '--font-body',
   subsets: ['latin'],
-  weight: ['300', '400', '700'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -101,7 +103,7 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebsiteJsonLd />
       </head>
-      <body className={`${nunito.variable} ${lato.variable} antialiased`}>
+      <body className={`${nunito.variable} ${inter.variable} antialiased`}>
         <QueryProvider>
           <ProjectProvider>
             {children}
