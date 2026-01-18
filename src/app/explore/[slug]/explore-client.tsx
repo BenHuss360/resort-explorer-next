@@ -3,8 +3,10 @@
 import { useState, useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
-import type { Project, Hotspot, Boundaries, CustomMapOverlay, EmbedSettings } from '@/lib/db/schema'
+import type { Project, Hotspot, Boundaries, CustomMapOverlay, EmbedSettings, BrandColors, BrandFonts } from '@/lib/db/schema'
+import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import { HotspotModal } from '@/components/modals/hotspot-modal'
+import { GoogleFontsLoader } from '@/components/google-fonts-loader'
 
 const LeafletMap = dynamic(
   () => import('@/components/map/leaflet-map'),
@@ -61,6 +63,14 @@ export function ExploreClient({ slug }: ExploreClientProps) {
         showHeader: rawProject.embedShowHeader ?? true,
         showBranding: rawProject.embedShowBranding ?? true,
       } as EmbedSettings,
+      brandColors: {
+        primary: rawProject.brandPrimaryColor || BRAND_DEFAULTS.primaryColor,
+        secondary: rawProject.brandSecondaryColor || BRAND_DEFAULTS.secondaryColor,
+      } as BrandColors,
+      brandFonts: {
+        primary: rawProject.brandPrimaryFont || BRAND_DEFAULTS.primaryFont,
+        secondary: rawProject.brandSecondaryFont || BRAND_DEFAULTS.secondaryFont,
+      } as BrandFonts,
     }
   }, [rawProject])
 
@@ -104,13 +114,24 @@ export function ExploreClient({ slug }: ExploreClientProps) {
     )
   }
 
+  // Collect fonts to load
+  const fontsToLoad = useMemo(() => {
+    return [project.brandFonts.primary, project.brandFonts.secondary]
+  }, [project.brandFonts.primary, project.brandFonts.secondary])
+
   return (
     <div className="w-full h-screen flex flex-col">
+      {/* Load custom Google Fonts */}
+      <GoogleFontsLoader fonts={fontsToLoad} />
+
       {/* Minimal header - conditionally rendered */}
       {project.embedSettings.showHeader && (
-        <div className="bg-emerald-600 px-4 py-2 flex items-center justify-between">
+        <div
+          className="px-4 py-2 flex items-center justify-between"
+          style={{ backgroundColor: project.brandColors.primary }}
+        >
           <span className="text-white font-medium text-sm">{rawProject.resortName}</span>
-          <span className="text-emerald-100 text-xs">{hotspots.length} spots</span>
+          <span className="text-white/70 text-xs">{hotspots.length} spots</span>
         </div>
       )}
 
@@ -145,6 +166,8 @@ export function ExploreClient({ slug }: ExploreClientProps) {
           hotspot={selectedHotspot}
           isOpen={!!selectedHotspot}
           onClose={() => setSelectedHotspot(null)}
+          brandColors={project.brandColors}
+          brandFonts={project.brandFonts}
         />
       )}
     </div>

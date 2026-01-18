@@ -76,6 +76,12 @@ export async function PATCH(
     // Embed settings
     if (body.embedShowHeader !== undefined) updateData.embedShowHeader = body.embedShowHeader
     if (body.embedShowBranding !== undefined) updateData.embedShowBranding = body.embedShowBranding
+    // Brand colors
+    if (body.brandPrimaryColor !== undefined) updateData.brandPrimaryColor = body.brandPrimaryColor
+    if (body.brandSecondaryColor !== undefined) updateData.brandSecondaryColor = body.brandSecondaryColor
+    // Brand fonts
+    if (body.brandPrimaryFont !== undefined) updateData.brandPrimaryFont = body.brandPrimaryFont
+    if (body.brandSecondaryFont !== undefined) updateData.brandSecondaryFont = body.brandSecondaryFont
 
     const [updated] = await db
       .update(projects)

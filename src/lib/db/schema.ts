@@ -3,6 +3,41 @@ import { relations } from 'drizzle-orm'
 import { z } from 'zod'
 
 // ============================================
+// BRAND DEFAULTS
+// ============================================
+
+export const BRAND_DEFAULTS = {
+  primaryColor: '#2F4F4F',
+  secondaryColor: '#FFD27F',
+  primaryFont: 'default',
+  secondaryFont: 'default',
+} as const
+
+// Available Google Fonts for brand customization
+export const AVAILABLE_FONTS = {
+  headings: [
+    'Playfair Display',
+    'Cormorant Garamond',
+    'Libre Baskerville',
+    'Lora',
+    'Merriweather',
+    'Source Serif Pro',
+    'Poppins',
+    'Inter',
+  ],
+  body: [
+    'Lato',
+    'Open Sans',
+    'Roboto',
+    'Source Sans Pro',
+    'Inter',
+    'Nunito',
+    'Work Sans',
+    'DM Sans',
+  ],
+} as const
+
+// ============================================
 // DATABASE TABLES
 // ============================================
 
@@ -35,6 +70,12 @@ export const projects = pgTable('projects', {
   // Embed settings (for white-label/mobile app integration)
   embedShowHeader: boolean('embed_show_header').default(true),
   embedShowBranding: boolean('embed_show_branding').default(true),
+  // Brand colors (for theming guest experience)
+  brandPrimaryColor: text('brand_primary_color').default('#2F4F4F'),
+  brandSecondaryColor: text('brand_secondary_color').default('#FFD27F'),
+  // Brand fonts (for theming guest experience)
+  brandPrimaryFont: text('brand_primary_font').default('default'),
+  brandSecondaryFont: text('brand_secondary_font').default('default'),
   // Meta
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow(),
@@ -145,6 +186,16 @@ export type CustomMapOverlay = {
 export type EmbedSettings = {
   showHeader: boolean
   showBranding: boolean
+}
+
+export type BrandColors = {
+  primary: string
+  secondary: string
+}
+
+export type BrandFonts = {
+  primary: string
+  secondary: string
 }
 
 // ============================================

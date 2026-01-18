@@ -2,15 +2,24 @@
 
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import type { Hotspot, OptionalField } from '@/lib/db/schema'
+import type { Hotspot, OptionalField, BrandColors, BrandFonts } from '@/lib/db/schema'
+import { BRAND_DEFAULTS } from '@/lib/db/schema'
 
 interface HotspotModalProps {
   hotspot: Hotspot
   isOpen: boolean
   onClose: () => void
+  brandColors?: BrandColors
+  brandFonts?: BrandFonts
 }
 
-export function HotspotModal({ hotspot, isOpen, onClose }: HotspotModalProps) {
+export function HotspotModal({ hotspot, isOpen, onClose, brandColors, brandFonts }: HotspotModalProps) {
+  const primaryColor = brandColors?.primary || BRAND_DEFAULTS.primaryColor
+  const secondaryColor = brandColors?.secondary || BRAND_DEFAULTS.secondaryColor
+  const primaryFont = brandFonts?.primary || BRAND_DEFAULTS.primaryFont
+  const secondaryFont = brandFonts?.secondary || BRAND_DEFAULTS.secondaryFont
+  const headingFontFamily = primaryFont === 'default' ? 'inherit' : `"${primaryFont}", serif`
+  const bodyFontFamily = secondaryFont === 'default' ? 'inherit' : `"${secondaryFont}", sans-serif`
   const [isPlaying, setIsPlaying] = useState(false)
   const optionalFields = (hotspot.optionalFields || []) as OptionalField[]
 
@@ -34,24 +43,25 @@ export function HotspotModal({ hotspot, isOpen, onClose }: HotspotModalProps) {
           {/* Header with decorative element */}
           <DialogHeader className="p-0">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-8 h-0.5 bg-[#FFD27F]" />
+              <div className="w-8 h-0.5" style={{ backgroundColor: secondaryColor }} />
               <span className="text-xs uppercase tracking-wider text-[#708090] font-medium">
                 Point of Interest
               </span>
             </div>
-            <DialogTitle className="text-2xl font-bold text-[#2F4F4F]">{hotspot.title}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold" style={{ color: primaryColor, fontFamily: headingFontFamily }}>{hotspot.title}</DialogTitle>
           </DialogHeader>
 
           {/* Description */}
-          <p className="text-[#708090] leading-relaxed text-base">{hotspot.description}</p>
+          <p className="text-[#708090] leading-relaxed text-base" style={{ fontFamily: bodyFontFamily }}>{hotspot.description}</p>
 
           {/* Audio Player - Luxury styled */}
           {hotspot.audioUrl && (
-            <div className="bg-white/60 rounded-xl p-5 border border-[#FFD27F]/30">
+            <div className="bg-white/60 rounded-xl p-5 border" style={{ borderColor: `${secondaryColor}30` }}>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
-                  className="w-14 h-14 rounded-full bg-[#2F4F4F] text-[#F5F0E6] flex items-center justify-center hover:bg-[#3a5f5f] transition-all duration-300 shadow-lg"
+                  className="w-14 h-14 rounded-full text-[#F5F0E6] flex items-center justify-center hover:opacity-90 transition-all duration-300 shadow-lg"
+                  style={{ backgroundColor: primaryColor }}
                 >
                   {isPlaying ? (
                     <svg
@@ -77,11 +87,11 @@ export function HotspotModal({ hotspot, isOpen, onClose }: HotspotModalProps) {
                   )}
                 </button>
                 <div className="flex-1">
-                  <p className="font-semibold text-sm text-[#2F4F4F]">Audio Guide</p>
-                  <div className="h-1.5 bg-[#2F4F4F]/10 rounded-full mt-2 overflow-hidden">
+                  <p className="font-semibold text-sm" style={{ color: primaryColor }}>Audio Guide</p>
+                  <div className="h-1.5 rounded-full mt-2 overflow-hidden" style={{ backgroundColor: `${primaryColor}15` }}>
                     <div
-                      className="h-full bg-[#FFD27F] rounded-full transition-all duration-500"
-                      style={{ width: isPlaying ? '30%' : '0%' }}
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: isPlaying ? '30%' : '0%', backgroundColor: secondaryColor }}
                     />
                   </div>
                 </div>
@@ -96,11 +106,11 @@ export function HotspotModal({ hotspot, isOpen, onClose }: HotspotModalProps) {
               {optionalFields.map((field, index) => (
                 <div
                   key={index}
-                  className="bg-white/60 rounded-xl p-4 flex items-start gap-3 border border-[#2F4F4F]/5 hover:border-[#FFD27F]/30 transition-colors duration-300"
+                  className="bg-white/60 rounded-xl p-4 flex items-start gap-3 border border-transparent hover:border-gray-200 transition-colors duration-300"
                 >
                   <span className="text-xl">{field.icon}</span>
                   <div>
-                    <p className="font-semibold text-sm text-[#2F4F4F]">{field.title}</p>
+                    <p className="font-semibold text-sm" style={{ color: primaryColor }}>{field.title}</p>
                     <p className="text-[#708090] text-sm">{field.subtitle}</p>
                   </div>
                 </div>

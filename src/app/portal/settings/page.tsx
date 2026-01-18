@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
 import { MOCK_DISTANCE_THRESHOLD } from '@/lib/location-settings'
 import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
+import { BRAND_DEFAULTS } from '@/lib/db/schema'
+import { GoogleFontsLoader } from '@/components/google-fonts-loader'
 
 // Dynamic import for map component (no SSR)
 const VenueLocationPicker = dynamic(
@@ -320,6 +322,22 @@ export default function PortalSettingsPage() {
     project?.embedSettings?.showBranding ?? true
   )
 
+  // Brand colors state
+  const [brandPrimaryColor, setBrandPrimaryColor] = useState<string>(
+    project?.brandColors?.primary || BRAND_DEFAULTS.primaryColor
+  )
+  const [brandSecondaryColor, setBrandSecondaryColor] = useState<string>(
+    project?.brandColors?.secondary || BRAND_DEFAULTS.secondaryColor
+  )
+
+  // Brand fonts state
+  const [brandPrimaryFont, setBrandPrimaryFont] = useState<string>(
+    project?.brandFonts?.primary || BRAND_DEFAULTS.primaryFont
+  )
+  const [brandSecondaryFont, setBrandSecondaryFont] = useState<string>(
+    project?.brandFonts?.secondary || BRAND_DEFAULTS.secondaryFont
+  )
+
   // Custom map overlay state
   const [customMapImageUrl, setCustomMapImageUrl] = useState<string | null>(
     project?.customMapOverlay?.imageUrl || null
@@ -350,6 +368,7 @@ export default function PortalSettingsPage() {
   const [showCalibrator, setShowCalibrator] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [customMapExpanded, setCustomMapExpanded] = useState(false)
+  const [brandingExpanded, setBrandingExpanded] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Update state when project loads
@@ -362,6 +381,12 @@ export default function PortalSettingsPage() {
       setVenueLocationLng(project.venueLocation?.longitude || null)
       setEmbedShowHeader(project.embedSettings?.showHeader ?? true)
       setEmbedShowBranding(project.embedSettings?.showBranding ?? true)
+      // Brand colors
+      setBrandPrimaryColor(project.brandColors?.primary || BRAND_DEFAULTS.primaryColor)
+      setBrandSecondaryColor(project.brandColors?.secondary || BRAND_DEFAULTS.secondaryColor)
+      // Brand fonts
+      setBrandPrimaryFont(project.brandFonts?.primary || BRAND_DEFAULTS.primaryFont)
+      setBrandSecondaryFont(project.brandFonts?.secondary || BRAND_DEFAULTS.secondaryFont)
       // Custom map overlay
       setCustomMapImageUrl(project.customMapOverlay?.imageUrl || null)
       setCustomMapEnabled(project.customMapOverlay?.enabled || false)
@@ -397,6 +422,10 @@ export default function PortalSettingsPage() {
       customMapEastLng?: number | null
       customMapGCPs?: GroundControlPoint[]
       customMapCalibrationMode?: CalibrationMode
+      brandPrimaryColor?: string
+      brandSecondaryColor?: string
+      brandPrimaryFont?: string
+      brandSecondaryFont?: string
     }) => {
       const res = await fetch(`/api/projects/${project!.id}`, {
         method: 'PATCH',
@@ -431,6 +460,10 @@ export default function PortalSettingsPage() {
       customMapEastLng: customMapBounds.eastLng,
       customMapGCPs,
       customMapCalibrationMode,
+      brandPrimaryColor,
+      brandSecondaryColor,
+      brandPrimaryFont,
+      brandSecondaryFont,
     })
   }
 
@@ -570,6 +603,239 @@ export default function PortalSettingsPage() {
               placeholder="Welcome message shown to guests..."
             />
           </div>
+        </div>
+
+        {/* Branding */}
+        <div className="bg-white rounded-lg border overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setBrandingExpanded(!brandingExpanded)}
+            className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`text-gray-400 transition-transform ${brandingExpanded ? 'rotate-90' : ''}`}
+              >
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+              <h3 className="font-semibold">Branding</h3>
+            </div>
+            <div className="flex items-center gap-2">
+              <div
+                className="w-5 h-5 rounded-full border border-gray-200"
+                style={{ backgroundColor: brandPrimaryColor }}
+                title="Primary color"
+              />
+              <div
+                className="w-5 h-5 rounded-full border border-gray-200"
+                style={{ backgroundColor: brandSecondaryColor }}
+                title="Secondary color"
+              />
+            </div>
+          </button>
+
+          {brandingExpanded && (
+            <div className="px-6 pb-6 space-y-6 border-t">
+              <p className="text-sm text-gray-500 pt-4">
+                Customize the colors and fonts used in your guest-facing map experience.
+              </p>
+
+              {/* Colors Section */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-medium text-gray-900">Colors</h4>
+
+                {/* Primary Color */}
+                <div>
+                  <label className="block text-sm text-gray-700 mb-2">
+                    Primary Color
+                    <span className="text-xs text-gray-400 ml-2">Headers, buttons</span>
+                  </label>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'Forest', value: '#2F4F4F' },
+                        { name: 'Navy', value: '#1E3A5F' },
+                        { name: 'Burgundy', value: '#722F37' },
+                        { name: 'Charcoal', value: '#36454F' },
+                        { name: 'Teal', value: '#008080' },
+                        { name: 'Slate', value: '#708090' },
+                        { name: 'Emerald', value: '#065F46' },
+                        { name: 'Indigo', value: '#4338CA' },
+                      ].map((color) => (
+                        <button
+                          key={color.value}
+                          type="button"
+                          onClick={() => setBrandPrimaryColor(color.value)}
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            brandPrimaryColor === color.value
+                              ? 'border-gray-900 scale-110'
+                              : 'border-transparent hover:border-gray-300'
+                          }`}
+                          style={{ backgroundColor: color.value }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
+                    <input
+                      type="color"
+                      value={brandPrimaryColor}
+                      onChange={(e) => setBrandPrimaryColor(e.target.value)}
+                      className="w-10 h-10 rounded cursor-pointer border-0 p-0"
+                      title="Custom color"
+                    />
+                    <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
+                      {brandPrimaryColor}
+                    </code>
+                  </div>
+                </div>
+
+                {/* Secondary Color */}
+                <div>
+                  <label className="block text-sm text-gray-700 mb-2">
+                    Secondary Color
+                    <span className="text-xs text-gray-400 ml-2">Accents, highlights</span>
+                  </label>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { name: 'Gold', value: '#FFD27F' },
+                        { name: 'Coral', value: '#FF6B6B' },
+                        { name: 'Sage', value: '#87A96B' },
+                        { name: 'Terracotta', value: '#C4A484' },
+                        { name: 'Copper', value: '#B87333' },
+                        { name: 'Rose', value: '#E8A0A0' },
+                        { name: 'Amber', value: '#F59E0B' },
+                        { name: 'Sky', value: '#38BDF8' },
+                      ].map((color) => (
+                        <button
+                          key={color.value}
+                          type="button"
+                          onClick={() => setBrandSecondaryColor(color.value)}
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            brandSecondaryColor === color.value
+                              ? 'border-gray-900 scale-110'
+                              : 'border-transparent hover:border-gray-300'
+                          }`}
+                          style={{ backgroundColor: color.value }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
+                    <input
+                      type="color"
+                      value={brandSecondaryColor}
+                      onChange={(e) => setBrandSecondaryColor(e.target.value)}
+                      className="w-10 h-10 rounded cursor-pointer border-0 p-0"
+                      title="Custom color"
+                    />
+                    <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono">
+                      {brandSecondaryColor}
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fonts Section */}
+              <div className="space-y-4 pt-4 border-t">
+                <h4 className="text-sm font-medium text-gray-900">Fonts</h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Primary Font (Headings) */}
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-2">
+                      Headings
+                    </label>
+                    <select
+                      value={brandPrimaryFont}
+                      onChange={(e) => setBrandPrimaryFont(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="default">Default (System Font)</option>
+                      <option value="Playfair Display">Playfair Display</option>
+                      <option value="Cormorant Garamond">Cormorant Garamond</option>
+                      <option value="Libre Baskerville">Libre Baskerville</option>
+                      <option value="Lora">Lora</option>
+                      <option value="Merriweather">Merriweather</option>
+                      <option value="Source Serif Pro">Source Serif Pro</option>
+                      <option value="Poppins">Poppins</option>
+                      <option value="Inter">Inter</option>
+                    </select>
+                  </div>
+
+                  {/* Secondary Font (Body) */}
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-2">
+                      Body Text
+                    </label>
+                    <select
+                      value={brandSecondaryFont}
+                      onChange={(e) => setBrandSecondaryFont(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      <option value="default">Default (System Font)</option>
+                      <option value="Lato">Lato</option>
+                      <option value="Open Sans">Open Sans</option>
+                      <option value="Roboto">Roboto</option>
+                      <option value="Source Sans Pro">Source Sans Pro</option>
+                      <option value="Inter">Inter</option>
+                      <option value="Nunito">Nunito</option>
+                      <option value="Work Sans">Work Sans</option>
+                      <option value="DM Sans">DM Sans</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Load fonts for preview */}
+              <GoogleFontsLoader fonts={[brandPrimaryFont, brandSecondaryFont]} />
+
+              {/* Combined Preview */}
+              <div className="pt-4 border-t">
+                <p className="text-sm text-gray-500 mb-3">Preview</p>
+                <div
+                  className="rounded-lg overflow-hidden border"
+                  style={{ borderColor: `${brandSecondaryColor}40` }}
+                >
+                  <div
+                    className="px-4 py-2 text-white text-sm font-medium"
+                    style={{ backgroundColor: brandPrimaryColor }}
+                  >
+                    Header Bar
+                  </div>
+                  <div className="bg-gray-50 p-4 space-y-2">
+                    <p
+                      className="text-lg font-semibold"
+                      style={{
+                        color: brandPrimaryColor,
+                        fontFamily: brandPrimaryFont === 'default' ? 'inherit' : `"${brandPrimaryFont}", serif`,
+                      }}
+                    >
+                      Hotspot Title
+                    </p>
+                    <p
+                      className="text-sm text-gray-600"
+                      style={{ fontFamily: brandSecondaryFont === 'default' ? 'inherit' : `"${brandSecondaryFont}", sans-serif` }}
+                    >
+                      This is how your description text will appear to guests exploring your property.
+                    </p>
+                    <div
+                      className="w-24 h-1.5 rounded-full mt-2"
+                      style={{ backgroundColor: brandSecondaryColor }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Venue Location */}
