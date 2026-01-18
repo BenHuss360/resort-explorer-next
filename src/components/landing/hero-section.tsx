@@ -120,7 +120,7 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
         <HotspotPreviewCard
           {...featuredHotspot}
           variant="featured"
-          onWatchVideo={() => console.log('Watch video clicked')}
+          onWatchVideo={() => {}}
           className="animate-cardFloat relative z-10"
         />
         <HotspotPreviewCard
