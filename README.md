@@ -17,7 +17,7 @@ Give your guests something to discover. WanderNest provides embeddable, interact
 - Create hotspots with rich content (images, audio guides, descriptions)
 - Upload custom illustrated maps that overlay on satellite imagery
 - Customize marker styles and map boundaries
-- Share via simple access codes, QR codes, or embed in your app
+- Share via direct links, QR codes, or embed in your app
 - Mobile QR flow for adding hotspots on-location
 
 ## For Guests
@@ -91,7 +91,7 @@ src/
 
 ## Demo
 
-Use access code `DEMO` to explore the demo property, or click "Try the Demo" on the landing page.
+Click "Try the Demo" on the landing page to explore The Newt in Somerset demo property.
 
 ## License
 
