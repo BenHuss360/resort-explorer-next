@@ -173,7 +173,7 @@ export function HotspotPreviewCard({
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 bg-[#FFD27F]" />
           <span className="text-[10px] uppercase tracking-wider text-[#708090] font-medium">
-            Point of Interest
+            Discovery Spot
           </span>
         </div>
 

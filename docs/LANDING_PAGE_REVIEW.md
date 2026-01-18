@@ -45,14 +45,14 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 - "Where exploration meets discovery."
 
 ### Demo Hotspot Cards
-- Label: "Point of Interest"
+- Label: "Discovery Spot"
 - Example: "Hilltop Viewpoint", "Lakeside Pavilion"
 
 ---
 
 ## Strengths
 
-1. **Consistent "GPS-powered" language** — Used in hero, How It Works, Properties CTA, and footer
+1. **Consistent "GPS-powered" language** — Used in How It Works and Properties CTA sections
 2. **Discovery theme** — "Discover," "unlock," "explore" appear naturally throughout
 3. **Clear value propositions** — No app download, works offline, privacy-first are repeated appropriately
 4. **Guest-focused then property-focused** — Page flows from guest experience to property benefits
@@ -98,17 +98,13 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 **Resolution:** Changed to "Content cached for remote areas"
 
-### 5. "Point of Interest" Label Is Functional But Cold
+### 5. "Point of Interest" Label Is Functional But Cold (FIXED)
 
-**Current:** Hotspot cards use "Point of Interest" as the category label.
+**Was:** Hotspot cards used "Point of Interest" as the category label.
 
-**Issue:** Functional but lacks warmth. Consider something that fits the discovery theme better.
+**Issue:** Functional but lacked warmth.
 
-**Alternatives:**
-- "Discovery Spot"
-- "Hidden Gem"
-- "Explore" (just the verb)
-- Remove the label entirely
+**Resolution:** Changed to "Discovery Spot" — warmer and fits the discovery theme.
 
 ---
 
@@ -116,12 +112,12 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 | Theme | Usage | Status |
 |-------|-------|--------|
-| "GPS-powered" | Hero, How It Works, Properties CTA, Footer | Consistent |
+| "GPS-powered" | How It Works, Properties CTA | Consistent |
 | "No app download" | Features, Properties CTA | Consistent |
-| "Discovery/discover" | Hero, How It Works, Properties CTA | Consistent |
-| "Explore" | Hero, How It Works, Features | Consistent |
-| "Property/properties" | Properties CTA, Footer | Consistent |
-| "Guests" | Properties CTA, Footer | Consistent |
+| "Discovery/discover" | Hero, How It Works, Properties CTA, Footer | Consistent |
+| "Explore/exploration" | Hero, How It Works, Features, Footer | Consistent |
+| "Property/properties" | Properties CTA | Consistent |
+| "Guests" | Properties CTA | Consistent |
 
 ---
 
@@ -136,7 +132,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 ### Low Priority (Optional)
 4. ~~**Strengthen mobile hero**~~ — DONE: Changed to "Stories Around Every Corner"
-5. **Reconsider "Point of Interest" label** — Warmer language optional
+5. ~~**Reconsider "Point of Interest" label**~~ — DONE: Changed to "Discovery Spot"
 
 ---
 
