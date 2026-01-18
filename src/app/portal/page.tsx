@@ -7,6 +7,7 @@ import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
 import { QRGeneratorDialog } from '@/components/modals/qr-generator-dialog'
 import Link from 'next/link'
 import type { Hotspot } from '@/lib/db/schema'
+import { MarkerPreview } from '@/components/ui/marker-preview'
 
 export default function PortalHotspotsPage() {
   const { project } = useProject()
@@ -93,24 +94,24 @@ export default function PortalHotspotsPage() {
           <div className="bg-amber-50 rounded-lg border border-amber-200 divide-y divide-amber-200">
             {drafts.map((hotspot) => (
               <div key={hotspot.id} className="p-4 flex items-center gap-4">
-                {/* Thumbnail or Marker */}
-                {hotspot.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL
-                  <img
-                    src={hotspot.imageUrl}
-                    alt={hotspot.title}
-                    className="w-12 h-12 rounded-lg object-cover shrink-0"
-                  />
-                ) : (
-                  <div
-                    className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: hotspot.markerColor || '#FFD27F' }}
-                  >
-                    <span className="text-white text-sm font-bold">
-                      {hotspot.markerType?.charAt(0).toUpperCase() || 'P'}
-                    </span>
+                {/* Marker & Thumbnail */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <MarkerPreview
+                      shape={hotspot.markerType || 'pin'}
+                      color={hotspot.markerColor || '#FFD27F'}
+                      size="small"
+                    />
                   </div>
-                )}
+                  {hotspot.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL
+                    <img
+                      src={hotspot.imageUrl}
+                      alt={hotspot.title}
+                      className="w-10 h-10 rounded object-cover"
+                    />
+                  )}
+                </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
@@ -209,14 +210,23 @@ export default function PortalHotspotsPage() {
         <div className="bg-white rounded-lg border divide-y">
           {published.map((hotspot) => (
             <div key={hotspot.id} className="p-4 flex items-center gap-4">
-              {/* Marker Preview */}
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                style={{ backgroundColor: hotspot.markerColor || '#3B82F6' }}
-              >
-                <span className="text-white text-xs font-bold">
-                  {hotspot.markerType?.charAt(0).toUpperCase() || 'P'}
-                </span>
+              {/* Marker & Thumbnail */}
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <MarkerPreview
+                    shape={hotspot.markerType || 'pin'}
+                    color={hotspot.markerColor || '#3B82F6'}
+                    size="small"
+                  />
+                </div>
+                {hotspot.imageUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL
+                  <img
+                    src={hotspot.imageUrl}
+                    alt={hotspot.title}
+                    className="w-10 h-10 rounded object-cover"
+                  />
+                )}
               </div>
 
               {/* Info */}
