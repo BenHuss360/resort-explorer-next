@@ -207,8 +207,8 @@ export function calculateTransformError(
  */
 export function calculateBoundsFromGCPs(
   gcps: GroundControlPoint[],
-  imageWidth: number,
-  imageHeight: number
+  _imageWidth: number,
+  _imageHeight: number
 ): { north: number; south: number; east: number; west: number } {
   if (gcps.length < 3) {
     throw new Error('At least 3 GCPs are required to calculate bounds')
@@ -279,11 +279,7 @@ export function suggestNextGCPPosition(
     return { x: 0.1, y: 0.9 } // Bottom-left
   }
 
-  // For more than 4 points, suggest center if not already covered
-  const centerX = gcps.reduce((sum, p) => sum + p.imageX, 0) / gcps.length
-  const centerY = gcps.reduce((sum, p) => sum + p.imageY, 0) / gcps.length
-
-  // Find point furthest from center
+  // For more than 4 points, suggest a point not already covered
   const distances = [
     { x: 0.5, y: 0.5 },
     { x: 0.25, y: 0.25 },

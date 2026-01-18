@@ -136,6 +136,7 @@ export function MediaUpload({ type, value, onChange, label }: MediaUploadProps) 
             <div className="relative">
               {type === 'image' ? (
                 <div className="relative w-full h-48 rounded-lg overflow-hidden bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- User-uploaded image preview */}
                   <img
                     src={value}
                     alt="Preview"

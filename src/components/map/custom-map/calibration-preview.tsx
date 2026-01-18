@@ -8,6 +8,20 @@ import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 // Import Leaflet.ImageOverlay.Rotated plugin for 3-corner mode
 import 'leaflet-imageoverlay-rotated'
 
+// Declare the extended L.imageOverlay.rotated type for TypeScript
+declare module 'leaflet' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- Standard pattern for augmenting Leaflet types
+  namespace imageOverlay {
+    function rotated(
+      url: string,
+      topLeft: L.LatLng,
+      topRight: L.LatLng,
+      bottomLeft: L.LatLng,
+      options?: L.ImageOverlayOptions
+    ): L.ImageOverlay
+  }
+}
+
 interface CalibrationPreviewProps {
   imageUrl: string
   bounds: {
@@ -95,12 +109,14 @@ export default function CalibrationPreview({
       mapRef.current = null
       setMapReady(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tileLayers is stable, venueCenter triggers re-init
   }, [venueCenter])
 
   // Update tile layer
   useEffect(() => {
     if (!mapRef.current || !tileLayerRef.current) return
     tileLayerRef.current.setUrl(tileLayers[mapLayer].url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tileLayers is a stable constant
   }, [mapLayer])
 
   // Update overlay when bounds or opacity changes
@@ -120,8 +136,8 @@ export default function CalibrationPreview({
 
       if (threeCorners && calibrationMode === '3corners') {
         // Use rotated overlay for 3-corner mode (supports rotation)
-        if (typeof (L as any).imageOverlay?.rotated === 'function') {
-          overlayRef.current = (L as any).imageOverlay.rotated(
+        if (typeof L.imageOverlay.rotated === 'function') {
+          overlayRef.current = L.imageOverlay.rotated(
             imageUrl,
             threeCorners.topLeft,
             threeCorners.topRight,

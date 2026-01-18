@@ -1,4 +1,4 @@
-import type { Project, Hotspot } from '@/lib/db/schema'
+import type { Hotspot } from '@/lib/db/schema'
 import type { ProjectContextData } from '@/components/providers/project-provider'
 
 // Demo project for creator mode - uses The Newt in Somerset as a real-world example

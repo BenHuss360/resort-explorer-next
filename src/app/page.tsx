@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, ReactNode, useCallback } from 'react'
+import { useState, useEffect, useRef, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { toast } from 'sonner'
 import {
   MapPin, ArrowRight, Footprints, TreePine, Sparkles, Building2,
-  Mountain, Compass, Leaf, ChevronDown, Play, Smartphone,
+  Mountain, Compass, Leaf, Play, Smartphone,
   MapPinned, Eye, Navigation, Zap
 } from 'lucide-react'
 import { useProject } from '@/components/providers/project-provider'
@@ -137,58 +137,6 @@ function ShimmerText({ children, className = '' }: { children: React.ReactNode; 
       `}</style>
     </span>
   )
-}
-
-// Tilt card wrapper
-function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [transform, setTransform] = useState('')
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const rotateX = (y - centerY) / 20
-    const rotateY = (centerX - x) / 20
-    setTransform(`perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`)
-  }
-
-  const handleMouseLeave = () => {
-    setTransform('')
-  }
-
-  return (
-    <div
-      ref={cardRef}
-      className={`transition-transform duration-300 ease-out ${className}`}
-      style={{ transform }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {children}
-    </div>
-  )
-}
-
-// Ripple effect hook for buttons
-function useRipple() {
-  const [ripples, setRipples] = useState<{ x: number; y: number; id: number }[]>([])
-
-  const addRipple = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const id = Date.now()
-    setRipples(prev => [...prev, { x, y, id }])
-    setTimeout(() => {
-      setRipples(prev => prev.filter(r => r.id !== id))
-    }, 600)
-  }, [])
-
-  return { ripples, addRipple }
 }
 
 // Scroll animation hook
@@ -327,78 +275,6 @@ function ScrollIndicator() {
         }
       `}</style>
     </div>
-  )
-}
-
-// Floating Demo CTA
-function FloatingDemoCTA() {
-  const [isVisible, setIsVisible] = useState(false)
-  const router = useRouter()
-  const { setProject } = useProject()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY > 400)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleDemo = () => {
-    activateDemoMode()
-    setProject(DEMO_PROJECT)
-    toast.success('Welcome to Demo Mode!')
-    router.push('/portal/preview')
-  }
-
-  return (
-    <button
-      onClick={handleDemo}
-      className={`fixed bottom-6 right-6 z-50 flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] text-[#F5F0E6] font-semibold rounded-full shadow-lg shadow-[#FFD27F]/30 hover:shadow-[#FFD27F]/50 hover:scale-105 transition-all duration-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
-      }`}
-    >
-      <Play className="w-4 h-4 fill-current" />
-      <span className="hidden sm:inline">Try Demo</span>
-    </button>
-  )
-}
-
-// Quick Demo Button for Hero with ripple effect
-function QuickDemoButton() {
-  const router = useRouter()
-  const { setProject } = useProject()
-  const { ripples, addRipple } = useRipple()
-
-  const handleDemo = (e: React.MouseEvent<HTMLButtonElement>) => {
-    addRipple(e)
-    activateDemoMode()
-    setProject(DEMO_PROJECT)
-    toast.success('Welcome to Demo Mode!')
-    router.push('/portal/preview')
-  }
-
-  return (
-    <button
-      onClick={handleDemo}
-      className="group relative overflow-hidden inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-[#F5F0E6]/20 text-[#F5F0E6] font-medium rounded-full transition-all duration-300 hover:scale-105 active:scale-95"
-    >
-      {ripples.map(ripple => (
-        <span
-          key={ripple.id}
-          className="absolute bg-[#FFD27F]/30 rounded-full animate-ping"
-          style={{
-            left: ripple.x - 10,
-            top: ripple.y - 10,
-            width: 20,
-            height: 20,
-          }}
-        />
-      ))}
-      <Play className="w-4 h-4 fill-current" />
-      Try Demo Instantly
-      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-    </button>
   )
 }
 
@@ -581,7 +457,7 @@ function UnifiedLoginCard() {
               </Button>
 
               <p className="text-center text-sm text-[#708090]">
-                Ask your property's front desk for an access code
+                Ask your property&apos;s front desk for an access code
               </p>
             </form>
           </TabsContent>

@@ -24,6 +24,7 @@ export default function PortalLayout({
 
   // Check demo mode after mount to avoid hydration mismatch
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: checking client-side value after hydration
     setIsDemo(isDemoMode())
   }, [])
 

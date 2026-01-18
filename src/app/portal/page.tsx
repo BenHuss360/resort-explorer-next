@@ -11,7 +11,7 @@ import type { Hotspot } from '@/lib/db/schema'
 export default function PortalHotspotsPage() {
   const { project } = useProject()
   const queryClient = useQueryClient()
-  const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [_deletingId, setDeletingId] = useState<number | null>(null)
 
   const { data: hotspots = [], isLoading } = useQuery({
     queryKey: ['hotspots', project?.id],
@@ -95,6 +95,7 @@ export default function PortalHotspotsPage() {
               <div key={hotspot.id} className="p-4 flex items-center gap-4">
                 {/* Thumbnail or Marker */}
                 {hotspot.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL
                   <img
                     src={hotspot.imageUrl}
                     alt={hotspot.title}

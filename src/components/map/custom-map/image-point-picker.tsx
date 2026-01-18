@@ -58,12 +58,13 @@ export default function ImagePointPicker({
   }, [])
 
   // Reset view and preload image when URL changes
-  // eslint-disable-next-line react-compiler/react-compiler
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- Intentional: resetting state when imageUrl changes */
     setView({ scale: 1, posX: 0, posY: 0 })
     setImageLoaded(false)
     setImageDimensions(null)
     setImageError(null)
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     if (!imageUrl) {
       return

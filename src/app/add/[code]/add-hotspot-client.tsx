@@ -303,6 +303,7 @@ export function AddHotspotClient({ code, token }: AddHotspotClientProps) {
 
           {imageUrl ? (
             <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element -- User-captured image preview */}
               <img
                 src={imageUrl}
                 alt="Preview"
