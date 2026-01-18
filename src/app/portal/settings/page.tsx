@@ -37,6 +37,18 @@ const CustomMapCalibrator = dynamic(
   }
 )
 
+// Section Header Component for grouping settings
+function SectionHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 pt-6 pb-2 first:pt-0">
+      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">
+        {children}
+      </h3>
+      <div className="flex-1 h-px bg-gray-200" />
+    </div>
+  )
+}
+
 // Embed Code Section - can be gated behind premium later
 function EmbedCodeSection({
   slug,
@@ -546,36 +558,15 @@ export default function PortalSettingsPage() {
     })
   }, [])
 
-  const copyPropertyCode = () => {
-    navigator.clipboard.writeText(project?.slug || '')
-    alert('Property code copied to clipboard!')
-  }
-
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Settings</h2>
 
-      {/* Property Code */}
-      <div className="bg-white rounded-lg border p-6">
-        <h3 className="font-semibold mb-4">Property Code</h3>
-        <div className="flex items-center gap-4">
-          <code className="bg-gray-100 px-4 py-2 rounded-lg text-lg font-mono">
-            {project?.slug}
-          </code>
-          <button
-            onClick={copyPropertyCode}
-            className="text-blue-600 hover:text-blue-700 text-sm"
-          >
-            Copy
-          </button>
-        </div>
-        <p className="text-sm text-gray-500 mt-2">
-          Share this code with guests so they can access your resort map at /explore/{project?.slug}
-        </p>
-      </div>
-
       {/* Resort Settings */}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* ===== IDENTITY & APPEARANCE ===== */}
+        <SectionHeader>Identity & Appearance</SectionHeader>
+
         <div className="bg-white rounded-lg border p-6 space-y-4">
           <h3 className="font-semibold">Resort Information</h3>
 
@@ -838,6 +829,9 @@ export default function PortalSettingsPage() {
           )}
         </div>
 
+        {/* ===== MAP & LOCATION ===== */}
+        <SectionHeader>Map & Location</SectionHeader>
+
         {/* Venue Location */}
         <div className="bg-white rounded-lg border p-6 space-y-4">
           <div className="flex items-center gap-3">
@@ -867,9 +861,9 @@ export default function PortalSettingsPage() {
           />
         </div>
 
-        {/* Map Experience */}
+        {/* Guest Interaction */}
         <div className="bg-white rounded-lg border p-6 space-y-4">
-          <h3 className="font-semibold">Map Experience</h3>
+          <h3 className="font-semibold">Guest Interaction</h3>
           <p className="text-sm text-gray-500">
             Choose how guests interact with hotspots on the map.
           </p>
@@ -885,7 +879,7 @@ export default function PortalSettingsPage() {
                 className="mt-1"
               />
               <div>
-                <p className="font-medium">Full Experience</p>
+                <p className="font-medium">Tap to Explore</p>
                 <p className="text-sm text-gray-500">
                   Guests tap markers to see detailed information with images, audio, and more.
                 </p>
@@ -902,7 +896,7 @@ export default function PortalSettingsPage() {
                 className="mt-1"
               />
               <div>
-                <p className="font-medium">Interactive Mode</p>
+                <p className="font-medium">Proximity Auto-Open</p>
                 <p className="text-sm text-gray-500">
                   Hotspots automatically open when guests are within 10 meters. Perfect for guided tours.
                 </p>
@@ -1064,6 +1058,37 @@ export default function PortalSettingsPage() {
           )}
             </div>
           )}
+        </div>
+
+        {/* ===== SHARING & DISTRIBUTION ===== */}
+        <SectionHeader>Sharing & Distribution</SectionHeader>
+
+        {/* Share Link */}
+        <div className="bg-white rounded-lg border p-6">
+          <h3 className="font-semibold mb-4">Share Link</h3>
+          <p className="text-sm text-gray-500 mb-3">
+            Share this link with guests so they can explore your property on their phone.
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 bg-gray-100 px-3 py-2 rounded-lg text-sm font-mono text-gray-700 truncate">
+              {typeof window !== 'undefined' ? window.location.origin : ''}/explore/{project?.slug}
+            </code>
+            <button
+              type="button"
+              onClick={() => {
+                const url = `${window.location.origin}/explore/${project?.slug}`
+                navigator.clipboard.writeText(url)
+                alert('Link copied to clipboard!')
+              }}
+              className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors flex items-center gap-1.5 shrink-0"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+              Copy
+            </button>
+          </div>
         </div>
 
         {/* Embed & Integration */}
