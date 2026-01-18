@@ -5,11 +5,11 @@ import { LandingHeader } from './landing-header'
 import { HotspotPreviewCard } from './hotspot-preview-card'
 import { CTABadge } from './cta-badge'
 
-// Hero background images for carousel
+// Hero background images for carousel (WebP for better compression)
 const heroImages = [
-  '/tuscanyhero.png',
-  '/englishcountryside.png',
-  '/heroskiresorthero.png',
+  '/tuscanyhero.webp',
+  '/englishcountryside.webp',
+  '/heroskiresorthero.webp',
 ]
 
 // Themed hotspot data for each hero image
@@ -21,13 +21,13 @@ const themedHotspots = [
       description:
         'Savor the golden hour among ancient vines. A timeless spot for wine tasting and sunset views.',
       audioDuration: '3:24',
-      imageUrl: 'https://images.unsplash.com/photo-1543418219-44e30b057fea?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1543418219-44e30b057fea?w=400&h=300&fit=crop&q=75',
     },
     secondary: {
       title: 'Villa Garden',
       description: 'Wander through centuries-old olive trees and fragrant herb gardens.',
       audioDuration: '2:12',
-      imageUrl: 'https://images.unsplash.com/photo-1762850106707-a9c07400cac2?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1762850106707-a9c07400cac2?w=400&h=300&fit=crop&q=75',
     },
   },
   // English Countryside theme
@@ -37,13 +37,13 @@ const themedHotspots = [
       description:
         'Explore our award-winning English gardens. Discover hidden paths, topiaries, and the iconic rose walk.',
       audioDuration: '4:05',
-      imageUrl: 'https://images.unsplash.com/photo-1582542021985-549ba224e01b?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1582542021985-549ba224e01b?w=400&h=300&fit=crop&q=75',
     },
     secondary: {
       title: 'Riverside Path',
       description: 'A peaceful trail along the estate river, perfect for morning strolls.',
       audioDuration: '2:30',
-      imageUrl: 'https://images.unsplash.com/photo-1675770070481-3ada9bbb3c47?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1675770070481-3ada9bbb3c47?w=400&h=300&fit=crop&q=75',
     },
   },
   // Ski Resort theme
@@ -53,28 +53,16 @@ const themedHotspots = [
       description:
         'Experience panoramic views from our highest peak. Perfect for sunrise photography and après-ski relaxation.',
       audioDuration: '2:48',
-      imageUrl: 'https://images.unsplash.com/photo-1612305277913-40770f05041d?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1612305277913-40770f05041d?w=400&h=300&fit=crop&q=75',
     },
     secondary: {
       title: 'Chairlift Vista',
       description: 'Scenic views along our historic chairlift route through the pines.',
       audioDuration: '1:55',
-      imageUrl: 'https://images.unsplash.com/photo-1749151068114-14fa7a506c52?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1749151068114-14fa7a506c52?w=400&h=300&fit=crop&q=75',
     },
   },
 ]
-
-// Grain texture overlay
-function GrainOverlay() {
-  return (
-    <div
-      className="pointer-events-none absolute inset-0 z-10 opacity-[0.04]"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-      }}
-    />
-  )
-}
 
 // Mobile headline for value proposition visibility - positioned in parchment area
 function MobileHeadline() {
@@ -159,17 +147,34 @@ interface HeroSectionProps {
 
 export function HeroSection({ heroImageUrl }: HeroSectionProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Cycle through hero images
   useEffect(() => {
     if (heroImageUrl) return // Don't carousel if a specific image is provided
 
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)
+      setIsTransitioning(true)
+      // Short delay before changing index to allow fade out
+      setTimeout(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)
+        setIsTransitioning(false)
+      }, 750) // Half of transition duration
     }, 6000) // Change image every 6 seconds
 
     return () => clearInterval(interval)
   }, [heroImageUrl])
+
+  // Preload next image
+  useEffect(() => {
+    if (heroImageUrl) return
+    const nextIndex = (currentImageIndex + 1) % heroImages.length
+    const img = new Image()
+    img.src = heroImages[nextIndex]
+  }, [currentImageIndex, heroImageUrl])
+
+  // Get the current theme for hotspot cards
+  const currentTheme = themedHotspots[currentImageIndex]
 
   return (
     <section className="relative h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden">
@@ -185,19 +190,17 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          // Fading carousel of hero images
+          // Optimized carousel - only render current image
           <div className="relative w-full h-full">
-            {heroImages.map((src, index) => (
-              <img
-                key={src}
-                src={src}
-                alt={`Resort destination ${index + 1}`}
-                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
-                style={{
-                  opacity: index === currentImageIndex ? 1 : 0,
-                }}
-              />
-            ))}
+            <img
+              key={heroImages[currentImageIndex]}
+              src={heroImages[currentImageIndex]}
+              alt={`Resort destination ${currentImageIndex + 1}`}
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
+              style={{
+                opacity: isTransitioning ? 0 : 1,
+              }}
+            />
           </div>
         )}
 
@@ -216,9 +219,6 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
         />
       </div>
 
-      {/* Grain texture overlay */}
-      <GrainOverlay />
-
       {/* Decorative borders */}
       <DecorativeBorder position="top" />
       <DecorativeBorder position="bottom" />
@@ -234,37 +234,30 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
         />
       </div>
 
-      {/* Hotspot Preview Cards - Right side, stacked with overlap (hidden on mobile, shown below hero instead) */}
-      {/* Renders all themed card sets and fades between them in sync with background */}
+      {/* Hotspot Preview Cards - Right side (hidden on mobile, shown below hero instead) */}
+      {/* Only render current themed card set */}
       <div className="absolute hidden sm:flex sm:right-6 sm:bottom-auto sm:top-[55%] sm:-translate-y-1/2 lg:right-12 z-20 flex-col">
-        {themedHotspots.map((theme, index) => (
-          <div
-            key={index}
-            className="transition-opacity duration-[1500ms] ease-in-out"
-            style={{
-              opacity: index === currentImageIndex ? 1 : 0,
-              position: index === 0 ? 'relative' : 'absolute',
-              top: index === 0 ? undefined : 0,
-              right: index === 0 ? undefined : 0,
-              pointerEvents: index === currentImageIndex ? 'auto' : 'none',
-            }}
-          >
-            <HotspotPreviewCard
-              {...theme.featured}
-              variant="featured"
-              onWatchVideo={() => {}}
-              className="animate-heroCardPopIn relative z-10"
-              style={{ '--pop-delay': '0.3s' } as React.CSSProperties}
-            />
-            <HotspotPreviewCard
-              {...theme.secondary}
-              variant="secondary"
-              hasVideo={false}
-              className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
-              style={{ '--pop-delay': '0.45s' } as React.CSSProperties}
-            />
-          </div>
-        ))}
+        <div
+          className="transition-opacity duration-[1500ms] ease-in-out"
+          style={{
+            opacity: isTransitioning ? 0 : 1,
+          }}
+        >
+          <HotspotPreviewCard
+            {...currentTheme.featured}
+            variant="featured"
+            onWatchVideo={() => {}}
+            className="animate-heroCardPopIn relative z-10"
+            style={{ '--pop-delay': '0.3s' } as React.CSSProperties}
+          />
+          <HotspotPreviewCard
+            {...currentTheme.secondary}
+            variant="secondary"
+            hasVideo={false}
+            className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
+            style={{ '--pop-delay': '0.45s' } as React.CSSProperties}
+          />
+        </div>
       </div>
 
     </section>
