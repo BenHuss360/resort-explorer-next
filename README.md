@@ -1,45 +1,46 @@
-# Wandernest
+# WanderNest
 
-A GPS-powered exploration tool for wellness, adventure, and luxury properties. Give your guests a better way to discover your grounds.
+**GPS-powered exploration for hospitality properties.**
 
-## What is Wandernest?
+Give your guests something to discover. WanderNest provides embeddable, interactive maps that unlock rich content as guests explore your grounds.
 
-Wandernest provides embeddable, interactive maps that properties share with their guests. As guests roam the property, they discover points of interest through GPS-triggered content.
+## How It Works
 
-**For properties:**
+1. **See Your Map** — All the places worth discovering, at a glance
+2. **Wander Freely** — Explore at your own pace with GPS guidance
+3. **Unlock Stories** — Audio, video, and details reveal as you approach
+
+## For Properties
+
 - Create hotspots with rich content (images, audio guides, descriptions)
+- Upload custom illustrated maps that overlay on satellite imagery
 - Customize marker styles and map boundaries
-- Choose between tap-to-discover or proximity-triggered modes
-- Share via simple access codes
+- Share via simple access codes, QR codes, or embed in your app
+- Mobile QR flow for adding hotspots on-location
 
-**For guests:**
+## For Guests
+
 - Explore at your own pace
 - Discover content automatically when nearby (within 10m)
 - Works offline in remote locations
-- Mobile-first, intuitive interface
+- No app download required — works in any browser
+- Privacy-first: location data never leaves your device
 
-## Features
+## Key Features
 
-- GPS-based proximity triggers
-- Rich media hotspots (images, audio)
-- Two experience modes: Full (tap) and Interactive (auto-trigger)
-- Offline support via IndexedDB
-- Custom map overlays with calibration support
-- Access code authentication
-
-## Custom Map Overlays
-
-Properties can upload illustrated maps that overlay on top of the base map:
-
-- **2-Corner Mode:** For north-aligned rectangular maps. Click top-left and bottom-right corners.
-- **3-Corner Mode:** For rotated/skewed maps. Click top-left, top-right, and bottom-left corners.
-
-The system uses Leaflet's ImageOverlay (2-corner) or ImageOverlay.Rotated (3-corner) for stable rendering at all zoom levels.
+| Feature | Description |
+|---------|-------------|
+| GPS Proximity Triggers | Content reveals automatically within 10m |
+| Rich Media Hotspots | Images, audio guides, video, detailed descriptions |
+| Two Experience Modes | Full (tap to discover) or Interactive (auto-trigger) |
+| Offline Support | IndexedDB caching for areas with limited connectivity |
+| Custom Map Overlays | Calibration support for illustrated property maps |
+| Zero Friction | No app download, instant browser access |
 
 ## Tech Stack
 
-- **Framework:** Next.js 16 with React 19
-- **Database:** PostgreSQL (Neon) with Drizzle ORM
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript
+- **Database:** PostgreSQL (Neon serverless) with Drizzle ORM
 - **Maps:** Leaflet + React-Leaflet
 - **Styling:** Tailwind CSS 4
 - **State:** TanStack Query
@@ -62,18 +63,33 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [PRODUCT.md](./PRODUCT.md) | Product overview, features, and vision |
+| [TARGET_AUDIENCE.md](./TARGET_AUDIENCE.md) | User personas and market positioning |
+| [docs/COPY_GUIDE.md](./docs/COPY_GUIDE.md) | Voice, tone, and terminology guidelines |
+| [CLAUDE.md](./CLAUDE.md) | Technical implementation details for developers |
+| [BRAND_NAME_OPTIONS.md](./BRAND_NAME_OPTIONS.md) | Brand naming rationale |
+
 ## Project Structure
 
 ```
 src/
   app/
-    map/        # Guest-facing map experience
-    portal/     # Property management dashboard
-    api/        # API routes
-  components/   # Shared UI components
-  hooks/        # Custom React hooks
-  lib/          # Utilities and database
+    page.tsx        # Landing page
+    map/            # Guest-facing map experience
+    portal/         # Property management dashboard
+    api/            # API routes
+  components/       # Shared UI components
+  hooks/            # Custom React hooks
+  lib/              # Utilities and database
 ```
+
+## Demo
+
+Use access code `DEMO` to explore the demo property, or click "Try the Demo" on the landing page.
 
 ## License
 

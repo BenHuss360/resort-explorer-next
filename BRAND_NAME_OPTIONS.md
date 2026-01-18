@@ -17,7 +17,7 @@ A **GPS-powered exploration tool** that wellness, adventure, and luxury properti
 
 ## Final Three Candidates
 
-### 1. Wandernest (Recommended)
+### 1. WanderNest (Recommended)
 
 **Etymology:** "Wander" (roam, explore) + "Nest" (home, sanctuary)
 
@@ -27,7 +27,7 @@ A **GPS-powered exploration tool** that wellness, adventure, and luxury properti
 - Speaks to the guest experience, which is the value prop to properties
 
 **Works across verticals:**
-- Safari lodge: "Explore our grounds with Wandernest"
+- Safari lodge: "Explore our grounds with WanderNest"
 - Wellness retreat: "Wander through our sanctuary"
 - Luxury hotel: "Discover our estate at your own pace"
 
@@ -89,7 +89,7 @@ A **GPS-powered exploration tool** that wellness, adventure, and luxury properti
 
 ## Recommendation
 
-**Wandernest** is the right name for this product.
+**WanderNest** is the right name for this product.
 
 It's a guest-facing exploration tool – the name should resonate with the end user experience (wandering and discovering), because that's what sells it to properties.
 
