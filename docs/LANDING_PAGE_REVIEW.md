@@ -45,7 +45,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 - "Where exploration meets discovery."
 
 ### Demo Hotspot Cards
-- Label: "Point of Interest"
+- Label: "Discovery Spot"
 - Example: "Hilltop Viewpoint", "Lakeside Pavilion"
 
 ---
@@ -98,17 +98,13 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 **Resolution:** Changed to "Content cached for remote areas"
 
-### 5. "Point of Interest" Label Is Functional But Cold
+### 5. "Point of Interest" Label Is Functional But Cold (FIXED)
 
-**Current:** Hotspot cards use "Point of Interest" as the category label.
+**Was:** Hotspot cards used "Point of Interest" as the category label.
 
-**Issue:** Functional but lacks warmth. Consider something that fits the discovery theme better.
+**Issue:** Functional but lacked warmth.
 
-**Alternatives:**
-- "Discovery Spot"
-- "Hidden Gem"
-- "Explore" (just the verb)
-- Remove the label entirely
+**Resolution:** Changed to "Discovery Spot" — warmer and fits the discovery theme.
 
 ---
 
@@ -136,7 +132,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 ### Low Priority (Optional)
 4. ~~**Strengthen mobile hero**~~ — DONE: Changed to "Stories Around Every Corner"
-5. **Reconsider "Point of Interest" label** — Warmer language optional
+5. ~~**Reconsider "Point of Interest" label**~~ — DONE: Changed to "Discovery Spot"
 
 ---
 
