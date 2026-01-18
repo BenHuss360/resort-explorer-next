@@ -16,6 +16,7 @@ export function SimpleHotspotModal({ hotspot, isOpen, onClose }: SimpleHotspotMo
         {/* Image Thumbnail */}
         {hotspot.imageUrl && (
           <div className="relative w-full h-36">
+            {/* eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL */}
             <img
               src={hotspot.imageUrl}
               alt={hotspot.title}

@@ -84,6 +84,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check if in demo mode first
     if (isDemoMode()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: initialization on mount
       setProjectState(DEMO_PROJECT as ProjectContextData)
       setIsLoading(false)
       return
@@ -112,7 +113,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (project?.id) {
       await fetchProject(project.id)
     }
-  }, [project?.id, fetchProject])
+  }, [project, fetchProject])
 
   return (
     <ProjectContext.Provider value={{ project, setProject, refreshProject, isLoading }}>

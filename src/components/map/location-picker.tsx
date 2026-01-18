@@ -117,7 +117,8 @@ export default function LocationPicker({
       mapRef.current = null
       markerRef.current = null
     }
-  }, []) // Only run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Mount-only effect, uses initial values
+  }, [])
 
   // Update marker when coordinates change externally
   useEffect(() => {
@@ -137,6 +138,7 @@ export default function LocationPicker({
       markerRef.current.remove()
       markerRef.current = null
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Only re-run when coordinates change, marker styling handled separately
   }, [latitude, longitude])
 
   // Update marker style when color or type changes

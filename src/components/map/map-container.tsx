@@ -51,7 +51,7 @@ export function MapContainer() {
   }, [])
 
   // Fetch hotspots with offline cache support
-  const { data: hotspots = [], isLoading: hotspotsLoading } = useQuery({
+  const { data: hotspots = [] } = useQuery({
     queryKey: ['hotspots', project?.id],
     queryFn: async () => {
       const projectId = project!.id
@@ -169,7 +169,7 @@ export function MapContainer() {
       {/* Offline Banner */}
       {isOffline && (
         <div className="bg-[#2F4F4F] text-[#F5F0E6] px-4 py-2 text-sm text-center">
-          You're offline - using cached data
+          You&apos;re offline - using cached data
         </div>
       )}
 
@@ -235,7 +235,7 @@ export function MapContainer() {
             Demo mode - Using venue location
             {distanceToVenue && (
               <span className="text-[#708090]">
-                (You're {formatDistance(distanceToVenue)} away)
+                (You&apos;re {formatDistance(distanceToVenue)} away)
               </span>
             )}
           </span>

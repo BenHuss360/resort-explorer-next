@@ -20,6 +20,7 @@ export function HotspotModal({ hotspot, isOpen, onClose }: HotspotModalProps) {
         {/* Image with subtle overlay */}
         {hotspot.imageUrl && (
           <div className="relative w-full h-64 overflow-hidden rounded-t-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL */}
             <img
               src={hotspot.imageUrl}
               alt={hotspot.title}

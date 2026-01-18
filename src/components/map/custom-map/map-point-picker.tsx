@@ -144,6 +144,7 @@ export default function MapPointPicker({
         mapRef.current = null
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tileLayers is a stable constant
   }, [venueCenter.lat, venueCenter.lng])
 
   // Update tile layer when mapLayer changes
@@ -152,6 +153,7 @@ export default function MapPointPicker({
 
     const layer = tileLayers[mapLayer]
     tileLayerRef.current.setUrl(layer.url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tileLayers is a stable constant
   }, [mapLayer])
 
   // Update markers when GCPs change

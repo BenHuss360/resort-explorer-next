@@ -10,6 +10,7 @@ import 'leaflet-imageoverlay-rotated'
 
 // Declare the extended L.imageOverlay.rotated type for TypeScript
 declare module 'leaflet' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- Standard pattern for augmenting Leaflet types
   namespace imageOverlay {
     function rotated(
       url: string,
@@ -22,6 +23,7 @@ declare module 'leaflet' {
 }
 
 // Fix default marker icon issue in Leaflet with bundlers
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Necessary: _getIconUrl is an internal property not in Leaflet types
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -168,7 +170,8 @@ export default function LeafletMap({
       map.remove()
       mapRef.current = null
     }
-  }, []) // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Mount-only effect, uses initial values
+  }, [])
 
   // Update hotspot markers
   useEffect(() => {

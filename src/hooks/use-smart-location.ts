@@ -64,6 +64,7 @@ export function useSmartLocation({ venueLocation, boundaries, enabled = true }: 
   // Generate mock position when needed
   useEffect(() => {
     if (shouldUseMock && effectiveVenueLocation && !mockPosition) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: lazy initialization of mock position
       setMockPosition(getMockPosition(effectiveVenueLocation))
     }
   }, [shouldUseMock, effectiveVenueLocation, mockPosition])

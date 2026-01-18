@@ -41,6 +41,7 @@ export function PreviewHotspotPanel({ hotspot, onClose }: PreviewHotspotPanelPro
           {/* Image */}
           {hotspot.imageUrl && (
             <div className="relative w-full h-24 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element -- User-uploaded image from external URL */}
               <img
                 src={hotspot.imageUrl}
                 alt={hotspot.title}

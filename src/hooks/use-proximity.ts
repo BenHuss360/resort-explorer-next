@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useCallback } from 'react'
+import { useMemo, useRef, useCallback, useState, useEffect } from 'react'
 import { calculateDistance } from '@/lib/utils/haversine'
 import type { Hotspot } from '@/lib/db/schema'
 
@@ -14,6 +14,7 @@ export function useProximity(
   proximityRadius: number = 30 // meters for auto-trigger
 ) {
   const triggeredRef = useRef<Set<number>>(new Set())
+  const [proximityHotspot, setProximityHotspot] = useState<HotspotWithDistance | null>(null)
 
   // Calculate distances to all hotspots
   const hotspotsWithDistance = useMemo<HotspotWithDistance[]>(() => {
@@ -38,17 +39,23 @@ export function useProximity(
   }, [hotspotsWithDistance])
 
   // Find hotspot within proximity that hasn't been triggered yet
-  const proximityHotspot = useMemo(() => {
-    if (!hotspotsWithDistance.length) return null
+  // Using useEffect to avoid accessing refs during render
+  useEffect(() => {
+    if (!hotspotsWithDistance.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: updating derived state based on effect
+      setProximityHotspot(null)
+      return
+    }
 
     for (const hotspot of hotspotsWithDistance) {
       if (hotspot.distance <= proximityRadius && !triggeredRef.current.has(hotspot.id)) {
         triggeredRef.current.add(hotspot.id)
-        return hotspot
+        setProximityHotspot(hotspot)
+        return
       }
     }
 
-    return null
+    setProximityHotspot(null)
   }, [hotspotsWithDistance, proximityRadius])
 
   // Reset a hotspot so it can trigger again

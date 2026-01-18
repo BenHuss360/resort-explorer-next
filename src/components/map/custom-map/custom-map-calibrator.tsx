@@ -92,10 +92,8 @@ function HelpPanel({ isOpen, onToggle }: { isOpen: boolean; onToggle: () => void
 }
 
 // Step indicator component
-function StepIndicator({ currentStep, gcpCount, maxPoints, isPreviewing }: {
+function StepIndicator({ currentStep, isPreviewing }: {
   currentStep: 'image' | 'map' | 'preview'
-  gcpCount: number
-  maxPoints: number
   isPreviewing: boolean
 }) {
   const steps = [
@@ -105,7 +103,6 @@ function StepIndicator({ currentStep, gcpCount, maxPoints, isPreviewing }: {
   ]
 
   const activeStep = isPreviewing ? 'preview' : currentStep
-  const isComplete = gcpCount >= 3
 
   return (
     <div className="flex items-center gap-1 text-xs">
@@ -234,7 +231,7 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
               onClick={() => handleNorthAnswer(false)}
               className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors"
             >
-              No, it's rotated
+              No, it&apos;s rotated
             </button>
             <button
               onClick={() => handleNorthAnswer(null)}
@@ -250,20 +247,20 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">Is your map drawn to scale?</h3>
           <p className="text-sm text-gray-600">
-            Some maps are stylized or simplified. If distances aren't proportionally accurate, we can handle that.
+            Some maps are stylized or simplified. If distances aren&apos;t proportionally accurate, we can handle that.
           </p>
           <div className="flex gap-3">
             <button
               onClick={() => handleScaleAnswer(true)}
               className="flex-1 py-3 px-4 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg text-blue-700 font-medium transition-colors"
             >
-              Yes, it's accurate
+              Yes, it&apos;s accurate
             </button>
             <button
               onClick={() => handleScaleAnswer(false)}
               className="flex-1 py-3 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-medium transition-colors"
             >
-              No, it's stylized
+              No, it&apos;s stylized
             </button>
             <button
               onClick={() => handleScaleAnswer(null)}
@@ -315,7 +312,7 @@ function CalibrationWizard({ onComplete }: { onComplete: (mode: CalibrationMode)
 export default function CustomMapCalibrator({
   imageUrl,
   existingGCPs = [],
-  existingBounds,
+  existingBounds: _existingBounds,
   existingOpacity = 1.0,
   venueCenter = { lat: 51.0958, lng: -2.5353 },
   onSave,
@@ -333,12 +330,14 @@ export default function CustomMapCalibrator({
   const [showHelp, setShowHelp] = useState(!existingGCPs.length) // Show help by default for new calibrations
   const [showWizard, setShowWizard] = useState(!existingGCPs.length) // Show wizard for new calibrations
 
-  // Labels for corner modes
-  const cornerLabels = calibrationMode === '2corners'
-    ? ['Top-Left', 'Bottom-Right']
-    : calibrationMode === '3corners'
-      ? ['Top-Left', 'Top-Right', 'Bottom-Left']
-      : ['Point 1', 'Point 2', 'Point 3', 'Point 4']
+  // Labels for corner modes - memoized to avoid recreating on every render
+  const cornerLabels = useMemo(() =>
+    calibrationMode === '2corners'
+      ? ['Top-Left', 'Bottom-Right']
+      : calibrationMode === '3corners'
+        ? ['Top-Left', 'Top-Right', 'Bottom-Left']
+        : ['Point 1', 'Point 2', 'Point 3', 'Point 4']
+  , [calibrationMode])
 
   const maxPoints = calibrationMode === '2corners' ? 2 : calibrationMode === '3corners' ? 3 : 20
 
@@ -360,7 +359,7 @@ export default function CustomMapCalibrator({
     setGCPs(prev => [...prev, newGCP])
     setPendingImagePoint(null)
     setCurrentStep('image')
-  }, [gcps.length, calibrationMode])
+  }, [gcps.length, calibrationMode, cornerLabels])
 
   // Remove a GCP
   const removeGCP = useCallback((id: string) => {
@@ -453,7 +452,7 @@ export default function CustomMapCalibrator({
     try {
       const bounds = calculateBoundsFromGCPs(gcps, imageNaturalSize.width, imageNaturalSize.height)
       return { calculatedBounds: bounds, boundsError: null }
-    } catch (error) {
+    } catch {
       // Points are likely collinear
       return { calculatedBounds: null, boundsError: 'Points are in a straight line. Adjust marker positions.' }
     }
@@ -574,8 +573,6 @@ export default function CustomMapCalibrator({
               <h2 className="text-lg font-semibold">Calibrate Custom Map</h2>
               <StepIndicator
                 currentStep={currentStep}
-                gcpCount={gcps.length}
-                maxPoints={maxPoints}
                 isPreviewing={showPreview}
               />
             </div>

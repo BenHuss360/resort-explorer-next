@@ -44,6 +44,7 @@ function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
 
   // Set baseUrl after mount to avoid hydration mismatch
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional: window.location only available on client
     setBaseUrl(window.location.origin)
   }, [])
 
@@ -100,7 +101,7 @@ function EmbedCodeSection({ accessCode }: { accessCode?: string }) {
           <span className="text-sm font-medium">Mobile App / WebView</span>
         </div>
         <p className="text-xs text-gray-500">
-          Use this URL in your mobile app's WebView for fullscreen integration.
+          Use this URL in your mobile app&apos;s WebView for fullscreen integration.
         </p>
         <div className="flex items-center gap-2">
           <code className="flex-1 bg-gray-100 px-3 py-2 rounded-lg text-sm font-mono text-gray-700 truncate">
@@ -480,8 +481,8 @@ export default function PortalSettingsPage() {
         <div className="bg-white rounded-lg border p-6 space-y-4">
           <h3 className="font-semibold">Venue Location</h3>
           <p className="text-sm text-gray-500">
-            Set your venue's location. Search for an address, click on the map, or use your current location.
-            When guests are more than {MOCK_DISTANCE_THRESHOLD / 1000}km away, they'll see a simulated location at your venue so they can explore the map remotely.
+            Set your venue&apos;s location. Search for an address, click on the map, or use your current location.
+            When guests are more than {MOCK_DISTANCE_THRESHOLD / 1000}km away, they&apos;ll see a simulated location at your venue so they can explore the map remotely.
           </p>
 
           <VenueLocationPicker
@@ -589,6 +590,7 @@ export default function PortalSettingsPage() {
             // Image uploaded - show preview and calibration options
             <div className="space-y-4">
               <div className="relative rounded-lg overflow-hidden bg-gray-100 aspect-video">
+                {/* eslint-disable-next-line @next/next/no-img-element -- User-uploaded custom map image */}
                 <img
                   src={customMapImageUrl}
                   alt="Custom map preview"
@@ -695,7 +697,7 @@ export default function PortalSettingsPage() {
               <div>
                 <p className="font-medium">Show Wandernest Branding</p>
                 <p className="text-sm text-gray-500">
-                  Display the "Powered by Wandernest" badge. Disable for white-label integration.
+                  Display the &quot;Powered by Wandernest&quot; badge. Disable for white-label integration.
                 </p>
               </div>
               <button
