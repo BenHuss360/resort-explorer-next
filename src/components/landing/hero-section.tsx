@@ -7,29 +7,13 @@ import { CTABadge } from './cta-badge'
 
 // Hero background images for carousel
 const heroImages = [
-  '/heroskiresorthero.png',
   '/tuscanyhero.png',
   '/englishcountryside.png',
+  '/heroskiresorthero.png',
 ]
 
 // Themed hotspot data for each hero image
 const themedHotspots = [
-  // Ski Resort theme
-  {
-    featured: {
-      title: 'Alpine Summit',
-      description:
-        'Experience panoramic views from our highest peak. Perfect for sunrise photography and après-ski relaxation.',
-      audioDuration: '2:48',
-      imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=400&h=300&fit=crop',
-    },
-    secondary: {
-      title: 'Chairlift Vista',
-      description: 'Scenic views along our historic chairlift route through the pines.',
-      audioDuration: '1:55',
-      imageUrl: 'https://images.unsplash.com/photo-1516939884455-1445c8652f83?w=400&h=300&fit=crop',
-    },
-  },
   // Tuscany theme
   {
     featured: {
@@ -60,6 +44,22 @@ const themedHotspots = [
       description: 'A peaceful trail along the estate river, perfect for morning strolls.',
       audioDuration: '2:30',
       imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+    },
+  },
+  // Ski Resort theme
+  {
+    featured: {
+      title: 'Alpine Summit',
+      description:
+        'Experience panoramic views from our highest peak. Perfect for sunrise photography and après-ski relaxation.',
+      audioDuration: '2:48',
+      imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=400&h=300&fit=crop',
+    },
+    secondary: {
+      title: 'Chairlift Vista',
+      description: 'Scenic views along our historic chairlift route through the pines.',
+      audioDuration: '1:55',
+      imageUrl: 'https://images.unsplash.com/photo-1516939884455-1445c8652f83?w=400&h=300&fit=crop',
     },
   },
 ]
