@@ -21,7 +21,7 @@ const themedHotspots = [
       description:
         'Savor the golden hour among ancient vines. A timeless spot for wine tasting and sunset views.',
       audioDuration: '3:24',
-      imageUrl: 'https://images.unsplash.com/photo-1523531294919-4bcd7c65e216?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1543418219-44e30b057fea?w=400&h=300&fit=crop',
     },
     secondary: {
       title: 'Villa Garden',
