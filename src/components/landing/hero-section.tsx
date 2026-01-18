@@ -1,8 +1,16 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { LandingHeader } from './landing-header'
 import { HotspotPreviewCard } from './hotspot-preview-card'
 import { CTABadge } from './cta-badge'
+
+// Hero background images for carousel
+const heroImages = [
+  '/heroskiresorthero.png',
+  '/tuscanyhero.png',
+  '/englishcountryside.png',
+]
 
 // Grain texture overlay
 function GrainOverlay() {
@@ -98,6 +106,18 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ heroImageUrl }: HeroSectionProps) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  // Cycle through hero images
+  useEffect(() => {
+    if (heroImageUrl) return // Don't carousel if a specific image is provided
+
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length)
+    }, 6000) // Change image every 6 seconds
+
+    return () => clearInterval(interval)
+  }, [heroImageUrl])
 
   // Demo hotspot data
   const featuredHotspot = {
@@ -120,7 +140,7 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
       {/* Header */}
       <LandingHeader />
 
-      {/* Background - Hero Image or Gradient Placeholder */}
+      {/* Background - Hero Image Carousel or Single Image */}
       <div className="absolute inset-0">
         {heroImageUrl ? (
           <img
@@ -129,25 +149,19 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          // Gradient placeholder with decorative elements
-          <div className="w-full h-full bg-gradient-to-br from-[#4a7c59] via-[#3d6b4f] to-[#2d5a3f]">
-            {/* Soft terrain shapes */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              viewBox="0 0 1440 900"
-              preserveAspectRatio="xMidYMid slice"
-            >
-              <ellipse cx="200" cy="700" rx="400" ry="200" fill="#c5d9a4" opacity="0.15" />
-              <ellipse cx="1200" cy="300" rx="300" ry="180" fill="#c5d9a4" opacity="0.12" />
-              <ellipse cx="700" cy="800" rx="500" ry="150" fill="#a8d4e6" opacity="0.1" />
-              <path
-                d="M0,600 Q300,550 600,600 T1200,580 T1440,620"
-                stroke="#d4d0c8"
-                strokeWidth="3"
-                fill="none"
-                opacity="0.15"
+          // Fading carousel of hero images
+          <div className="relative w-full h-full">
+            {heroImages.map((src, index) => (
+              <img
+                key={src}
+                src={src}
+                alt={`Resort destination ${index + 1}`}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
+                style={{
+                  opacity: index === currentImageIndex ? 1 : 0,
+                }}
               />
-            </svg>
+            ))}
           </div>
         )}
 
