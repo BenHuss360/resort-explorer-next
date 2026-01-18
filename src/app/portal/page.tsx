@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useProject } from '@/components/providers/project-provider'
 import { isDemoMode, DEMO_HOTSPOTS } from '@/lib/mock-data'
@@ -11,7 +10,6 @@ import type { Hotspot } from '@/lib/db/schema'
 export default function PortalHotspotsPage() {
   const { project } = useProject()
   const queryClient = useQueryClient()
-  const [_deletingId, setDeletingId] = useState<number | null>(null)
 
   const { data: hotspots = [], isLoading } = useQuery({
     queryKey: ['hotspots', project?.id],
@@ -39,7 +37,6 @@ export default function PortalHotspotsPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hotspots', project?.id] })
-      setDeletingId(null)
     },
   })
 

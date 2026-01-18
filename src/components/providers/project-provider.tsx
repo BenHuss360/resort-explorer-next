@@ -113,7 +113,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (project?.id) {
       await fetchProject(project.id)
     }
-  }, [project, fetchProject])
+  }, [project?.id, fetchProject])
 
   return (
     <ProjectContext.Provider value={{ project, setProject, refreshProject, isLoading }}>

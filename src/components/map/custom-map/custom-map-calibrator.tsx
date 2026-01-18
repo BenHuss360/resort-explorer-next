@@ -452,7 +452,7 @@ export default function CustomMapCalibrator({
     try {
       const bounds = calculateBoundsFromGCPs(gcps, imageNaturalSize.width, imageNaturalSize.height)
       return { calculatedBounds: bounds, boundsError: null }
-    } catch {
+    } catch (_error) {
       // Points are likely collinear
       return { calculatedBounds: null, boundsError: 'Points are in a straight line. Adjust marker positions.' }
     }
