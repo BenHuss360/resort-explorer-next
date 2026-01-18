@@ -96,7 +96,7 @@ export function HotspotPreviewCard({
           bg-[#F5F0E6] rounded-2xl overflow-hidden
           border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
           transition-all duration-300 hover:scale-[1.02]
-          max-w-xs
+          max-w-xs lg:max-w-sm xl:max-w-md
           ${className}
         `}
         style={{
@@ -106,7 +106,7 @@ export function HotspotPreviewCard({
       >
         <div className="flex gap-3 p-3">
           {/* Thumbnail image */}
-          <div className="w-20 h-16 rounded-lg overflow-hidden flex-shrink-0">
+          <div className="w-20 h-16 lg:w-24 lg:h-20 xl:w-28 xl:h-24 rounded-lg overflow-hidden flex-shrink-0">
             {imageUrl ? (
               <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
             ) : (
@@ -141,7 +141,7 @@ export function HotspotPreviewCard({
         bg-[#F5F0E6] rounded-2xl overflow-hidden
         border border-[#2F4F4F]/10 hover:border-[#FFD27F]/50
         transition-all duration-300 hover:scale-[1.02]
-        w-[280px] sm:w-auto sm:max-w-sm
+        w-[280px] sm:w-auto sm:max-w-sm lg:max-w-md xl:max-w-lg 2xl:max-w-xl
         ${className}
       `}
       style={{
@@ -150,7 +150,7 @@ export function HotspotPreviewCard({
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden h-32">
+      <div className="relative overflow-hidden h-32 lg:h-40 xl:h-48">
         {imageUrl ? (
           <img
             src={imageUrl}
