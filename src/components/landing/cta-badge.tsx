@@ -6,20 +6,16 @@ interface CTABadgeProps {
 
 export function CTABadge({ className = '' }: CTABadgeProps) {
   return (
-    <div className={`bg-[#F5F0E6] rounded-2xl p-6 shadow-2xl border border-[#FFD27F]/30 max-w-xs ${className}`}>
-      {/* Logo and brand */}
-      <div className="flex items-center gap-3 mb-4">
-        <img src="/wnlogo.svg" alt="WanderNest" className="h-12 w-auto" />
-        <span className="font-bold text-[#2F4F4F] text-lg">WanderNest</span>
+    <div className={`flex items-start gap-4 ${className}`}>
+      {/* Pin icon in rounded container */}
+      <div className="bg-[#F5F0E6]/90 rounded-xl p-3 shadow-lg border border-[#FFD27F]/20">
+        <img src="/wnlogo.svg" alt="" className="h-8 w-auto" />
       </div>
 
-      {/* Tagline */}
-      <p className="text-[#708090] leading-relaxed text-sm">
-        Discover the beauty of our retreat through GPS-powered exploration.
+      {/* Value prop text */}
+      <p className="text-[#2F4F4F] font-medium text-base leading-snug pt-2 max-w-[180px]">
+        Give your guests something to discover
       </p>
-
-      {/* Gold accent */}
-      <div className="w-12 h-0.5 bg-[#FFD27F] mt-4" />
     </div>
   )
 }
