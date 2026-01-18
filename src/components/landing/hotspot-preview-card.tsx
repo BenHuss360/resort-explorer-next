@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { Play, Pause, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -32,9 +32,12 @@ export function HotspotPreviewCard({
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const demoIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  useEffect(() => {
-    if (audioUrl) {
+  // Create audio element lazily on first play
+  const getOrCreateAudio = useCallback(() => {
+    if (!audioUrl) return null
+    if (!audioRef.current) {
       audioRef.current = new Audio(audioUrl)
       audioRef.current.addEventListener('timeupdate', () => {
         if (audioRef.current) {
@@ -47,44 +50,48 @@ export function HotspotPreviewCard({
         setProgress(0)
       })
     }
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current = null
-      }
-    }
+    return audioRef.current
   }, [audioUrl])
 
-  const toggleAudio = () => {
-    if (!audioRef.current) {
+  const toggleAudio = useCallback(() => {
+    const audio = getOrCreateAudio()
+
+    if (!audio) {
       // Demo mode - animate progress without actual audio
-      setIsPlaying(!isPlaying)
+      if (isPlaying) {
+        // Stop demo
+        if (demoIntervalRef.current) {
+          clearInterval(demoIntervalRef.current)
+          demoIntervalRef.current = null
+        }
+        setIsPlaying(false)
+      } else {
+        // Start demo animation
+        setIsPlaying(true)
+        demoIntervalRef.current = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 100) {
+              setIsPlaying(false)
+              if (demoIntervalRef.current) {
+                clearInterval(demoIntervalRef.current)
+                demoIntervalRef.current = null
+              }
+              return 0
+            }
+            return prev + 0.5
+          })
+        }, 50)
+      }
       return
     }
 
     if (isPlaying) {
-      audioRef.current.pause()
+      audio.pause()
     } else {
-      audioRef.current.play()
+      audio.play()
     }
     setIsPlaying(!isPlaying)
-  }
-
-  // Demo progress animation when no audio
-  useEffect(() => {
-    if (isPlaying && !audioUrl) {
-      const interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            setIsPlaying(false)
-            return 0
-          }
-          return prev + 0.5
-        })
-      }, 50)
-      return () => clearInterval(interval)
-    }
-  }, [isPlaying, audioUrl])
+  }, [getOrCreateAudio, isPlaying])
 
   const isFeatured = variant === 'featured'
 
@@ -108,7 +115,7 @@ export function HotspotPreviewCard({
           {/* Thumbnail image */}
           <div className="w-20 h-16 lg:w-24 lg:h-20 xl:w-28 xl:h-24 rounded-lg overflow-hidden flex-shrink-0">
             {imageUrl ? (
-              <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+              <img src={imageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-[#4a7c59] via-[#3d6b4f] to-[#2d5a3f]" />
             )}
@@ -156,6 +163,7 @@ export function HotspotPreviewCard({
             src={imageUrl}
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            loading="lazy"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#4a7c59] via-[#3d6b4f] to-[#2d5a3f]">

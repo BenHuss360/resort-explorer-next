@@ -1,77 +1,11 @@
-'use client'
-
-import { useRef, useEffect, useState, ReactNode } from 'react'
 import { Map, Sparkles, Smartphone, Zap, Eye, Navigation, Footprints } from 'lucide-react'
 import { HeroSection } from '@/components/landing/hero-section'
 import { HotspotPreviewCard } from '@/components/landing/hotspot-preview-card'
 import { PropertiesCTA } from '@/components/landing/properties-cta'
+import { AnimatedSection } from '@/components/landing/animated-section'
+import { GrainOverlay } from '@/components/landing/grain-overlay'
 
-// Grain texture overlay
-function GrainOverlay() {
-  return (
-    <div
-      className="pointer-events-none fixed inset-0 z-[60] opacity-[0.03]"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-      }}
-    />
-  )
-}
-
-// Scroll animation hook
-function useScrollAnimation(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.unobserve(entry.target)
-        }
-      },
-      { threshold }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => observer.disconnect()
-  }, [threshold])
-
-  return { ref, isVisible }
-}
-
-// Animated section wrapper
-function AnimatedSection({
-  children,
-  className = '',
-  delay = 0,
-}: {
-  children: ReactNode
-  className?: string
-  delay?: number
-}) {
-  const { ref, isVisible } = useScrollAnimation()
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${className}`}
-      style={{
-        transitionDelay: `${delay}ms`,
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-// How It Works Section - Updated copy
+// How It Works Section
 function HowItWorksSection() {
   const steps = [
     {
@@ -216,11 +150,11 @@ function Footer() {
   )
 }
 
-// Main Landing Page
+// Main Landing Page - Server Component
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Grain texture overlay */}
+      {/* Grain texture overlay - single instance */}
       <GrainOverlay />
 
       {/* Hero Section */}
@@ -233,9 +167,9 @@ export default function LandingPage() {
             title="Manor Gardens"
             description="Explore our award-winning English gardens. Discover hidden paths, topiaries, and the iconic rose walk."
             audioDuration="4:05"
-            imageUrl="https://images.unsplash.com/photo-1582542021985-549ba224e01b?w=400&h=300&fit=crop"
+            imageUrl="https://images.unsplash.com/photo-1582542021985-549ba224e01b?w=400&h=300&fit=crop&q=75"
             variant="featured"
-            onWatchVideo={() => {}}
+            hasVideo={false}
           />
         </div>
       </div>
