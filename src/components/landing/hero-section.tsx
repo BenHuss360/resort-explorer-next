@@ -27,7 +27,7 @@ const themedHotspots = [
       title: 'Villa Garden',
       description: 'Wander through centuries-old olive trees and fragrant herb gardens.',
       audioDuration: '2:12',
-      imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1762850106707-a9c07400cac2?w=400&h=300&fit=crop',
     },
   },
   // English Countryside theme
@@ -43,7 +43,7 @@ const themedHotspots = [
       title: 'Riverside Path',
       description: 'A peaceful trail along the estate river, perfect for morning strolls.',
       audioDuration: '2:30',
-      imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1675770070481-3ada9bbb3c47?w=400&h=300&fit=crop',
     },
   },
   // Ski Resort theme
@@ -59,7 +59,7 @@ const themedHotspots = [
       title: 'Chairlift Vista',
       description: 'Scenic views along our historic chairlift route through the pines.',
       audioDuration: '1:55',
-      imageUrl: 'https://images.unsplash.com/photo-1516939884455-1445c8652f83?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1749151068114-14fa7a506c52?w=400&h=300&fit=crop',
     },
   },
 ]
