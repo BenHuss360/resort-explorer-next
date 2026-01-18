@@ -21,7 +21,7 @@ export const DEMO_PROJECT: ProjectContextData = {
     westLng: -2.4950,
     eastLng: -2.4650,
     opacity: 0.9,
-    enabled: true,
+    enabled: false,
     gcps: [
       {
         id: 'gcp-topleft',
