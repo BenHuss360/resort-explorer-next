@@ -207,7 +207,7 @@ function Footer() {
               </span>
             </div>
             <p className="text-sm text-[#708090] text-center md:text-right max-w-md">
-              GPS-powered exploration for properties that care about guest experience.
+              Where exploration meets discovery.
             </p>
           </div>
         </AnimatedSection>

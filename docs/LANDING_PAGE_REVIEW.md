@@ -42,7 +42,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 ### Footer
 - Logo + **"WanderNest"**
-- "GPS-powered exploration for properties that care about guest experience."
+- "Where exploration meets discovery."
 
 ### Demo Hotspot Cards
 - Label: "Point of Interest"
@@ -82,16 +82,13 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 **Resolution:** Changed to "Stories Around Every Corner" — connects to the "Unlock Stories" step and feels more evocative.
 
-### 3. Footer Tagline Is Generic
+### 3. Footer Tagline Is Generic (FIXED)
 
-**Current:** "GPS-powered exploration for properties that care about guest experience."
+**Was:** "GPS-powered exploration for properties that care about guest experience."
 
-**Issue:** "...that care about guest experience" is cliche and doesn't add value.
+**Issue:** "...that care about guest experience" was cliché and didn't add value.
 
-**Alternatives:**
-- "GPS-powered exploration for hospitality properties."
-- "Turn your grounds into an adventure."
-- "Every property has stories to tell."
+**Resolution:** Changed to "Where exploration meets discovery." — concise, evocative, and captures the product essence.
 
 ### 4. "Spotty Signal" Is Informal (FIXED)
 
@@ -134,7 +131,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 1. ~~**Fix brand name capitalization**~~ — DONE: Standardized on "WanderNest" everywhere
 
 ### Medium Priority
-2. **Update footer tagline** — Remove "that care about guest experience"
+2. ~~**Update footer tagline**~~ — DONE: Changed to "Where exploration meets discovery."
 3. ~~**Refine offline copy**~~ — DONE: Changed to "Content cached for remote areas"
 
 ### Low Priority (Optional)
