@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { LandingHeader } from './landing-header'
 import { HotspotPreviewCard } from './hotspot-preview-card'
 import { CTABadge } from './cta-badge'
@@ -165,11 +166,11 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
     return () => clearInterval(interval)
   }, [heroImageUrl])
 
-  // Preload next image
+  // Preload next image using native browser Image constructor
   useEffect(() => {
     if (heroImageUrl) return
     const nextIndex = (currentImageIndex + 1) % heroImages.length
-    const img = new Image()
+    const img = new window.Image()
     img.src = heroImages[nextIndex]
   }, [currentImageIndex, heroImageUrl])
 
@@ -184,19 +185,25 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
       {/* Background - Hero Image Carousel or Single Image */}
       <div className="absolute inset-0">
         {heroImageUrl ? (
-          <img
+          <Image
             src={heroImageUrl}
             alt="Aerial view of resort property"
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
           />
         ) : (
           // Optimized carousel - only render current image
           <div className="relative w-full h-full">
-            <img
+            <Image
               key={heroImages[currentImageIndex]}
               src={heroImages[currentImageIndex]}
               alt={`Resort destination ${currentImageIndex + 1}`}
-              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out"
+              fill
+              priority={currentImageIndex === 0}
+              className="object-cover transition-opacity duration-[1500ms] ease-in-out"
+              sizes="100vw"
               style={{
                 opacity: isTransitioning ? 0 : 1,
               }}
@@ -209,14 +216,6 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
 
         {/* Parchment frame - bottom border only */}
         <div className="absolute inset-x-0 bottom-0 h-44 md:h-56 bg-gradient-to-t from-[#c9b896] via-[#d4c4a8]/90 to-transparent" />
-
-        {/* Parchment texture overlay on borders */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.08]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E")`,
-          }}
-        />
       </div>
 
       {/* Decorative borders */}
