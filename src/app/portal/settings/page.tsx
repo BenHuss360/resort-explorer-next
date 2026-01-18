@@ -8,6 +8,15 @@ import { MOCK_DISTANCE_THRESHOLD } from '@/lib/location-settings'
 import type { GroundControlPoint, CalibrationMode } from '@/lib/db/schema'
 import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import { GoogleFontsLoader } from '@/components/google-fonts-loader'
+import { isDemoMode } from '@/lib/mock-data'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 // Dynamic import for map component (no SSR)
 const VenueLocationPicker = dynamic(
@@ -381,6 +390,7 @@ export default function PortalSettingsPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [customMapExpanded, setCustomMapExpanded] = useState(false)
   const [brandingExpanded, setBrandingExpanded] = useState(false)
+  const [showDemoModal, setShowDemoModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Update state when project loads
@@ -455,6 +465,12 @@ export default function PortalSettingsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (isDemoMode()) {
+      setShowDemoModal(true)
+      return
+    }
+
     mutation.mutate({
       resortName,
       homepageContent,
@@ -488,6 +504,15 @@ export default function PortalSettingsPage() {
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+
+    if (isDemoMode()) {
+      setShowDemoModal(true)
+      // Reset input so user can try again after dismissing modal
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+      return
+    }
 
     setIsUploading(true)
     try {
@@ -1134,6 +1159,27 @@ export default function PortalSettingsPage() {
           onCancel={() => setShowCalibrator(false)}
         />
       )}
+
+      {/* Demo Mode Modal */}
+      <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>This is a Demo</DialogTitle>
+            <DialogDescription>
+              You cannot save changes in demo mode. Sign up to create your own WanderNest and start building interactive experiences for your guests.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <button
+              type="button"
+              onClick={() => setShowDemoModal(false)}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Got it
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
