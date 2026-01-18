@@ -16,6 +16,24 @@ function GrainOverlay() {
   )
 }
 
+// Mobile headline for value proposition visibility - positioned in parchment area
+function MobileHeadline() {
+  return (
+    <div className="md:hidden absolute inset-x-0 bottom-24 z-30 px-6 text-center">
+      <div className="flex items-center justify-center gap-3 mb-1.5">
+        <div className="w-8 h-0.5 bg-[#c9a227]" />
+        <span className="text-[11px] uppercase tracking-widest text-[#5a4a3a] font-bold">
+          GPS Discovery
+        </span>
+        <div className="w-8 h-0.5 bg-[#c9a227]" />
+      </div>
+      <h1 className="text-2xl font-extrabold text-[#3a3025] leading-tight">
+        Explore Every Corner
+      </h1>
+    </div>
+  )
+}
+
 // Decorative vintage border for treasure map aesthetic
 function DecorativeBorder({ position }: { position: 'top' | 'bottom' }) {
   const isTop = position === 'top'
@@ -155,13 +173,16 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
       <DecorativeBorder position="top" />
       <DecorativeBorder position="bottom" />
 
-      {/* CTA Badge - positioned on the parchment area (hidden on mobile) */}
-      <div className="absolute left-6 lg:left-12 bottom-8 lg:bottom-12 z-40 hidden md:block">
+      {/* Mobile headline */}
+      <MobileHeadline />
+
+      {/* CTA Badge - centered on mobile, left-aligned on desktop */}
+      <div className="absolute z-40 left-1/2 -translate-x-1/2 bottom-14 md:left-6 md:translate-x-0 md:bottom-8 lg:left-12 lg:bottom-12">
         <CTABadge className="animate-cardFloat" />
       </div>
 
-      {/* Hotspot Preview Cards - Right side, stacked with overlap */}
-      <div className="absolute right-4 sm:right-6 lg:right-12 bottom-24 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 z-20 flex flex-col">
+      {/* Hotspot Preview Cards - Right side, stacked with overlap (hidden on mobile, shown below hero instead) */}
+      <div className="absolute hidden sm:flex sm:right-6 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 lg:right-12 z-20 flex-col">
         <HotspotPreviewCard
           {...featuredHotspot}
           variant="featured"

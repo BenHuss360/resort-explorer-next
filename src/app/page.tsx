@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState, ReactNode } from 'react'
 import { Map, Sparkles, Smartphone, Zap, Eye, Navigation, Footprints } from 'lucide-react'
 import { HeroSection } from '@/components/landing/hero-section'
+import { HotspotPreviewCard } from '@/components/landing/hotspot-preview-card'
 import { PropertiesCTA } from '@/components/landing/properties-cta'
 
 // Grain texture overlay
@@ -224,6 +225,20 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <HeroSection heroImageUrl="/herobackground.png" />
+
+      {/* Mobile Hotspot Card - shown below hero on mobile only */}
+      <div className="sm:hidden bg-gradient-to-b from-[#c9b896] to-[#F5F0E6] px-4 py-6 -mt-1">
+        <div className="max-w-sm mx-auto">
+          <HotspotPreviewCard
+            title="Hilltop Viewpoint"
+            description="Enjoy a breathtaking panorama from our hilltop lookout. A perfect spot to relax and take in the sunset."
+            audioDuration="3:12"
+            imageUrl="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop"
+            variant="featured"
+            onWatchVideo={() => {}}
+          />
+        </div>
+      </div>
 
       {/* How It Works */}
       <HowItWorksSection />

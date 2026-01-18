@@ -6,15 +6,16 @@ interface CTABadgeProps {
 
 export function CTABadge({ className = '' }: CTABadgeProps) {
   return (
-    <div className={`flex items-start gap-4 ${className}`}>
-      {/* Pin icon in rounded container */}
-      <div className="bg-[#F5F0E6]/90 rounded-xl p-3 shadow-lg border border-[#FFD27F]/20">
+    <div className={`flex flex-col items-center md:flex-row md:items-start gap-2 md:gap-4 ${className}`}>
+      {/* Pin icon in rounded container - hidden on mobile */}
+      <div className="hidden md:block bg-[#F5F0E6]/90 rounded-xl p-3 shadow-lg border border-[#FFD27F]/20">
         <img src="/wnlogo.svg" alt="" className="h-8 w-auto" />
       </div>
 
-      {/* Value prop text */}
-      <p className="text-[#2F4F4F] font-medium text-base leading-snug pt-2 max-w-[180px]">
-        Give your guests something to discover
+      {/* Value prop text - shorter on mobile */}
+      <p className="text-[#3a3025] font-semibold text-[13px] md:text-base leading-tight text-center md:text-left md:pt-2 max-w-[180px] md:max-w-[180px]">
+        <span className="md:hidden">Something to discover</span>
+        <span className="hidden md:inline">Give your guests something to discover</span>
       </p>
     </div>
   )
