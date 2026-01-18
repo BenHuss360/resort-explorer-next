@@ -58,7 +58,7 @@ async function migrate() {
       AND column_name IN ('access_code', 'slug')
     `)
 
-    const columns = columnCheck.rows.map((r: { column_name: string }) => r.column_name)
+    const columns = columnCheck.rows.map((r) => r.column_name as string)
     const hasAccessCode = columns.includes('access_code')
     const hasSlug = columns.includes('slug')
 
