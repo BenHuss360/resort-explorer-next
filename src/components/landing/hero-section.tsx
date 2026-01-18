@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { LandingHeader } from './landing-header'
 import { HotspotPreviewCard } from './hotspot-preview-card'
 import { CTABadge } from './cta-badge'
@@ -17,31 +16,64 @@ function GrainOverlay() {
   )
 }
 
-// Scroll indicator
-function ScrollIndicator() {
-  const [isVisible, setIsVisible] = useState(true)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY < 100)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+// Decorative vintage border for treasure map aesthetic
+function DecorativeBorder({ position }: { position: 'top' | 'bottom' }) {
+  const isTop = position === 'top'
 
   return (
     <div
-      className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-500 z-20 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      className={`absolute left-0 right-0 z-30 pointer-events-none ${
+        isTop ? 'top-[72px]' : 'bottom-0'
+      }`}
     >
-      <span className="text-[#F5F0E6]/70 text-xs font-medium tracking-wider uppercase">
-        Scroll to explore
-      </span>
-      <div className="w-6 h-10 rounded-full border-2 border-[#F5F0E6]/30 flex items-start justify-center p-1">
-        <div className="w-1.5 h-3 bg-[#FFD27F]/70 rounded-full animate-scrollBounce" />
-      </div>
+      <svg
+        viewBox="0 0 1440 40"
+        preserveAspectRatio="none"
+        className={`w-full h-8 md:h-10 ${isTop ? '' : 'rotate-180'}`}
+      >
+        {/* Parchment base band */}
+        <rect x="0" y="0" width="1440" height="40" fill="#F5F0E6" fillOpacity="0.85" />
+
+        {/* Decorative wave pattern */}
+        <path
+          d="M0,20 Q60,8 120,20 T240,20 T360,20 T480,20 T600,20 T720,20 T840,20 T960,20 T1080,20 T1200,20 T1320,20 T1440,20"
+          stroke="#d4c4a8"
+          strokeWidth="2"
+          fill="none"
+        />
+
+        {/* Gold accent line */}
+        <path
+          d="M0,28 Q60,22 120,28 T240,28 T360,28 T480,28 T600,28 T720,28 T840,28 T960,28 T1080,28 T1200,28 T1320,28 T1440,28"
+          stroke="#FFD27F"
+          strokeWidth="1.5"
+          fill="none"
+          opacity="0.7"
+        />
+
+        {/* Corner flourishes */}
+        <circle cx="40" cy="20" r="4" fill="#d4c4a8" />
+        <circle cx="1400" cy="20" r="4" fill="#d4c4a8" />
+
+        {/* Center ornament */}
+        <g transform="translate(720, 20)">
+          <circle r="6" fill="#FFD27F" opacity="0.8" />
+          <circle r="3" fill="#d4c4a8" />
+        </g>
+
+        {/* Gradient fade at edges */}
+        <defs>
+          <linearGradient id={`fadeGradient-${position}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#F5F0E6" stopOpacity={isTop ? "0" : "0.9"} />
+            <stop offset="100%" stopColor="#F5F0E6" stopOpacity={isTop ? "0.9" : "0"} />
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="1440" height="40" fill={`url(#fadeGradient-${position})`} />
+      </svg>
     </div>
   )
 }
+
 
 interface HeroSectionProps {
   heroImageUrl?: string
@@ -66,7 +98,7 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative h-[70vh] min-h-[500px] max-h-[800px] overflow-hidden">
       {/* Header */}
       <LandingHeader />
 
@@ -101,19 +133,30 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
           </div>
         )}
 
-        {/* Warm overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#2F4F4F]/40 via-transparent to-[#F5F0E6]/60" />
+        {/* Dark overlay at top for header blend */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#2F4F4F]/50 to-transparent" />
 
-        {/* Parchment texture at edges */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#F5F0E6]/20 via-transparent to-[#F5F0E6]/20" />
+        {/* Parchment frame - bottom border only */}
+        <div className="absolute inset-x-0 bottom-0 h-44 md:h-56 bg-gradient-to-t from-[#c9b896] via-[#d4c4a8]/90 to-transparent" />
+
+        {/* Parchment texture overlay on borders */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-[0.08]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)'/%3E%3C/svg%3E")`,
+          }}
+        />
       </div>
 
       {/* Grain texture overlay */}
       <GrainOverlay />
 
+      {/* Decorative borders */}
+      <DecorativeBorder position="top" />
+      <DecorativeBorder position="bottom" />
 
-      {/* CTA Badge - Lower left (hidden on mobile) */}
-      <div className="absolute left-6 lg:left-12 bottom-24 lg:bottom-32 z-20 hidden md:block">
+      {/* CTA Badge - positioned on the parchment area (hidden on mobile) */}
+      <div className="absolute left-6 lg:left-12 bottom-8 lg:bottom-12 z-40 hidden md:block">
         <CTABadge className="animate-cardFloat" />
       </div>
 
@@ -133,26 +176,6 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
         />
       </div>
 
-      {/* Scroll Indicator */}
-      <ScrollIndicator />
-
-      {/* Custom animations */}
-      <style jsx>{`
-        @keyframes scrollBounce {
-          0%,
-          100% {
-            transform: translateY(0);
-            opacity: 1;
-          }
-          50% {
-            transform: translateY(12px);
-            opacity: 0.3;
-          }
-        }
-        .animate-scrollBounce {
-          animation: scrollBounce 1.5s ease-in-out infinite;
-        }
-      `}</style>
     </section>
   )
 }
