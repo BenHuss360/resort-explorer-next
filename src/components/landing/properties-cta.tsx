@@ -1,15 +1,18 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Play, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { activateDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
 import { useProject } from '@/components/providers/project-provider'
 import { toast } from 'sonner'
+import { ContactModal } from '@/components/modals/contact-modal'
 
 export function PropertiesCTA() {
   const router = useRouter()
   const { setProject } = useProject()
+  const [contactOpen, setContactOpen] = useState(false)
 
   const handleTryDemo = () => {
     activateDemoMode()
@@ -68,6 +71,7 @@ export function PropertiesCTA() {
           <Button
             variant="outline"
             size="lg"
+            onClick={() => setContactOpen(true)}
             className="border-[#2F4F4F]/20 text-[#2F4F4F] hover:bg-[#2F4F4F] hover:text-[#F5F0E6] px-8"
           >
             Contact Us
@@ -75,6 +79,8 @@ export function PropertiesCTA() {
           </Button>
         </div>
       </div>
+
+      <ContactModal open={contactOpen} onOpenChange={setContactOpen} />
     </section>
   )
 }
