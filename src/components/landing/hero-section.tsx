@@ -53,7 +53,7 @@ const themedHotspots = [
       description:
         'Experience panoramic views from our highest peak. Perfect for sunrise photography and après-ski relaxation.',
       audioDuration: '2:48',
-      imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=400&h=300&fit=crop',
+      imageUrl: 'https://images.unsplash.com/photo-1612305277913-40770f05041d?w=400&h=300&fit=crop',
     },
     secondary: {
       title: 'Chairlift Vista',
