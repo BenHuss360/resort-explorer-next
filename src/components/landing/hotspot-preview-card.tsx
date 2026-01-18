@@ -14,6 +14,7 @@ interface HotspotPreviewCardProps {
   variant?: 'featured' | 'secondary'
   onWatchVideo?: () => void
   className?: string
+  style?: React.CSSProperties
 }
 
 export function HotspotPreviewCard({
@@ -26,6 +27,7 @@ export function HotspotPreviewCard({
   variant = 'featured',
   onWatchVideo,
   className = '',
+  style,
 }: HotspotPreviewCardProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -99,6 +101,7 @@ export function HotspotPreviewCard({
         `}
         style={{
           boxShadow: '0 10px 25px -5px rgba(47, 79, 79, 0.4), 0 20px 40px -10px rgba(47, 79, 79, 0.3), 0 4px 6px -2px rgba(47, 79, 79, 0.2)',
+          ...style,
         }}
       >
         <div className="flex gap-3 p-3">
@@ -143,6 +146,7 @@ export function HotspotPreviewCard({
       `}
       style={{
         boxShadow: '0 10px 25px -5px rgba(47, 79, 79, 0.5), 0 25px 50px -12px rgba(47, 79, 79, 0.4), 0 4px 6px -2px rgba(47, 79, 79, 0.25)',
+        ...style,
       }}
     >
       {/* Image */}

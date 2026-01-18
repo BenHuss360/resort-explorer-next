@@ -178,7 +178,10 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
 
       {/* CTA Badge - centered on mobile, left-aligned on desktop */}
       <div className="absolute z-40 left-1/2 -translate-x-1/2 bottom-14 md:left-6 md:translate-x-0 md:bottom-8 lg:left-12 lg:bottom-12">
-        <CTABadge className="animate-cardFloat" />
+        <CTABadge
+          className="animate-ctaBadgePopIn"
+          style={{ '--pop-delay': '1.5s' } as React.CSSProperties}
+        />
       </div>
 
       {/* Hotspot Preview Cards - Right side, stacked with overlap (hidden on mobile, shown below hero instead) */}
@@ -187,13 +190,15 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
           {...featuredHotspot}
           variant="featured"
           onWatchVideo={() => {}}
-          className="animate-cardFloat relative z-10"
+          className="animate-heroCardPopIn relative z-10"
+          style={{ '--pop-delay': '1.6s' } as React.CSSProperties}
         />
         <HotspotPreviewCard
           {...secondaryHotspot}
           variant="secondary"
           hasVideo={false}
-          className="hidden md:block animate-cardFloat [animation-delay:0.5s] -mt-4 ml-4 relative z-0"
+          className="hidden md:block animate-heroCardPopIn -mt-4 ml-4 relative z-0"
+          style={{ '--pop-delay': '1.8s' } as React.CSSProperties}
         />
       </div>
 
