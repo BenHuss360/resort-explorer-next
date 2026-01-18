@@ -287,14 +287,19 @@
 
 .animate-heroCardPopIn {
   opacity: 0;
-  animation:
-    heroCardPopIn 1s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards,
-    cardFloat 6s ease-in-out calc(var(--pop-delay, 0s) + 1s) infinite;
+  animation: heroCardPopIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards;
 }
 
 .animate-ctaBadgePopIn {
   opacity: 0;
-  animation:
-    ctaBadgePopIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards,
-    cardFloat 6s ease-in-out calc(var(--pop-delay, 0s) + 0.8s) infinite;
+  animation: ctaBadgePopIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--pop-delay, 0s) forwards;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-heroCardPopIn,
+  .animate-ctaBadgePopIn {
+    animation: none;
+    opacity: 1;
+  }
 }
