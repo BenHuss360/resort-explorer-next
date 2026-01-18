@@ -1,35 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { toast } from 'sonner'
-import {
-  MapPin, ArrowRight, Footprints, TreePine, Sparkles, Building2,
-  Mountain, Compass, Leaf, Play, Smartphone,
-  MapPinned, Eye, Navigation, Zap
-} from 'lucide-react'
-import { useProject } from '@/components/providers/project-provider'
-import { activateDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
-
-// Parallax scroll hook
-function useParallax(speed = 0.5) {
-  const [offset, setOffset] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setOffset(window.scrollY * speed)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [speed])
-
-  return offset
-}
+import { useRef, useEffect, useState, ReactNode } from 'react'
+import { Map, Sparkles, Smartphone, Zap, Eye, Navigation, Footprints } from 'lucide-react'
+import { HeroSection } from '@/components/landing/hero-section'
+import { PropertiesCTA } from '@/components/landing/properties-cta'
 
 // Grain texture overlay
 function GrainOverlay() {
@@ -40,102 +14,6 @@ function GrainOverlay() {
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
       }}
     />
-  )
-}
-
-// Animated gradient background for hero
-function AnimatedGradientBg() {
-  return (
-    <div className="absolute inset-0 overflow-hidden">
-      {/* Base gradient - Forest Green */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#2F4F4F] via-[#3a5f5f] to-[#4a6f6f]" />
-
-      {/* Animated color blobs - Forest Green variants */}
-      <div
-        className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-25"
-        style={{
-          background: 'radial-gradient(circle, rgba(47, 79, 79, 0.8) 0%, transparent 50%)',
-          animation: 'moveBlob1 15s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-25"
-        style={{
-          background: 'radial-gradient(circle, rgba(58, 95, 95, 0.8) 0%, transparent 50%)',
-          animation: 'moveBlob2 18s ease-in-out infinite',
-        }}
-      />
-      <div
-        className="absolute top-1/4 right-1/4 w-1/2 h-1/2 rounded-full opacity-15"
-        style={{
-          background: 'radial-gradient(circle, rgba(255, 210, 127, 0.6) 0%, transparent 50%)',
-          animation: 'moveBlob3 20s ease-in-out infinite',
-        }}
-      />
-
-      <style jsx>{`
-        @keyframes moveBlob1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30%, 20%) scale(1.1); }
-          66% { transform: translate(-20%, 30%) scale(0.9); }
-        }
-        @keyframes moveBlob2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(-30%, -20%) scale(0.9); }
-          66% { transform: translate(20%, -30%) scale(1.1); }
-        }
-        @keyframes moveBlob3 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-30%, 30%) scale(1.2); }
-        }
-      `}</style>
-    </div>
-  )
-}
-
-// Animated logo with sway effect
-function AnimatedLogo({ className = '', iconClassName = '' }: { className?: string; iconClassName?: string }) {
-  return (
-    <div className={`relative ${className}`}>
-      {/* Glow effect behind logo - Gold */}
-      <div className="absolute inset-0 bg-[#FFD27F]/30 rounded-3xl blur-xl animate-pulse" />
-      <div className="relative bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/20 w-full h-full">
-        <Footprints
-          className={`text-white transition-transform ${iconClassName}`}
-          style={{
-            animation: 'sway 4s ease-in-out infinite',
-          }}
-        />
-      </div>
-      <style jsx>{`
-        @keyframes sway {
-          0%, 100% { transform: rotate(-2deg) translateX(0); }
-          25% { transform: rotate(1deg) translateX(1px); }
-          50% { transform: rotate(2deg) translateX(0); }
-          75% { transform: rotate(-1deg) translateX(-1px); }
-        }
-      `}</style>
-    </div>
-  )
-}
-
-// Shimmer text effect
-function ShimmerText({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <span className={`relative inline-block ${className}`}>
-      <span className="bg-gradient-to-r from-[#FFD27F] via-[#F5F0E6] to-[#FFD27F] bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer">
-        {children}
-      </span>
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        .animate-shimmer {
-          animation: shimmer 3s linear infinite;
-        }
-      `}</style>
-    </span>
   )
 }
 
@@ -169,7 +47,7 @@ function useScrollAnimation(threshold = 0.1) {
 function AnimatedSection({
   children,
   className = '',
-  delay = 0
+  delay = 0,
 }: {
   children: ReactNode
   className?: string
@@ -192,621 +70,27 @@ function AnimatedSection({
   )
 }
 
-// Floating decorative elements for hero with parallax
-function FloatingElements() {
-  const offset = useParallax(0.3)
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Animated gradient orbs with parallax - Forest Green/Gold variants */}
-      <div
-        className="absolute top-20 left-[10%] w-72 h-72 bg-gradient-to-br from-white/10 to-[#FFD27F]/15 rounded-full blur-3xl animate-pulse"
-        style={{ transform: `translateY(${offset * 0.5}px)` }}
-      />
-      <div
-        className="absolute top-40 right-[15%] w-56 h-56 bg-gradient-to-br from-[#F5F0E6]/10 to-[#FFD27F]/10 rounded-full blur-3xl animate-pulse [animation-delay:1s]"
-        style={{ transform: `translateY(${offset * 0.3}px)` }}
-      />
-      <div
-        className="absolute bottom-32 left-[20%] w-40 h-40 bg-gradient-to-br from-[#FFD27F]/10 to-[#F5F0E6]/10 rounded-full blur-2xl animate-pulse [animation-delay:2s]"
-        style={{ transform: `translateY(${offset * 0.7}px)` }}
-      />
-      <div
-        className="absolute bottom-20 right-[25%] w-32 h-32 bg-white/5 rounded-full blur-2xl animate-pulse [animation-delay:3s]"
-        style={{ transform: `translateY(${offset * 0.4}px)` }}
-      />
-
-      {/* Floating icons with parallax */}
-      <div
-        className="absolute top-32 left-[8%] opacity-20 animate-bounce [animation-duration:3s]"
-        style={{ transform: `translateY(${offset * 0.2}px)` }}
-      >
-        <Mountain className="w-8 h-8 text-[#F5F0E6]" />
-      </div>
-      <div
-        className="absolute top-24 right-[12%] opacity-15 animate-bounce [animation-duration:4s] [animation-delay:0.5s]"
-        style={{ transform: `translateY(${offset * 0.4}px)` }}
-      >
-        <Compass className="w-10 h-10 text-[#F5F0E6]" />
-      </div>
-      <div
-        className="absolute bottom-44 right-[8%] opacity-20 animate-bounce [animation-duration:3.5s] [animation-delay:1s]"
-        style={{ transform: `translateY(${offset * 0.3}px)` }}
-      >
-        <Leaf className="w-6 h-6 text-[#F5F0E6]" />
-      </div>
-      <div
-        className="absolute bottom-52 left-[15%] opacity-15 animate-bounce [animation-duration:4.5s] [animation-delay:1.5s]"
-        style={{ transform: `translateY(${offset * 0.5}px)` }}
-      >
-        <TreePine className="w-7 h-7 text-[#F5F0E6]" />
-      </div>
-    </div>
-  )
-}
-
-// Improved scroll indicator
-function ScrollIndicator() {
-  const [isVisible, setIsVisible] = useState(true)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsVisible(window.scrollY < 100)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  return (
-    <div
-      className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-    >
-      <span className="text-[#F5F0E6]/70 text-xs font-medium tracking-wider uppercase">Scroll to explore</span>
-      <div className="w-6 h-10 rounded-full border-2 border-[#F5F0E6]/30 flex items-start justify-center p-1">
-        <div className="w-1.5 h-3 bg-[#FFD27F]/70 rounded-full animate-scrollBounce" />
-      </div>
-      <style jsx>{`
-        @keyframes scrollBounce {
-          0%, 100% { transform: translateY(0); opacity: 1; }
-          50% { transform: translateY(12px); opacity: 0.3; }
-        }
-        .animate-scrollBounce {
-          animation: scrollBounce 1.5s ease-in-out infinite;
-        }
-      `}</style>
-    </div>
-  )
-}
-
-// Unified Login Card with tabs for Guest Access and Property Portal
-function UnifiedLoginCard() {
-  const [accessCode, setAccessCode] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const { setProject } = useProject()
-
-  const handleGuestSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!accessCode.trim()) return
-
-    setIsLoading(true)
-
-    // Check for demo mode first
-    if (accessCode.trim().toUpperCase() === 'DEMO') {
-      activateDemoMode()
-      setProject(DEMO_PROJECT)
-      toast.success('Welcome to Demo Mode!')
-      router.push('/portal/preview')
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      const res = await fetch(`/api/projects/by-code/${accessCode.trim().toUpperCase()}`)
-
-      if (res.ok) {
-        const data = await res.json()
-        setProject(data)
-        toast.success(`Welcome to ${data.resortName}!`)
-        router.push(`/embed/${accessCode.trim().toUpperCase()}`)
-      } else {
-        toast.error('Invalid access code. Please check and try again.')
-      }
-    } catch {
-      toast.error('Invalid access code. Please check and try again.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handlePropertySubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email.trim() || !password.trim()) {
-      toast.error('Please enter both email and password.')
-      return
-    }
-
-    setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 800))
-
-    // Test account check
-    if (email.trim().toLowerCase() === 'ben@appletrees.com' && password === '123') {
-      // Clear demo mode and fetch real project
-      localStorage.removeItem('demoMode')
-      try {
-        const res = await fetch('/api/projects/by-code/APPLETREES')
-        if (res.ok) {
-          const data = await res.json()
-          setProject({
-            id: data.id,
-            resortName: data.resortName,
-            accessCode: data.accessCode,
-            homepageContent: data.homepageContent || '',
-            mapExperience: data.mapExperience || 'full',
-            boundaries: {
-              north: data.northBoundary,
-              south: data.southBoundary,
-              east: data.eastBoundary,
-              west: data.westBoundary,
-            },
-            customMapOverlay: {
-              imageUrl: data.customMapImageUrl,
-              northLat: data.customMapNorthLat,
-              southLat: data.customMapSouthLat,
-              westLng: data.customMapWestLng,
-              eastLng: data.customMapEastLng,
-              opacity: data.customMapOpacity ?? 1.0,
-              enabled: data.customMapEnabled || false,
-              gcps: data.customMapGCPs || [],
-              calibrationMode: data.customMapCalibrationMode || '2corners',
-            },
-            venueLocation: {
-              latitude: data.venueLocationLat,
-              longitude: data.venueLocationLng,
-            },
-            embedSettings: {
-              showHeader: data.embedShowHeader ?? true,
-              showBranding: data.embedShowBranding ?? true,
-            },
-          })
-          toast.success(`Welcome! Managing ${data.resortName}`)
-          router.push('/portal')
-        } else {
-          setIsLoading(false)
-          toast.error('No project found. Please create one first.')
-        }
-      } catch {
-        setIsLoading(false)
-        toast.error('Failed to load project.')
-      }
-    } else {
-      setIsLoading(false)
-      toast.error('Invalid email or password.')
-    }
-  }
-
-  const handleForgotPassword = () => {
-    toast.info('Password recovery coming soon.')
-  }
-
-  return (
-    <Card className="relative overflow-hidden border-0 bg-white/80 backdrop-blur-xl shadow-2xl">
-      {/* Top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2F4F4F] via-[#FFD27F] to-[#2F4F4F]" />
-
-      <CardHeader className="text-center pb-4 pt-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-[#2F4F4F] via-[#3a5f5f] to-[#4a6f6f] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-[#2F4F4F]/30">
-          <Footprints className="w-8 h-8 text-[#F5F0E6]" />
-        </div>
-        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#2F4F4F] via-[#3a5f5f] to-[#2F4F4F] bg-clip-text text-transparent">
-          Welcome to Wandernest
-        </CardTitle>
-        <CardDescription className="text-[#708090] mt-1">
-          Enter your access code or sign in to manage your property
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="pb-8 px-6">
-        <Tabs defaultValue="guest" className="w-full">
-          <TabsList className="w-full mb-6 bg-[#F5F0E6] p-1 rounded-lg">
-            <TabsTrigger value="guest" className="flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md">
-              <Footprints className="w-4 h-4 mr-2" />
-              Guest Access
-            </TabsTrigger>
-            <TabsTrigger value="property" className="flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md">
-              <Building2 className="w-4 h-4 mr-2" />
-              Property Portal
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="guest">
-            <form onSubmit={handleGuestSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="access-code" className="text-sm font-medium text-[#708090]">
-                  Access Code
-                </Label>
-                <Input
-                  id="access-code"
-                  type="text"
-                  placeholder="Enter your code"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
-                  className="mt-2 text-center text-lg font-bold tracking-[0.2em] uppercase h-12 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
-                  maxLength={10}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] hover:from-[#3a5f5f] hover:to-[#4a6f6f] text-[#F5F0E6] font-semibold shadow-lg shadow-[#FFD27F]/25"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Loading...
-                  </span>
-                ) : (
-                  <>
-                    Begin Exploring
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </>
-                )}
-              </Button>
-
-              <p className="text-center text-sm text-[#708090]">
-                Ask your property&apos;s front desk for an access code
-              </p>
-            </form>
-          </TabsContent>
-
-          <TabsContent value="property">
-            <form onSubmit={handlePropertySubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="email" className="text-sm font-medium text-[#708090]">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@property.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-2 h-10 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="password" className="text-sm font-medium text-[#708090]">
-                  Password
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-2 h-10 border-[#2F4F4F]/20 focus:border-[#FFD27F] focus:ring-[#FFD27F]/20"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full h-12 bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] hover:from-[#3a5f5f] hover:to-[#4a6f6f] text-[#F5F0E6] font-semibold shadow-lg shadow-[#FFD27F]/25"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Signing in...
-                  </span>
-                ) : (
-                  'Sign In'
-                )}
-              </Button>
-
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="w-full text-center text-sm text-[#708090]/70 hover:text-[#708090] transition-colors"
-              >
-                Forgot your password?
-              </button>
-
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#2F4F4F]/10" />
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-white text-[#708090]">or</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  activateDemoMode()
-                  setProject(DEMO_PROJECT)
-                  toast.success('Welcome to Demo Mode!')
-                  router.push('/portal/preview')
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#2F4F4F] hover:text-[#3a5f5f] hover:bg-[#F5F0E6] rounded-lg transition-colors"
-              >
-                <Play className="w-4 h-4" />
-                Explore the demo
-              </button>
-            </form>
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Phone mockup with animated elements - matches actual app experience
-function PhoneMockup() {
-  return (
-    <div className="relative mx-auto max-w-[320px] lg:max-w-none">
-      {/* Phone frame */}
-      <div className="relative bg-[#1a1a1a] rounded-[3rem] p-3 shadow-2xl shadow-black/30">
-        {/* Screen */}
-        <div className="bg-[#e8e4dc] rounded-[2.5rem] overflow-hidden aspect-[9/19] relative">
-          {/* Status bar */}
-          <div className="bg-[#1a1a1a] px-6 py-2 flex items-center justify-between relative z-10">
-            <span className="text-white/90 text-xs font-medium">9:41</span>
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 3C8.5 3 5.5 4.5 3.5 7L12 21l8.5-14C18.5 4.5 15.5 3 12 3z" opacity="0.3"/>
-                <path d="M12 6C9.5 6 7.5 7.5 6 9.5L12 18l6-8.5C16.5 7.5 14.5 6 12 6z"/>
-              </svg>
-              <svg className="w-4 h-4 text-white/90" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="2" y="7" width="20" height="10" rx="2" opacity="0.3"/>
-                <rect x="4" y="9" width="14" height="6" rx="1"/>
-              </svg>
-            </div>
-          </div>
-
-          {/* App header - matches actual embed header */}
-          <div className="bg-emerald-600 px-4 py-2 flex items-center justify-between relative z-10">
-            <span className="text-white font-medium text-sm">The Retreat at Blue Mountain</span>
-            <span className="text-emerald-100 text-xs">8 spots</span>
-          </div>
-
-          {/* Map area - abstract stylized background */}
-          <div className="relative flex-1 bg-[#e8e4dc]" style={{height: 'calc(100% - 76px)'}}>
-            {/* Abstract map background */}
-            <div className="absolute inset-0">
-              <svg className="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice">
-                {/* Soft organic shapes for terrain */}
-                <ellipse cx="40" cy="200" rx="60" ry="40" fill="#c5d9a4" opacity="0.4"/>
-                <ellipse cx="160" cy="80" rx="50" ry="35" fill="#c5d9a4" opacity="0.35"/>
-                <ellipse cx="100" cy="260" rx="80" ry="30" fill="#a8d4e6" opacity="0.3"/>
-                {/* Subtle paths */}
-                <path d="M20,140 Q60,120 100,140 T180,130" stroke="#d4d0c8" strokeWidth="3" fill="none" opacity="0.5"/>
-                <path d="M0,200 Q80,180 140,210 T200,190" stroke="#d4d0c8" strokeWidth="2" fill="none" opacity="0.4"/>
-              </svg>
-            </div>
-
-            {/* Hotspot markers with glows */}
-            <div className="absolute inset-0">
-              {/* Gold pin marker (featured) */}
-              <div className="absolute top-[12%] left-[22%] animate-pinPulse">
-                <div className="relative">
-                  <div className="absolute w-8 h-8 bg-[#FFD27F] rounded-full blur-md opacity-40 -top-1 -left-1"/>
-                  <svg width="24" height="30" viewBox="0 0 24 30" className="drop-shadow-lg">
-                    <path d="M12 0C6.5 0 2 4.5 2 10c0 7 10 18 10 18s10-11 10-18c0-5.5-4.5-10-10-10z" fill="#FFD27F" stroke="#F5F0E6" strokeWidth="1.5"/>
-                    <circle cx="12" cy="10" r="3" fill="#F5F0E6"/>
-                  </svg>
-                </div>
-              </div>
-
-              {/* Forest green circle marker */}
-              <div className="absolute top-[35%] left-[58%] animate-pinPulse [animation-delay:0.4s]">
-                <div className="relative">
-                  <div className="absolute w-6 h-6 bg-[#2F4F4F] rounded-full blur-sm opacity-30 -top-0.5 -left-0.5"/>
-                  <div className="w-5 h-5 bg-[#2F4F4F] rounded-full border-2 border-[#F5F0E6] shadow-lg"/>
-                </div>
-              </div>
-
-              {/* Blue pin marker */}
-              <div className="absolute top-[55%] left-[30%] animate-pinPulse [animation-delay:0.8s]">
-                <div className="relative">
-                  <div className="absolute w-6 h-6 bg-[#3B82F6] rounded-full blur-sm opacity-35 -top-0.5 -left-0.5"/>
-                  <svg width="20" height="26" viewBox="0 0 24 30" className="drop-shadow-md">
-                    <path d="M12 0C6.5 0 2 4.5 2 10c0 7 10 18 10 18s10-11 10-18c0-5.5-4.5-10-10-10z" fill="#3B82F6" stroke="#F5F0E6" strokeWidth="1.5"/>
-                    <circle cx="12" cy="10" r="3" fill="#F5F0E6"/>
-                  </svg>
-                </div>
-              </div>
-
-              {/* Slate circle marker */}
-              <div className="absolute top-[25%] right-[22%] animate-pinPulse [animation-delay:1.2s]">
-                <div className="relative">
-                  <div className="absolute w-5 h-5 bg-[#708090] rounded-full blur-sm opacity-30"/>
-                  <div className="w-4 h-4 bg-[#708090] rounded-full border-2 border-[#F5F0E6] shadow-md"/>
-                </div>
-              </div>
-
-              {/* User location dot */}
-              <div className="absolute top-[42%] left-[44%]">
-                <div className="relative">
-                  <div className="absolute w-8 h-8 bg-[#2F4F4F] rounded-full opacity-15 -top-2 -left-2 animate-ping"/>
-                  <div className="w-4 h-4 bg-[#2F4F4F] rounded-full border-[2.5px] border-[#F5F0E6] shadow-lg"/>
-                </div>
-              </div>
-            </div>
-
-            {/* Zoom controls */}
-            <div className="absolute bottom-16 right-2 flex flex-col bg-white rounded shadow-md overflow-hidden z-10">
-              <button className="w-6 h-6 flex items-center justify-center text-[#2F4F4F] text-sm">+</button>
-              <div className="h-px bg-gray-200"/>
-              <button className="w-6 h-6 flex items-center justify-center text-[#2F4F4F] text-sm">−</button>
-            </div>
-
-            {/* Powered by badge - matches actual app */}
-            <div className="absolute bottom-2 left-2 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[7px] text-gray-500 flex items-center gap-1 shadow-sm z-10">
-              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M12 2c-2.8 0-5 2.2-5 5 0 .5.1.9.2 1.3l4.8 11.5 4.8-11.5c.1-.4.2-.8.2-1.3 0-2.8-2.2-5-5-5z"/>
-              </svg>
-              Powered by Wandernest
-            </div>
-
-            {/* Modal overlay - shows actual hotspot detail experience */}
-            <div className="absolute inset-x-3 bottom-3 bg-[#F5F0E6] rounded-2xl shadow-2xl overflow-hidden z-20 animate-slideUp">
-              {/* Modal image */}
-              <div className="h-20 bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-600 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2040%22%3E%3Cpath%20d%3D%22M0%2040%20Q20%2025%2040%2030%20T70%2020%20T100%2028%20L100%2040%20Z%22%20fill%3D%22rgba(255,255,255,0.1)%22%2F%3E%3C%2Fsvg%3E')] bg-cover bg-bottom"/>
-                {/* Close button */}
-                <button className="absolute top-2 right-2 w-5 h-5 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                  <svg width="10" height="10" viewBox="0 0 24 24" stroke="#F5F0E6" strokeWidth="2.5" fill="none">
-                    <path d="M18 6L6 18M6 6l12 12"/>
-                  </svg>
-                </button>
-              </div>
-
-              {/* Modal content - matches hotspot-modal.tsx exactly */}
-              <div className="p-3 space-y-2">
-                {/* Header with gold bar */}
-                <div className="flex items-center gap-1.5">
-                  <div className="w-6 h-0.5 bg-[#FFD27F]"/>
-                  <span className="text-[8px] uppercase tracking-wider text-[#708090] font-medium">Point of Interest</span>
-                </div>
-                <h4 className="font-bold text-[#2F4F4F] text-base leading-tight">Meditation Garden</h4>
-                <p className="text-[10px] text-[#708090] leading-relaxed">A tranquil sanctuary surrounded by ancient oaks, perfect for morning reflection and mindfulness practice.</p>
-
-                {/* Audio player - matches hotspot modal styling */}
-                <div className="bg-white/60 rounded-lg p-2 border border-[#FFD27F]/30 flex items-center gap-2">
-                  <button className="w-8 h-8 rounded-full bg-[#2F4F4F] flex items-center justify-center flex-shrink-0 shadow">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="#F5F0E6">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[9px] font-semibold text-[#2F4F4F]">Audio Guide</p>
-                    <div className="h-1 bg-[#2F4F4F]/10 rounded-full mt-1 overflow-hidden">
-                      <div className="w-1/3 h-full bg-[#FFD27F] rounded-full"/>
-                    </div>
-                  </div>
-                  <span className="text-[9px] text-[#708090] font-medium">3:24</span>
-                </div>
-              </div>
-            </div>
-
-            <style jsx>{`
-              @keyframes pinPulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
-              }
-              @keyframes slideUp {
-                0% { transform: translateY(10px); opacity: 0.8; }
-                100% { transform: translateY(0); opacity: 1; }
-              }
-              .animate-pinPulse {
-                animation: pinPulse 3s ease-in-out infinite;
-              }
-              .animate-slideUp {
-                animation: slideUp 0.3s ease-out forwards;
-              }
-            `}</style>
-          </div>
-
-          {/* Bottom home indicator */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-28 h-1 bg-[#2F4F4F]/20 rounded-full z-30" />
-        </div>
-
-        {/* Notch / Dynamic Island */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#1a1a1a] rounded-full" />
-      </div>
-
-      {/* Decorative elements around phone */}
-      <div className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-[#FFD27F] to-[#f5c55a] rounded-2xl opacity-20 blur-xl" />
-      <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-full opacity-20 blur-xl" />
-    </div>
-  )
-}
-
-// Product Preview Section
-function ProductPreviewSection() {
-  const features = [
-    { icon: MapPinned, label: 'Interactive Map', description: 'See all points of interest' },
-    { icon: Navigation, label: 'GPS Navigation', description: 'Get directions to any spot' },
-    { icon: Eye, label: 'Proximity Unlock', description: 'Content reveals as you approach' },
-    { icon: Zap, label: 'Instant Access', description: 'No app download required' },
-  ]
-
-  return (
-    <section className="py-20 md:py-28 px-4 bg-gradient-to-b from-[#F5F0E6]/50 to-white relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-[#FFD27F]/20 to-transparent rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#2F4F4F]/10 to-transparent rounded-full blur-3xl" />
-
-      <div className="max-w-6xl mx-auto relative">
-        <AnimatedSection className="text-center mb-12 md:mb-16">
-          <span className="inline-block px-4 py-1.5 bg-gradient-to-r from-[#FFD27F]/30 to-[#F5F0E6] text-[#2F4F4F] text-sm font-medium rounded-full mb-4">
-            See It In Action
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2F4F4F] mb-4">
-            Exploration Made{' '}
-            <span className="bg-gradient-to-r from-[#2F4F4F] to-[#3a5f5f] bg-clip-text text-transparent">
-              Beautiful
-            </span>
-          </h2>
-          <p className="text-lg text-[#708090] max-w-2xl mx-auto">
-            A seamless mobile experience that guides guests through your property with interactive maps and location-aware content
-          </p>
-        </AnimatedSection>
-
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Phone Mockup */}
-          <AnimatedSection delay={200}>
-            <PhoneMockup />
-          </AnimatedSection>
-
-          {/* Features list */}
-          <div className="space-y-6">
-            {features.map((feature, index) => (
-              <AnimatedSection key={index} delay={300 + index * 100}>
-                <div className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white hover:shadow-lg transition-all duration-300 group">
-                  <div className="w-14 h-14 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-2xl flex items-center justify-center shadow-lg shadow-[#FFD27F]/20 group-hover:scale-110 transition-transform flex-shrink-0">
-                    <feature.icon className="w-7 h-7 text-[#F5F0E6]" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-[#2F4F4F] mb-1">{feature.label}</h3>
-                    <p className="text-[#708090]">{feature.description}</p>
-                  </div>
-                </div>
-              </AnimatedSection>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// How It Works Section
+// How It Works Section - Updated copy
 function HowItWorksSection() {
   const steps = [
     {
-      icon: MapPin,
-      title: 'Get Your Code',
-      description: 'Your property provides a unique access code for your stay',
+      icon: Map,
+      title: 'See Your Map',
+      description: 'All the places worth discovering, at a glance',
       color: 'from-[#FFD27F] to-[#f5c55a]',
       shadowColor: 'shadow-[#FFD27F]/25',
     },
     {
       icon: Footprints,
       title: 'Wander Freely',
-      description: 'Explore the grounds at your own pace with GPS guidance',
+      description: 'Explore at your own pace with GPS guidance',
       color: 'from-[#2F4F4F] to-[#3a5f5f]',
       shadowColor: 'shadow-[#2F4F4F]/25',
     },
     {
       icon: Sparkles,
-      title: 'Discover More',
-      description: 'Hidden content reveals as you approach interesting spots',
+      title: 'Unlock Stories',
+      description: 'Audio, video, and details reveal as you approach',
       color: 'from-[#708090] to-[#5a6a7a]',
       shadowColor: 'shadow-[#708090]/25',
     },
@@ -828,7 +112,7 @@ function HowItWorksSection() {
             How It Works
           </h2>
           <p className="text-lg text-[#708090] max-w-2xl mx-auto">
-            GPS-powered discovery that unfolds naturally as you wander through the property
+            GPS-powered discovery that unfolds naturally as you explore the property
           </p>
         </AnimatedSection>
 
@@ -847,15 +131,13 @@ function HowItWorksSection() {
                     {index + 1}
                   </div>
 
-                  <div className={`w-24 h-24 bg-gradient-to-br ${step.color} rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl ${step.shadowColor} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <div
+                    className={`w-24 h-24 bg-gradient-to-br ${step.color} rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl ${step.shadowColor} group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
+                  >
                     <step.icon className="w-12 h-12 text-[#F5F0E6]" />
                   </div>
-                  <h3 className="font-bold text-xl text-[#2F4F4F] mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-[#708090] leading-relaxed">
-                    {step.description}
-                  </p>
+                  <h3 className="font-bold text-xl text-[#2F4F4F] mb-3">{step.title}</h3>
+                  <p className="text-[#708090] leading-relaxed">{step.description}</p>
                 </div>
               </div>
             </AnimatedSection>
@@ -869,10 +151,14 @@ function HowItWorksSection() {
 // Features Grid
 function FeaturesSection() {
   const features = [
-    { icon: Smartphone, title: 'No App Download', description: 'Works directly in your browser' },
+    { icon: Smartphone, title: 'No App Download', description: 'Works in browser or integrates into your app' },
     { icon: Zap, title: 'Works Offline', description: 'Content cached for spotty signal areas' },
     { icon: Eye, title: 'Privacy First', description: 'Location data never leaves your device' },
-    { icon: Navigation, title: 'Instant Access', description: 'Just enter your code and start exploring' },
+    {
+      icon: Navigation,
+      title: 'Instant Access',
+      description: 'Just open the link and start exploring',
+    },
   ]
 
   return (
@@ -902,6 +188,33 @@ function FeaturesSection() {
   )
 }
 
+// Footer
+function Footer() {
+  return (
+    <footer className="py-12 md:py-16 bg-[#F5F0E6] border-t border-[#2F4F4F]/10">
+      <div className="max-w-5xl mx-auto px-4">
+        <AnimatedSection>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3 group cursor-pointer">
+              <img
+                src="/wnlogo.svg"
+                alt="WanderNest"
+                className="h-12 w-auto group-hover:scale-110 transition-transform duration-300"
+              />
+              <span className="font-bold text-2xl text-[#2F4F4F] group-hover:text-[#3a5f5f] transition-colors">
+                Wandernest
+              </span>
+            </div>
+            <p className="text-sm text-[#708090] text-center md:text-right max-w-md">
+              GPS-powered exploration for properties that care about guest experience.
+            </p>
+          </div>
+        </AnimatedSection>
+      </div>
+    </footer>
+  )
+}
+
 // Main Landing Page
 export default function LandingPage() {
   return (
@@ -910,55 +223,7 @@ export default function LandingPage() {
       <GrainOverlay />
 
       {/* Hero Section */}
-      <header id="hero-section" className="relative min-h-[90vh] md:min-h-screen flex flex-col pt-16 md:pt-20 pb-32 md:pb-40 px-4 overflow-hidden">
-        {/* Animated gradient background */}
-        <AnimatedGradientBg />
-
-        <FloatingElements />
-
-        {/* Mesh gradient overlays */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.08),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(255,210,127,0.1),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_90%,rgba(47,79,79,0.5),transparent_50%)]" />
-
-        <div className="flex-1 flex items-center">
-          <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6 md:mb-8 border border-[#F5F0E6]/10">
-              <span className="w-2 h-2 bg-[#FFD27F] rounded-full animate-pulse" />
-              <span className="text-[#F5F0E6] text-sm font-medium">GPS-Powered Exploration</span>
-            </div>
-
-            {/* Animated swaying logo */}
-            <AnimatedLogo
-              className="w-20 h-20 md:w-24 md:h-24 mx-auto mb-6 md:mb-8"
-              iconClassName="w-10 h-10 md:w-12 md:h-12"
-            />
-
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-[1.1]">
-              Wander. Discover.
-              <br />
-              <ShimmerText>Experience.</ShimmerText>
-            </h1>
-
-            <p className="text-lg sm:text-xl md:text-2xl text-[#F5F0E6]/90 max-w-2xl mx-auto leading-relaxed mb-8 md:mb-10 px-4">
-              GPS-powered exploration for wellness retreats and luxury properties.
-              Let your guests discover at their own pace.
-            </p>
-          </div>
-        </div>
-
-        <ScrollIndicator />
-      </header>
-
-      {/* Login Card */}
-      <main className="max-w-md mx-auto px-4 -mt-20 md:-mt-24 relative z-10">
-        <AnimatedSection>
-          <UnifiedLoginCard />
-        </AnimatedSection>
-      </main>
-
-      {/* Product Preview */}
-      <ProductPreviewSection />
+      <HeroSection heroImageUrl="/herobackground.png" />
 
       {/* How It Works */}
       <HowItWorksSection />
@@ -966,24 +231,11 @@ export default function LandingPage() {
       {/* Features */}
       <FeaturesSection />
 
+      {/* For Properties CTA */}
+      <PropertiesCTA />
+
       {/* Footer */}
-      <footer className="py-12 md:py-16 bg-[#F5F0E6] border-t border-[#2F4F4F]/10">
-        <div className="max-w-5xl mx-auto px-4">
-          <AnimatedSection>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-3 group cursor-pointer">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#2F4F4F] to-[#3a5f5f] rounded-xl flex items-center justify-center shadow-lg shadow-[#2F4F4F]/20 group-hover:shadow-[#FFD27F]/40 group-hover:scale-110 transition-all duration-300">
-                  <Footprints className="w-6 h-6 text-[#F5F0E6] group-hover:rotate-12 transition-transform duration-300" />
-                </div>
-                <span className="font-bold text-2xl text-[#2F4F4F] group-hover:text-[#3a5f5f] transition-colors">Wandernest</span>
-              </div>
-              <p className="text-sm text-[#708090] text-center md:text-right max-w-md">
-                GPS-powered exploration for properties that care about guest experience.
-              </p>
-            </div>
-          </AnimatedSection>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
