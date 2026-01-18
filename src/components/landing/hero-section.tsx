@@ -55,12 +55,14 @@ export function HeroSection({ heroImageUrl }: HeroSectionProps) {
     description:
       'Enjoy a breathtaking panorama from our hilltop lookout. A perfect spot to relax and take in the sunset.',
     audioDuration: '3:12',
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
   }
 
   const secondaryHotspot = {
     title: 'Lakeside Pavilion',
     description: 'Relax by the water\'s edge in our tranquil lakeside pavilion.',
     audioDuration: '2:45',
+    imageUrl: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop',
   }
 
   return (
