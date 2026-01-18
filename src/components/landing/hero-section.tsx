@@ -28,7 +28,7 @@ function MobileHeadline() {
         <div className="w-8 h-0.5 bg-[#c9a227]" />
       </div>
       <h1 className="text-2xl font-extrabold text-[#3a3025] leading-tight">
-        Explore Every Corner
+        Stories Around Every Corner
       </h1>
     </div>
   )

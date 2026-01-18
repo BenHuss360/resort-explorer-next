@@ -12,7 +12,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 
 ### Hero Section
 - Mobile badge: "GPS Discovery"
-- Mobile headline: "Explore Every Corner"
+- Mobile headline: "Stories Around Every Corner"
 - CTA Badge (mobile): "Something to discover"
 - CTA Badge (desktop): "Give your guests something to discover"
 
@@ -74,16 +74,13 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 - `src/components/landing/properties-cta.tsx`
 - `src/app/page.tsx`
 
-### 2. Mobile Hero Headline Could Be Stronger
+### 2. Mobile Hero Headline Could Be Stronger (FIXED)
 
-**Current:** "Explore Every Corner"
+**Was:** "Explore Every Corner"
 
-**Issue:** Generic; doesn't communicate the GPS/discovery angle or what makes WanderNest unique.
+**Issue:** Generic; didn't communicate the GPS/discovery angle or what makes WanderNest unique.
 
-**Alternatives to consider:**
-- "Discovery Awaits"
-- "Explore. Discover. Experience."
-- "Wander and Discover"
+**Resolution:** Changed to "Stories Around Every Corner" — connects to the "Unlock Stories" step and feels more evocative.
 
 ### 3. Footer Tagline Is Generic
 
@@ -141,7 +138,7 @@ An analysis of the landing page messaging, consistency, and suggested improvemen
 3. ~~**Refine offline copy**~~ — DONE: Changed to "Content cached for remote areas"
 
 ### Low Priority (Optional)
-4. **Strengthen mobile hero** — Consider more distinctive headline
+4. ~~**Strengthen mobile hero**~~ — DONE: Changed to "Stories Around Every Corner"
 5. **Reconsider "Point of Interest" label** — Warmer language optional
 
 ---
