@@ -4,7 +4,7 @@ export function OrganizationJsonLd() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Wandernest',
+    name: 'WanderNest',
     applicationCategory: 'TravelApplication',
     operatingSystem: 'Web',
     description:
@@ -17,7 +17,7 @@ export function OrganizationJsonLd() {
     },
     provider: {
       '@type': 'Organization',
-      name: 'Wandernest',
+      name: 'WanderNest',
       url: baseUrl,
     },
   }
@@ -36,7 +36,7 @@ export function WebsiteJsonLd() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Wandernest',
+    name: 'WanderNest',
     url: baseUrl,
     description:
       'GPS-powered exploration platform for wellness retreats, resorts, and luxury properties.',

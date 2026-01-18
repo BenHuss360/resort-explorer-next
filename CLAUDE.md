@@ -1,6 +1,8 @@
-# Wandernest
+# WanderNest
 
 GPS-powered exploration platform for resorts and hospitality properties. Guests discover hotspots via interactive maps with proximity-triggered content.
+
+> **See also:** [PRODUCT.md](./PRODUCT.md) for product vision and features, [TARGET_AUDIENCE.md](./TARGET_AUDIENCE.md) for user personas and market positioning.
 
 ## Tech Stack
 

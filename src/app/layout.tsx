@@ -22,8 +22,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Wandernest - GPS-Powered Guest Exploration',
-    template: '%s | Wandernest',
+    default: 'WanderNest - GPS-Powered Guest Exploration',
+    template: '%s | WanderNest',
   },
   description:
     'GPS-powered exploration platform for wellness retreats, resorts, and luxury properties. Let your guests discover points of interest with interactive maps and proximity-triggered content.',
@@ -37,17 +37,17 @@ export const metadata: Metadata = {
     'proximity-based content',
     'property points of interest',
   ],
-  authors: [{ name: 'Wandernest' }],
-  creator: 'Wandernest',
-  publisher: 'Wandernest',
+  authors: [{ name: 'WanderNest' }],
+  creator: 'WanderNest',
+  publisher: 'WanderNest',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || 'https://wandernest.app'
   ),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'Wandernest',
-    title: 'Wandernest - GPS-Powered Guest Exploration',
+    siteName: 'WanderNest',
+    title: 'WanderNest - GPS-Powered Guest Exploration',
     description:
       'GPS-powered exploration platform for wellness retreats, resorts, and luxury properties. Interactive maps with proximity-triggered content.',
     images: [
@@ -55,13 +55,13 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Wandernest - GPS-Powered Guest Exploration Platform',
+        alt: 'WanderNest - GPS-Powered Guest Exploration Platform',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wandernest - GPS-Powered Guest Exploration',
+    title: 'WanderNest - GPS-Powered Guest Exploration',
     description:
       'GPS-powered exploration for wellness retreats and luxury properties. Interactive maps with proximity-triggered content.',
     images: ['/og-image.png'],

@@ -176,7 +176,7 @@ export function MapContainer() {
       {/* Header */}
       <header className="bg-[#F5F0E6] border-b border-[#2F4F4F]/10 px-4 py-4 flex items-center justify-between shrink-0">
         <div>
-          <h1 className="font-bold text-lg text-[#2F4F4F]">{project?.resortName || 'Wandernest'}</h1>
+          <h1 className="font-bold text-lg text-[#2F4F4F]">{project?.resortName || 'WanderNest'}</h1>
           {nearestHotspot ? (
             <p className="text-sm text-[#708090]">
               Nearest: {nearestHotspot.title} ({formatDistance(nearestHotspot.distance)})

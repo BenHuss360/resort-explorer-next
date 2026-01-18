@@ -557,7 +557,7 @@ export function HotspotForm({ hotspot, mode }: HotspotFormProps) {
           <DialogHeader>
             <DialogTitle>This is a Demo</DialogTitle>
             <DialogDescription>
-              You cannot save hotspots in demo mode. Sign up to create your own Wandernest and start building interactive experiences for your guests.
+              You cannot save hotspots in demo mode. Sign up to create your own WanderNest and start building interactive experiences for your guests.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="sm:justify-center">

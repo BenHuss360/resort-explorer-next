@@ -695,9 +695,9 @@ export default function PortalSettingsPage() {
 
             <label className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
               <div>
-                <p className="font-medium">Show Wandernest Branding</p>
+                <p className="font-medium">Show WanderNest Branding</p>
                 <p className="text-sm text-gray-500">
-                  Display the &quot;Powered by Wandernest&quot; badge. Disable for white-label integration.
+                  Display the &quot;Powered by WanderNest&quot; badge. Disable for white-label integration.
                 </p>
               </div>
               <button

@@ -153,7 +153,7 @@ function HowItWorksSection() {
 function FeaturesSection() {
   const features = [
     { icon: Smartphone, title: 'No App Download', description: 'Works in browser or integrates into your app' },
-    { icon: Zap, title: 'Works Offline', description: 'Content cached for spotty signal areas' },
+    { icon: Zap, title: 'Works Offline', description: 'Content cached for remote areas' },
     { icon: Eye, title: 'Privacy First', description: 'Location data never leaves your device' },
     {
       icon: Navigation,
@@ -203,7 +203,7 @@ function Footer() {
                 className="h-12 w-auto group-hover:scale-110 transition-transform duration-300"
               />
               <span className="font-bold text-2xl text-[#2F4F4F] group-hover:text-[#3a5f5f] transition-colors">
-                Wandernest
+                WanderNest
               </span>
             </div>
             <p className="text-sm text-[#708090] text-center md:text-right max-w-md">
