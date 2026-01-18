@@ -1,4 +1,5 @@
 import type { Hotspot } from '@/lib/db/schema'
+import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import type { ProjectContextData } from '@/components/providers/project-provider'
 
 // Demo project for creator mode - uses The Newt in Somerset as a real-world example
@@ -49,6 +50,14 @@ export const DEMO_PROJECT: ProjectContextData = {
   embedSettings: {
     showHeader: true,
     showBranding: true,
+  },
+  brandColors: {
+    primary: BRAND_DEFAULTS.primaryColor,
+    secondary: BRAND_DEFAULTS.secondaryColor,
+  },
+  brandFonts: {
+    primary: BRAND_DEFAULTS.primaryFont,
+    secondary: BRAND_DEFAULTS.secondaryFont,
   },
 }
 

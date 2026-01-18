@@ -1,7 +1,8 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
-import type { Boundaries, CustomMapOverlay, MapExperience, EmbedSettings } from '@/lib/db/schema'
+import type { Boundaries, CustomMapOverlay, MapExperience, EmbedSettings, BrandColors, BrandFonts } from '@/lib/db/schema'
+import { BRAND_DEFAULTS } from '@/lib/db/schema'
 import { isDemoMode, DEMO_PROJECT } from '@/lib/mock-data'
 
 export interface VenueLocation {
@@ -19,6 +20,8 @@ export interface ProjectContextData {
   customMapOverlay: CustomMapOverlay
   venueLocation: VenueLocation
   embedSettings: EmbedSettings
+  brandColors: BrandColors
+  brandFonts: BrandFonts
 }
 
 interface ProjectContextType {
@@ -69,6 +72,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           embedSettings: {
             showHeader: data.embedShowHeader ?? true,
             showBranding: data.embedShowBranding ?? true,
+          },
+          brandColors: {
+            primary: data.brandPrimaryColor || BRAND_DEFAULTS.primaryColor,
+            secondary: data.brandSecondaryColor || BRAND_DEFAULTS.secondaryColor,
+          },
+          brandFonts: {
+            primary: data.brandPrimaryFont || BRAND_DEFAULTS.primaryFont,
+            secondary: data.brandSecondaryFont || BRAND_DEFAULTS.secondaryFont,
           },
         }
         setProjectState(projectData)
