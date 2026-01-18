@@ -15,8 +15,7 @@ export function CTABadge({ className = '', style }: CTABadgeProps) {
 
       {/* Value prop text - shorter on mobile */}
       <p className="text-[#3a3025] font-semibold text-[13px] md:text-base leading-tight text-center md:text-left md:pt-2 max-w-[180px] md:max-w-[180px]">
-        <span className="md:hidden">Something to discover</span>
-        <span className="hidden md:inline">Give your guests something to discover</span>
+        Secrets worth finding
       </p>
     </div>
   )
